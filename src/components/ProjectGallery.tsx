@@ -9,14 +9,14 @@ const categories = ["All", "Exterior", "Kitchen", "Interior"] as const;
 const images = [
   { src: "/images/project-1/exterior-front-1.jpg", alt: "Modern craftsman exterior front view", category: "Exterior" },
   { src: "/images/project-1/exterior-front-2.jpg", alt: "Two-story modern home with stone accents", category: "Exterior" },
-  { src: "/images/project-1/front-door.jpg", alt: "Custom wood front door with stone columns", category: "Exterior" },
-  { src: "/images/project-1/exterior-back.jpg", alt: "Rear exterior with covered patio", category: "Exterior" },
-  { src: "/images/project-1/exterior-rear.jpg", alt: "Back of home with stone and board-and-batten siding", category: "Exterior" },
-  { src: "/images/project-1/exterior-entry.jpg", alt: "Entry walkway and front porch", category: "Exterior" },
+  { src: "/images/project-1/exterior-front-3.jpg", alt: "Custom wood front door with stone columns", category: "Exterior" },
+  { src: "/images/project-1/exterior-rear-1.jpg", alt: "Rear exterior with covered patio", category: "Exterior" },
+  { src: "/images/project-1/exterior-rear-2.jpg", alt: "Back of home with stone and board-and-batten siding", category: "Exterior" },
+  { src: "/images/project-1/exterior-rear-3.jpg", alt: "Entry walkway and front porch", category: "Exterior" },
   { src: "/images/project-1/kitchen-1.jpg", alt: "Custom walnut kitchen with dark island", category: "Kitchen" },
   { src: "/images/project-1/kitchen-2.jpg", alt: "Kitchen marble countertops and pendant lights", category: "Kitchen" },
   { src: "/images/project-1/kitchen-3.jpg", alt: "Open kitchen with walnut cabinets wide view", category: "Kitchen" },
-  { src: "/images/project-1/shower.jpg", alt: "Walk-in shower with dual shower heads", category: "Interior" },
+  { src: "/images/project-1/interior-shower.jpg", alt: "Walk-in shower with dual shower heads", category: "Interior" },
 ] as const;
 
 export default function ProjectGallery() {
