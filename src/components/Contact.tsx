@@ -2,31 +2,33 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, FormEvent } from "react";
+import { sendContactEmail } from "@/app/actions";
 
 export default function Contact() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSending(true);
+    setError(null);
     const form = e.currentTarget;
     const data = new FormData(form);
 
     try {
-      const res = await fetch("https://formspree.io/f/YOUR_FORM_ID", {
-        method: "POST",
-        body: data,
-        headers: { Accept: "application/json" },
-      });
-      if (res.ok) {
+      const result = await sendContactEmail(data);
+
+      if (result.success) {
         setSubmitted(true);
         form.reset();
+      } else {
+        setError(result.error || "Failed to send message. Please try again.");
       }
     } catch {
-      // fail silently
+      setError("An unexpected error occurred. Please try again.");
     } finally {
       setSending(false);
     }
@@ -117,7 +119,11 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
-                <input type="hidden" name="_replyto" value="" />
+                {error && (
+                  <div className="bg-red-900/20 border border-red-600 text-red-400 px-4 py-3 rounded text-sm">
+                    {error}
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs tracking-wider uppercase text-charcoal-200 mb-2">
