@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { LazyMotion, domAnimation, m, AnimatePresence, useInView } from "framer-motion";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 const categories = ["All", "Exterior", "Kitchen", "Interior"] as const;
 
@@ -39,21 +39,74 @@ const images = [
   { src: "/images/project-1/interior-11.jpg", alt: "Primary walk-in shower with dual shower heads, mosaic floor, and recessed storage niche", category: "Interior" },
 ] as const;
 
+/* ── page-flip variants ─────────────────────────────────────────── */
+const pageVariants = {
+  enter: (dir: number) => ({
+    rotateY: dir > 0 ? 90 : -90,
+    opacity: 0,
+    scale: 0.95,
+  }),
+  center: {
+    rotateY: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (dir: number) => ({
+    rotateY: dir < 0 ? 90 : -90,
+    opacity: 0,
+    scale: 0.95,
+  }),
+};
+
+const pageTransition = {
+  type: "tween" as const,
+  duration: 0.45,
+  ease: [0.4, 0.0, 0.2, 1],
+};
+
 export default function ProjectGallery() {
-  const ref = useRef<HTMLElement | null>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const thumbRef = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   const [filter, setFilter] = useState<(typeof categories)[number]>("All");
-  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [[page, direction], setPage] = useState([0, 0]);
 
   const filtered = useMemo(() => {
-    return filter === "All" ? images : images.filter((i) => i.category === filter);
+    return filter === "All" ? [...images] : images.filter((i) => i.category === filter);
   }, [filter]);
+
+  const safeIndex = Math.min(page, filtered.length - 1);
+  const current = filtered[safeIndex];
+
+  const paginate = useCallback(
+    (newDir: number) => {
+      setPage(([prev]) => {
+        const next = prev + newDir;
+        if (next < 0 || next >= filtered.length) return [prev, 0];
+        return [next, newDir];
+      });
+    },
+    [filtered.length],
+  );
+
+  const jumpTo = useCallback(
+    (idx: number) => {
+      setPage(([prev]) => [idx, idx > prev ? 1 : -1]);
+    },
+    [],
+  );
+
+  const handleFilterChange = useCallback((cat: (typeof categories)[number]) => {
+    setFilter(cat);
+    setPage([0, 0]);
+  }, []);
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <section id="projects" className="py-24 md:py-32 bg-charcoal-800" ref={ref as any}>
-        <div className="max-w-7xl mx-auto px-6">
+      <section id="projects" className="py-24 md:py-32 bg-charcoal-800" ref={sectionRef as any}>
+        <div className="max-w-[90rem] mx-auto px-4 sm:px-6">
+          {/* Header */}
           <m.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 18 }}
@@ -67,12 +120,12 @@ export default function ProjectGallery() {
             </p>
           </m.div>
 
-          {/* Filter buttons */}
+          {/* Filter tabs */}
           <div className="flex flex-wrap justify-center gap-3 mb-10">
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setFilter(cat)}
+                onClick={() => handleFilterChange(cat)}
                 className={`px-4 py-2 text-xs tracking-wider uppercase rounded transition-colors ${
                   filter === cat
                     ? "bg-walnut-500 text-white"
@@ -84,106 +137,152 @@ export default function ProjectGallery() {
             ))}
           </div>
 
-          {/* Gallery */}
-          <AnimatePresence mode="popLayout" initial={false}>
-            <m.div
-              key={filter}
-              className="grid grid-cols-2 md:grid-cols-3 gap-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {filtered.map((img) => (
-                <button
-                  key={img.src}
-                  type="button"
-                  className="relative aspect-[4/3] overflow-hidden rounded-sm text-left group
-                             [transform:translateZ(0)] will-change-transform"
-                  onClick={() => setLightbox(images.findIndex((x) => x.src === img.src))}
-                >
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    sizes="(min-width: 768px) 33vw, 50vw"
-                    quality={75}
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]
-                               [transform:translateZ(0)] will-change-transform"
-                  />
+          {/* ── Scrapbook ────────────────────────────────────────── */}
+          <div className="flex flex-col xl:flex-row gap-6 items-start">
 
-                  <div className="absolute inset-0 bg-charcoal-900/0 group-hover:bg-charcoal-900/35 transition-colors duration-200 ease-out flex items-end p-4">
-                    <p className="text-white text-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-200 ease-out">
-                      {img.alt}
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </m.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Lightbox */}
-        <AnimatePresence>
-          {lightbox !== null && (
-            <m.div
-              className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setLightbox(null)}
-            >
-              <button
-                className="absolute top-6 right-6 text-white/60 hover:text-white text-3xl"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLightbox(null);
-                }}
-              >
-                &times;
-              </button>
-
-              <button
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white text-4xl px-3"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLightbox(lightbox === 0 ? images.length - 1 : lightbox - 1);
-                }}
-              >
-                &#8249;
-              </button>
-
-              <button
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white text-4xl px-3"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLightbox(lightbox === images.length - 1 ? 0 : lightbox + 1);
-                }}
-              >
-                &#8250;
-              </button>
-
+            {/* Main book */}
+            <div className="flex-1 w-full min-w-0">
               <div
-                className="relative max-h-[85vh] max-w-[90vw] w-[90vw] md:w-[70vw] aspect-[4/3]"
-                onClick={(e) => e.stopPropagation()}
+                className="relative mx-auto w-full rounded-md overflow-hidden"
+                style={{ perspective: "1400px" }}
               >
-                <Image
-                  src={images[lightbox].src}
-                  alt={images[lightbox].alt}
-                  fill
-                  sizes="90vw"
-                  quality={85}
-                  className="object-contain"
-                  priority
-                />
-              </div>
+                {/* Scrapbook cover */}
+                <div className="relative bg-charcoal-900 border border-charcoal-600 rounded-md shadow-2xl">
+                  {/* Spine */}
+                  <div className="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-walnut-700 to-walnut-600 rounded-l-md z-20" />
+                  {/* Spine stitch line */}
+                  <div className="absolute left-[14px] top-4 bottom-4 w-px bg-walnut-400/30 z-20" />
 
-              <p className="absolute bottom-6 text-sand-300 text-sm tracking-wide px-6 text-center">
-                {images[lightbox].alt}
+                  {/* Page area */}
+                  <div className="relative aspect-[3/2] m-4 ml-7 bg-charcoal-950 rounded-sm overflow-hidden">
+                    <AnimatePresence initial={false} custom={direction} mode="popLayout">
+                      <m.div
+                        key={current?.src ?? "empty"}
+                        custom={direction}
+                        variants={pageVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={pageTransition}
+                        className="absolute inset-0"
+                        style={{ transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
+                      >
+                        {current && (
+                          <Image
+                            src={current.src}
+                            alt={current.alt}
+                            fill
+                            sizes="(min-width: 1280px) 70vw, 92vw"
+                            className="object-cover"
+                            priority={safeIndex === 0}
+                          />
+                        )}
+                      </m.div>
+                    </AnimatePresence>
+
+                    {/* ── Overlay nav arrows ── */}
+                    <button
+                      onClick={() => paginate(-1)}
+                      disabled={safeIndex === 0}
+                      className="absolute left-0 top-0 bottom-0 w-16 sm:w-20 z-30 flex items-center justify-center
+                                 bg-gradient-to-r from-black/50 to-transparent opacity-0 hover:opacity-100 focus:opacity-100
+                                 disabled:hidden transition-opacity duration-200 group cursor-pointer"
+                      aria-label="Previous page"
+                    >
+                      <span className="text-white text-4xl sm:text-5xl drop-shadow-lg group-hover:scale-110 transition-transform">
+                        &#8249;
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => paginate(1)}
+                      disabled={safeIndex >= filtered.length - 1}
+                      className="absolute right-0 top-0 bottom-0 w-16 sm:w-20 z-30 flex items-center justify-center
+                                 bg-gradient-to-l from-black/50 to-transparent opacity-0 hover:opacity-100 focus:opacity-100
+                                 disabled:hidden transition-opacity duration-200 group cursor-pointer"
+                      aria-label="Next page"
+                    >
+                      <span className="text-white text-4xl sm:text-5xl drop-shadow-lg group-hover:scale-110 transition-transform">
+                        &#8250;
+                      </span>
+                    </button>
+
+                    {/* Inner page shadow */}
+                    <div className="pointer-events-none absolute inset-0 shadow-inner rounded-sm" />
+                  </div>
+
+                  {/* Bottom bar — caption + arrow buttons + page count */}
+                  <div className="flex items-center justify-between px-6 sm:px-8 py-5 ml-4">
+                    <button
+                      onClick={() => paginate(-1)}
+                      disabled={safeIndex === 0}
+                      className="flex items-center justify-center w-11 h-11 rounded-full
+                                 bg-charcoal-700 hover:bg-walnut-600 text-sand-100 text-xl
+                                 disabled:bg-charcoal-800 disabled:text-charcoal-600 disabled:cursor-not-allowed
+                                 transition-colors shadow-md"
+                      aria-label="Previous page"
+                    >
+                      &#8249;
+                    </button>
+
+                    <div className="text-center flex-1 min-w-0 px-4">
+                      <p className="text-sand-200 text-sm sm:text-base truncate">{current?.alt}</p>
+                      <p className="text-charcoal-400 text-xs mt-1 tracking-wider uppercase">
+                        {current?.category} &middot; {safeIndex + 1} of {filtered.length}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => paginate(1)}
+                      disabled={safeIndex >= filtered.length - 1}
+                      className="flex items-center justify-center w-11 h-11 rounded-full
+                                 bg-charcoal-700 hover:bg-walnut-600 text-sand-100 text-xl
+                                 disabled:bg-charcoal-800 disabled:text-charcoal-600 disabled:cursor-not-allowed
+                                 transition-colors shadow-md"
+                      aria-label="Next page"
+                    >
+                      &#8250;
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Thumbnail strip ─────────────────────────────────── */}
+            <div className="xl:w-56 w-full flex-shrink-0" ref={thumbRef as any}>
+              <p className="text-charcoal-400 text-xs tracking-wider uppercase mb-3 hidden xl:block">
+                Pages
               </p>
-            </m.div>
-          )}
-        </AnimatePresence>
+              <div className="flex xl:flex-col flex-row gap-2 overflow-x-auto xl:overflow-y-auto xl:max-h-[600px] pb-2 xl:pb-0 xl:pr-1 scrollbar-thin scrollbar-thumb-charcoal-600">
+                {filtered.map((img, idx) => (
+                  <button
+                    key={img.src}
+                    onClick={() => jumpTo(idx)}
+                    className={`relative flex-shrink-0 w-24 h-16 xl:w-full xl:h-auto xl:aspect-[4/3] rounded-sm overflow-hidden border-2 transition-all duration-200 ${
+                      idx === safeIndex
+                        ? "border-walnut-500 shadow-lg shadow-walnut-500/25 opacity-100"
+                        : "border-transparent hover:border-charcoal-500 opacity-50 hover:opacity-90"
+                    }`}
+                  >
+                    <Image
+                      src={img.src}
+                      alt=""
+                      fill
+                      sizes="160px"
+                      className="object-cover"
+                      loading="lazy"
+                    />
+                    {/* Page number badge */}
+                    <span className={`absolute bottom-1 right-1 text-[10px] font-medium px-1.5 py-0.5 rounded
+                      ${idx === safeIndex ? "bg-walnut-500 text-white" : "bg-black/60 text-white/70"}`}>
+                      {idx + 1}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </LazyMotion>
   );
