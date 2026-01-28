@@ -26,7 +26,7 @@ export default function About() {
           >
             <div className="relative overflow-hidden rounded-sm">
               <img
-                src="/images/project-1/front-door.jpg"
+                src="/images/project-1/exterior-3.jpg"
                 alt="Kiefer Built custom home entrance"
                 className="w-full h-[500px] object-cover"
               />

@@ -19,7 +19,7 @@ export default function Hero() {
         <div
           className="absolute inset-0 bg-cover bg-center scale-110"
           style={{
-            backgroundImage: "url(/images/project-1/exterior-front-1.jpg)",
+            backgroundImage: "url(/images/project-1/exterior-1.jpg)",
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-charcoal-900/70 via-charcoal-900/40 to-charcoal-900/80" />

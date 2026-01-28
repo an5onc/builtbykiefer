@@ -7,16 +7,36 @@ import { useMemo, useRef, useState } from "react";
 const categories = ["All", "Exterior", "Kitchen", "Interior"] as const;
 
 const images = [
-  { src: "/images/project-1/exterior-front-1.jpg", alt: "Modern craftsman exterior front view", category: "Exterior" },
-  { src: "/images/project-1/exterior-front-2.jpg", alt: "Two-story modern home with stone accents", category: "Exterior" },
-  { src: "/images/project-1/exterior-front-3.jpg", alt: "Custom wood front door with stone columns", category: "Exterior" },
-  { src: "/images/project-1/exterior-rear-1.jpg", alt: "Rear exterior with covered patio", category: "Exterior" },
-  { src: "/images/project-1/exterior-rear-2.jpg", alt: "Back of home with stone and board-and-batten siding", category: "Exterior" },
-  { src: "/images/project-1/exterior-rear-3.jpg", alt: "Entry walkway and front porch", category: "Exterior" },
-  { src: "/images/project-1/kitchen-1.jpg", alt: "Custom walnut kitchen with dark island", category: "Kitchen" },
-  { src: "/images/project-1/kitchen-2.jpg", alt: "Kitchen marble countertops and pendant lights", category: "Kitchen" },
-  { src: "/images/project-1/kitchen-3.jpg", alt: "Open kitchen with walnut cabinets wide view", category: "Kitchen" },
-  { src: "/images/project-1/interior-shower.jpg", alt: "Walk-in shower with dual shower heads", category: "Interior" },
+  // Exterior (6)
+  { src: "/images/project-1/exterior-1.jpg", alt: "Modern craftsman front elevation with covered porch, stone columns, and wood-clad garage doors", category: "Exterior" },
+  { src: "/images/project-1/exterior-2.jpg", alt: "Front angle view showcasing three-car garage with cedar doors and white stone accents", category: "Exterior" },
+  { src: "/images/project-1/exterior-3.jpg", alt: "Custom walnut front entry door flanked by stone pillar columns and sidelight windows", category: "Exterior" },
+  { src: "/images/project-1/exterior-4.jpg", alt: "Rear exterior with covered patio, motorized shade, and board-and-batten siding", category: "Exterior" },
+  { src: "/images/project-1/exterior-5.jpg", alt: "Back of home with covered entry, stone columns, and exposed wood beam detail", category: "Exterior" },
+  { src: "/images/project-1/exterior-6.jpg", alt: "Side exterior showing multi-gable roofline, stone porch, and mixed siding", category: "Exterior" },
+  // Kitchen (10)
+  { src: "/images/project-1/kitchen-1.jpg", alt: "Dark island with marble countertop, walnut cabinetry, and matte black drum pendants", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-2.jpg", alt: "Full kitchen with walnut cabinets, slatted ceiling feature, subway tile backsplash, and dark island", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-3.jpg", alt: "Wide view of open kitchen with matte black island, marble counters, and walnut perimeter cabinets", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-4.jpg", alt: "Gas range detail with walnut cabinetry, dark range hood, and subway tile backsplash", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-5.jpg", alt: "Panel-ready refrigerator with custom walnut cabinetry surround", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-6.jpg", alt: "Professional double wall oven set in walnut cabinet tower with subway tile", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-7.jpg", alt: "Kitchen sink station with matte black faucet, walnut cabinets, and subway tile to ceiling", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-8.jpg", alt: "Kitchen opening to dining area with slatted ceiling, dark island, and bubble pendant lights", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-9.jpg", alt: "Slatted ceiling detail with matte black drum pendant lights over kitchen island", category: "Kitchen" },
+  { src: "/images/project-1/kitchen-10.jpg", alt: "Kitchen from dining perspective showing walnut cabinets, appliances, and natural light", category: "Kitchen" },
+  // Interior (11)
+  { src: "/images/project-1/interior-1.jpg", alt: "Butler's pantry with dark cabinets, marble countertop, linear tile backsplash, and open shelving", category: "Interior" },
+  { src: "/images/project-1/interior-2.jpg", alt: "Laundry room with maple cabinets, marble counter, hexagonal backsplash, and matte black faucet", category: "Interior" },
+  { src: "/images/project-1/interior-3.jpg", alt: "Primary bathroom with floating walnut vanity, round wood mirrors, freestanding soaking tub", category: "Interior" },
+  { src: "/images/project-1/interior-4.jpg", alt: "Primary bath wide view with dual vanity, glass shower enclosure, and freestanding tub", category: "Interior" },
+  { src: "/images/project-1/interior-5.jpg", alt: "Walk-in shower with dual shower heads, hand shower, recessed niche, and mosaic tile floor", category: "Interior" },
+  { src: "/images/project-1/interior-6.jpg", alt: "Guest bathroom with decorative blue hexagonal shell tile, maple vanity, and glass shower", category: "Interior" },
+  { src: "/images/project-1/interior-7.jpg", alt: "Guest bath shower with blue hexagonal shell tile accent wall and glass door", category: "Interior" },
+  { src: "/images/project-1/interior-8.jpg", alt: "Powder room with bold geometric wallpaper, dark vanity, pendant light, and patterned floor tile", category: "Interior" },
+  { src: "/images/project-1/interior-9.jpg", alt: "Tub-shower combo with elongated hexagonal tile and glass panel door", category: "Interior" },
+  { src: "/images/project-1/interior-10.jpg", alt: "Living room with floor-to-ceiling dark tiled fireplace, linear gas insert, and cable railing staircase", category: "Interior" },
+  { src: "/images/project-1/interior-11.jpg", alt: "Primary walk-in shower with dual shower heads, mosaic floor, and recessed storage niche", category: "Interior" },
 ] as const;
 
 export default function ProjectGallery() {

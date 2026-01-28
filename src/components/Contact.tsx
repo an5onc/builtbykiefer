@@ -42,7 +42,7 @@ export default function Contact() {
       <div
         className="absolute inset-0 opacity-5 bg-cover bg-center"
         style={{
-          backgroundImage: "url(/images/project-1/exterior-front-2.jpg)",
+          backgroundImage: "url(/images/project-1/exterior-2.jpg)",
         }}
       />
 
