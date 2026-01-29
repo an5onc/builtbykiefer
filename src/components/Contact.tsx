@@ -1,38 +1,50 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, FormEvent } from "react";
-import { sendContactEmail } from "@/app/actions";
+import { useRef, useEffect, useState } from "react";
 
 export default function Contact() {
   const ref = useRef(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [submitted, setSubmitted] = useState(false);
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [loadCount, setLoadCount] = useState(0);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSending(true);
-    setError(null);
-    const form = e.currentTarget;
-    const data = new FormData(form);
+  useEffect(() => {
+    // Load Buildertrend script
+    const script = document.createElement('script');
+    script.src = 'https://buildertrend.net/leads/contactforms/js/btClientContactForm.js';
+    script.type = 'text/javascript';
+    document.body.appendChild(script);
 
-    try {
-      const result = await sendContactEmail(data);
-
-      if (result.success) {
-        setSubmitted(true);
-        form.reset();
-      } else {
-        setError(result.error || "Failed to send message. Please try again.");
+    return () => {
+      // Cleanup script on unmount
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
       }
-    } catch {
-      setError("An unexpected error occurred. Please try again.");
-    } finally {
-      setSending(false);
+    };
+  }, []);
+
+  const handleIframeLoad = () => {
+    // The iframe loads twice: once initially, once after submission
+    // Show thank you after the second load (submission)
+    setLoadCount(prev => {
+      const newCount = prev + 1;
+      if (newCount > 1) {
+        setShowThankYou(true);
+      }
+      return newCount;
+    });
+  };
+
+  const resetForm = () => {
+    setShowThankYou(false);
+    setLoadCount(0);
+    // Reload the iframe to show fresh form
+    if (iframeRef.current) {
+      iframeRef.current.src = iframeRef.current.src;
     }
-  }
+  };
 
   return (
     <section
@@ -107,103 +119,60 @@ export default function Contact() {
             initial={{ opacity: 0, x: 30 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative"
           >
-            {submitted ? (
-              <div className="h-full flex items-center justify-center">
-                <div className="text-center">
-                  <p className="text-3xl text-walnut-400 mb-4">Thank you</p>
-                  <p className="text-charcoal-200">
-                    We&apos;ll be in touch within 24 hours.
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {error && (
-                  <div className="bg-red-900/20 border border-red-600 text-red-400 px-4 py-3 rounded text-sm">
-                    {error}
+            {/* Buildertrend Contact Form */}
+            <div className="bg-white p-6 rounded-lg shadow-xl relative">
+              {!showThankYou ? (
+                <iframe
+                  ref={iframeRef}
+                  src="https://buildertrend.net/leads/contactforms/ContactFormFrame.aspx?builderID=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJidWlsZGVySWQiOjczMDYwfQ.kg1wLW3_McP07nQZcG8Rft8Z2CMWbaNbyNRgAd8a5FY"
+                  scrolling="no"
+                  id="btIframe"
+                  onLoad={handleIframeLoad}
+                  style={{
+                    background: 'white',
+                    border: '0px',
+                    margin: '0 auto',
+                    width: '100%',
+                    minHeight: '600px'
+                  }}
+                  title="Contact Form"
+                />
+              ) : (
+                <div className="flex items-center justify-center min-h-[600px]">
+                  <div className="text-center p-8">
+                    <div className="mb-6">
+                      <svg
+                        className="mx-auto h-16 w-16 text-walnut-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-3xl font-bold text-walnut-500 mb-4">
+                      Thank You!
+                    </h3>
+                    <p className="text-gray-600 mb-6 max-w-md">
+                      We&apos;ve received your message and will get back to you within 24 hours.
+                    </p>
+                    <button
+                      onClick={resetForm}
+                      className="px-6 py-3 bg-walnut-500 text-white rounded-lg hover:bg-walnut-600 transition-colors text-sm tracking-wider uppercase"
+                    >
+                      Submit Another Request
+                    </button>
                   </div>
-                )}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs tracking-wider uppercase text-charcoal-200 mb-2">
-                      First Name
-                    </label>
-                    <input
-                      type="text"
-                      name="firstName"
-                      required
-                      className="w-full bg-charcoal-700 border border-charcoal-600 text-sand-100 px-4 py-3 rounded text-sm focus:outline-none focus:border-walnut-500 transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs tracking-wider uppercase text-charcoal-200 mb-2">
-                      Last Name
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      required
-                      className="w-full bg-charcoal-700 border border-charcoal-600 text-sand-100 px-4 py-3 rounded text-sm focus:outline-none focus:border-walnut-500 transition-colors"
-                    />
-                  </div>
                 </div>
-                <div>
-                  <label className="block text-xs tracking-wider uppercase text-charcoal-200 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    className="w-full bg-charcoal-700 border border-charcoal-600 text-sand-100 px-4 py-3 rounded text-sm focus:outline-none focus:border-walnut-500 transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs tracking-wider uppercase text-charcoal-200 mb-2">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    className="w-full bg-charcoal-700 border border-charcoal-600 text-sand-100 px-4 py-3 rounded text-sm focus:outline-none focus:border-walnut-500 transition-colors"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs tracking-wider uppercase text-charcoal-200 mb-2">
-                    Project Type
-                  </label>
-                  <select
-                    name="projectType"
-                    className="w-full bg-charcoal-700 border border-charcoal-600 text-sand-100 px-4 py-3 rounded text-sm focus:outline-none focus:border-walnut-500 transition-colors"
-                  >
-                    <option>Custom New Build</option>
-                    <option>Renovation / Remodel</option>
-                    <option>Addition</option>
-                    <option>Commercial</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs tracking-wider uppercase text-charcoal-200 mb-2">
-                    Tell Us About Your Project
-                  </label>
-                  <textarea
-                    name="message"
-                    rows={4}
-                    required
-                    className="w-full bg-charcoal-700 border border-charcoal-600 text-sand-100 px-4 py-3 rounded text-sm focus:outline-none focus:border-walnut-500 transition-colors resize-none"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={sending}
-                  className="w-full py-3.5 bg-walnut-500 text-white tracking-wider uppercase text-sm rounded hover:bg-walnut-600 transition-colors disabled:opacity-50"
-                >
-                  {sending ? "Sending..." : "Send Message"}
-                </button>
-              </form>
-            )}
+              )}
+            </div>
           </motion.div>
         </div>
       </div>
