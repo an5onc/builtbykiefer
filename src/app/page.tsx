@@ -19,6 +19,8 @@ export default function Home() {
       <motion.div
         className="fixed top-0 left-0 h-[3px] bg-walnut-500 z-[100]"
         style={{ width: progressWidth }}
+        role="progressbar"
+        aria-label="Page scroll progress"
       />
       <Header />
       <main>

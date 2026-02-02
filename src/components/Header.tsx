@@ -70,7 +70,8 @@ export default function Header() {
           <button
             className="md:hidden text-white p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
           >
             <div className="w-6 flex flex-col gap-1.5">
               <span

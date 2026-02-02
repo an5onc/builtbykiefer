@@ -17,6 +17,8 @@ export default function Hero() {
       {/* Background image with parallax */}
       <motion.div className="absolute inset-0" style={{ y }}>
         <div
+          role="img"
+          aria-label="Custom craftsman home exterior by Kiefer Built Contracting"
           className="absolute inset-0 bg-cover bg-center scale-110"
           style={{
             backgroundImage: "url(/images/project-1/exterior-1.jpg)",

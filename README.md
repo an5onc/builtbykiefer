@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Built by Kiefer
+
+Portfolio website for **Kiefer Built Contracting** — custom home building, renovations, and commercial construction in Northern Colorado.
+
+**Live site:** [builtbykiefer.com](https://builtbykiefer.com)
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (App Router, static export)
+- **Styling:** Tailwind CSS 4
+- **Animations:** Framer Motion
+- **Contact Form:** Buildertrend embedded iframe
+- **Deployment:** Vercel (auto-deploy from `main`)
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+Static export outputs to the `out/` directory.
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/
+│   ├── layout.tsx      # Root layout with metadata/SEO
+│   ├── page.tsx         # Home page
+│   └── globals.css      # Global styles & Tailwind
+├── components/
+│   ├── Header.tsx       # Fixed header with mobile menu
+│   ├── Hero.tsx         # Full-screen hero with parallax
+│   ├── ProjectGallery.tsx # Scrapbook-style image gallery
+│   ├── Process.tsx      # 4-step build process section
+│   ├── Contact.tsx      # Contact info + Buildertrend form
+│   └── Footer.tsx       # Site footer with social links
+public/
+└── images/              # Project photography
+```
