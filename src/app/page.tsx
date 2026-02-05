@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import About from "@/components/About";
 import ProjectGallery from "@/components/ProjectGallery";
 import Process from "@/components/Process";
 import Contact from "@/components/Contact";
@@ -21,10 +22,13 @@ export default function Home() {
         style={{ width: progressWidth }}
         role="progressbar"
         aria-label="Page scroll progress"
+        aria-valuemin={0}
+        aria-valuemax={100}
       />
       <Header />
-      <main>
+      <main id="main-content">
         <Hero />
+        <About />
         <ProjectGallery />
         <Process />
         <Contact />
