@@ -104,7 +104,7 @@ export default function ProjectGallery() {
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <section id="projects" className="py-24 md:py-32 bg-charcoal-800" ref={sectionRef as any}>
+      <section id="projects" className="py-24 md:py-32 bg-charcoal-800" ref={sectionRef as any} aria-labelledby="projects-heading">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6">
           {/* Header */}
           <m.div
@@ -114,18 +114,20 @@ export default function ProjectGallery() {
             transition={{ duration: 0.45, ease: "easeOut" }}
           >
             <p className="text-walnut-400 text-sm tracking-[0.3em] uppercase mb-3">Our Work</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-sand-100 mb-4">Featured Project</h2>
+            <h2 id="projects-heading" className="text-3xl md:text-4xl font-bold text-sand-100 mb-4">Featured Project</h2>
             <p className="text-charcoal-200 max-w-lg mx-auto">
               A modern craftsman home featuring stone accents, custom walnut cabinetry, and premium finishes throughout.
             </p>
           </m.div>
 
           {/* Filter tabs */}
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
+          <div className="flex flex-wrap justify-center gap-3 mb-10" role="group" aria-label="Filter project photos by category">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => handleFilterChange(cat)}
+                aria-pressed={filter === cat}
+                aria-label={`Show ${cat.toLowerCase()} photos`}
                 className={`px-4 py-2 text-xs tracking-wider uppercase rounded transition-colors ${
                   filter === cat
                     ? "bg-walnut-500 text-white"

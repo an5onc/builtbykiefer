@@ -51,6 +51,7 @@ export default function Contact() {
       id="contact"
       className="py-24 md:py-32 bg-charcoal-800 relative overflow-hidden"
       ref={ref}
+      aria-labelledby="contact-heading"
     >
       {/* Background accent image */}
       <div
@@ -71,25 +72,26 @@ export default function Contact() {
             <p className="text-walnut-400 text-sm tracking-[0.3em] uppercase mb-3">
               Get in Touch
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-sand-100 mb-6">
+            <h2 id="contact-heading" className="text-3xl md:text-4xl font-bold text-sand-100 mb-6">
               Ready to Build
               <br />
               Your Dream Home?
             </h2>
             <p className="text-charcoal-200 leading-relaxed mb-8">
               Tell us about your project. Whether it&apos;s a custom new build,
-              renovation, or commercial space, we&apos;d love to hear your
+              renovation, or commercial space in Northern Colorado, we&apos;d love to hear your
               vision.
             </p>
 
-            <div className="space-y-4 text-charcoal-200">
+            <address className="space-y-4 text-charcoal-200 not-italic">
               <div>
                 <p className="text-xs tracking-wider uppercase text-walnut-400 mb-1">
                   Phone
                 </p>
                 <a
-                  href="tel:9705155059"
+                  href="tel:+19705155059"
                   className="hover:text-walnut-300 transition-colors"
+                  aria-label="Call Kiefer Built Contracting at (970) 515-5059"
                 >
                   (970) 515-5059
                 </a>
@@ -101,6 +103,7 @@ export default function Contact() {
                 <a
                   href="mailto:info@kbuiltco.com"
                   className="hover:text-walnut-300 transition-colors"
+                  aria-label="Email Kiefer Built Contracting at info@kbuiltco.com"
                 >
                   info@kbuiltco.com
                 </a>
@@ -111,7 +114,7 @@ export default function Contact() {
                 </p>
                 <p>Windsor, Colorado</p>
               </div>
-            </div>
+            </address>
           </motion.div>
 
           {/* Right: Form */}

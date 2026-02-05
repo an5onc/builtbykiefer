@@ -11,12 +11,13 @@ export default function Footer() {
               Custom Homes &middot; Northern Colorado
             </p>
           </div>
-          <div className="flex gap-6">
+          <nav className="flex gap-6" aria-label="Social links and external sites">
             <a
               href="https://www.facebook.com/KieferBuiltContracting"
               target="_blank"
               rel="noopener noreferrer"
               className="text-charcoal-300 hover:text-walnut-400 transition-colors text-sm"
+              aria-label="Kiefer Built Contracting on Facebook"
             >
               Facebook
             </a>
@@ -25,6 +26,7 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-charcoal-300 hover:text-walnut-400 transition-colors text-sm"
+              aria-label="Kiefer Built Contracting on Instagram"
             >
               Instagram
             </a>
@@ -33,10 +35,11 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-charcoal-300 hover:text-walnut-400 transition-colors text-sm"
+              aria-label="Visit kbuiltco.com"
             >
               kbuiltco.com
             </a>
-          </div>
+          </nav>
           <p className="text-charcoal-400 text-xs">
             &copy; {new Date().getFullYear()} Kiefer Built Contracting. All
             rights reserved.

@@ -35,7 +35,7 @@ export default function Process() {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="process" className="py-24 md:py-32 bg-sand-100" ref={ref}>
+    <section id="process" className="py-24 md:py-32 bg-sand-100" ref={ref} aria-labelledby="process-heading">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           className="text-center mb-16"
@@ -46,7 +46,7 @@ export default function Process() {
           <p className="text-walnut-500 text-sm tracking-[0.3em] uppercase mb-3">
             How We Work
           </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-charcoal-800">
+          <h2 id="process-heading" className="text-3xl md:text-4xl font-bold text-charcoal-800">
             Our Process
           </h2>
         </motion.div>
