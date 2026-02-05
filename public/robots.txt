@@ -1,0 +1,6 @@
+# robots.txt for www.builtbykiefer.com
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.builtbykiefer.com/sitemap.xml

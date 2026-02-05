@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://www.builtbykiefer.com</loc>
+    <lastmod>2026-02-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://www.builtbykiefer.com/images/project-1/exterior-1.jpg</image:loc>
+      <image:caption>Custom craftsman home exterior by Kiefer Built Contracting</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.builtbykiefer.com/images/project-1/exterior-2.jpg</image:loc>
+      <image:caption>Three-car garage with cedar doors and stone accents</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.builtbykiefer.com/images/project-1/kitchen-1.jpg</image:loc>
+      <image:caption>Custom kitchen with walnut cabinetry and marble countertops</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.builtbykiefer.com/images/project-1/interior-3.jpg</image:loc>
+      <image:caption>Primary bathroom with floating walnut vanity and freestanding tub</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.builtbykiefer.com/images/project-1/interior-10.jpg</image:loc>
+      <image:caption>Living room with floor-to-ceiling tiled fireplace and cable railing staircase</image:caption>
+    </image:image>
+  </url>
+</urlset>
