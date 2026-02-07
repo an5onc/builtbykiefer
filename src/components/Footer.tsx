@@ -5,13 +5,13 @@ export default function Footer() {
     <footer className="bg-charcoal-900 py-12" role="contentinfo">
       <div className="max-w-7xl mx-auto px-6">
         {/* Partner acknowledgment */}
-        <div className="flex items-center justify-center gap-4 mb-8 pb-8 border-b border-charcoal-700/50">
-          <span className="text-charcoal-400 text-xs tracking-wider">In partnership with</span>
+        <div className="flex items-center justify-center gap-6 mb-8 pb-8 border-b border-charcoal-700/50">
+          <span className="text-charcoal-400 text-sm tracking-wider">In partnership with</span>
           <a
             href="https://epsbuildings.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="relative w-24 h-8 opacity-70 hover:opacity-100 transition-opacity"
+            className="relative w-40 h-14 opacity-80 hover:opacity-100 transition-opacity"
           >
             <Image
               src="/images/eps-buildings-logo.webp"
