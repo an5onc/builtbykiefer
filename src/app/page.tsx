@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import Partnership from "@/components/Partnership";
 import About from "@/components/About";
 import ProjectGallery from "@/components/ProjectGallery";
 import Process from "@/components/Process";
@@ -28,6 +29,7 @@ export default function Home() {
       <Header />
       <main id="main-content">
         <Hero />
+        <Partnership />
         <About />
         <ProjectGallery />
         <Process />

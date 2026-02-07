@@ -1,7 +1,27 @@
+import Image from "next/image";
+
 export default function Footer() {
   return (
     <footer className="bg-charcoal-900 py-12" role="contentinfo">
       <div className="max-w-7xl mx-auto px-6">
+        {/* Partner acknowledgment */}
+        <div className="flex items-center justify-center gap-4 mb-8 pb-8 border-b border-charcoal-700/50">
+          <span className="text-charcoal-400 text-xs tracking-wider">In partnership with</span>
+          <a
+            href="https://epsbuildings.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative w-24 h-8 opacity-70 hover:opacity-100 transition-opacity"
+          >
+            <Image
+              src="/images/eps-buildings-logo.webp"
+              alt="EPS Buildings"
+              fill
+              className="object-contain"
+            />
+          </a>
+        </div>
+
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
             <p className="text-sand-100 font-bold tracking-wider">
