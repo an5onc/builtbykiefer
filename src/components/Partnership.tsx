@@ -30,13 +30,25 @@ export default function Partnership() {
 
           {/* Partnership logos */}
           <div className="flex items-center justify-center gap-8 md:gap-12">
-            {/* Kiefer K logo placeholder - using text for now */}
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-lg bg-walnut-600/20 border border-walnut-500/30 flex items-center justify-center">
-                <span className="text-3xl md:text-4xl font-bold text-walnut-400">K</span>
+            {/* Kiefer K logo */}
+            <a
+              href="https://kbuiltco.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center group"
+            >
+              <div className="w-20 h-20 md:w-24 md:h-24 relative transition-transform group-hover:scale-105">
+                <Image
+                  src="/images/kiefer-k-logo.png"
+                  alt="Kiefer Built Contracting"
+                  fill
+                  className="object-contain"
+                />
               </div>
-              <span className="mt-2 text-sand-300/70 text-xs tracking-wider">KIEFER BUILT</span>
-            </div>
+              <span className="mt-2 text-sand-300/70 text-xs tracking-wider group-hover:text-walnut-400 transition-colors">
+                KIEFER BUILT
+              </span>
+            </a>
 
             {/* Plus sign */}
             <div className="text-walnut-500/60 text-2xl font-light">+</div>
