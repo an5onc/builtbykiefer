@@ -51,6 +51,36 @@
   --color-stone-300: #C8C0B4;
   --color-stone-400: #ADA396;
 
+  /* 4815 Demuth — dark metal siding + mountain palette */
+  --color-steel-50: #F0F0EE;
+  --color-steel-100: #D8D6D2;
+  --color-steel-200: #B0ADA6;
+  --color-steel-300: #807B72;
+  --color-steel-400: #5C5750;
+  --color-steel-500: #3E3A34;
+  --color-steel-600: #33302B;
+  --color-steel-700: #282622;
+  --color-steel-800: #1D1B18;
+  --color-steel-900: #12110F;
+
+  --color-pine-50: #E8F0E8;
+  --color-pine-100: #C8D8C8;
+  --color-pine-200: #94B094;
+  --color-pine-300: #5C8A5C;
+  --color-pine-400: #3D6B3D;
+  --color-pine-500: #2A4F2A;
+  --color-pine-600: #224222;
+  --color-pine-700: #1A331A;
+  --color-pine-800: #122412;
+  --color-pine-900: #0A160A;
+
+  --color-boulder-50: #F2F0ED;
+  --color-boulder-100: #E0DCD6;
+  --color-boulder-200: #C4BDB3;
+  --color-boulder-300: #A8A090;
+  --color-boulder-400: #8C836E;
+  --color-boulder-500: #6E6454;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
