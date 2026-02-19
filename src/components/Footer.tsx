@@ -42,7 +42,7 @@ export default function Footer() {
               Facebook
             </a>
             <a
-              href="https://www.instagram.com/kieferbuiltcontracting"
+              href="https://www.instagram.com/kieferbuiltco"
               target="_blank"
               rel="noopener noreferrer"
               className="text-charcoal-300 hover:text-walnut-400 transition-colors text-sm"
@@ -60,10 +60,23 @@ export default function Footer() {
               kbuiltco.com
             </a>
           </nav>
-          <p className="text-charcoal-400 text-xs">
-            &copy; {new Date().getFullYear()} Kiefer Built Contracting. All
-            rights reserved.
-          </p>
+          <div className="text-right">
+            <p className="text-charcoal-400 text-xs">
+              &copy; {new Date().getFullYear()} Kiefer Built Contracting. All
+              rights reserved.
+            </p>
+            <p className="text-charcoal-500 text-xs mt-1">
+              Created and Powered by{" "}
+              <a
+                href="https://nexgenstudio.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-walnut-400/70 hover:text-walnut-400 transition-colors"
+              >
+                Nexgen Studio
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>

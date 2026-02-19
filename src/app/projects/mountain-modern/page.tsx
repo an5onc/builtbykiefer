@@ -300,12 +300,91 @@ export default function MountainModernProject() {
         </div>
       </SectionWrapper>
 
+      {/* EPS Partnership */}
+      <section className="py-16 bg-steel-800 border-t border-steel-700/30">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="h-px w-16 bg-gradient-to-r from-transparent to-pine-500/50" />
+              <span className="text-pine-400 text-xs tracking-[0.3em] uppercase">
+                Built in Partnership
+              </span>
+              <div className="h-px w-16 bg-gradient-to-l from-transparent to-pine-500/50" />
+            </div>
+            <div className="flex items-center justify-center gap-8 md:gap-12">
+              <a
+                href="https://kbuiltco.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center group"
+              >
+                <div className="w-20 h-20 md:w-24 md:h-24 relative transition-transform group-hover:scale-105">
+                  <Image
+                    src="/images/kiefer-k-logo.png"
+                    alt="Kiefer Built Contracting"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <span className="mt-2 text-steel-400 text-xs tracking-wider group-hover:text-pine-400 transition-colors">
+                  KIEFER BUILT
+                </span>
+              </a>
+              <div className="text-pine-500/60 text-2xl font-light">+</div>
+              <a
+                href="https://epsbuildings.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center group"
+              >
+                <div className="w-24 h-16 md:w-32 md:h-20 relative transition-transform group-hover:scale-105">
+                  <Image
+                    src="/images/eps-buildings-logo.webp"
+                    alt="EPS Buildings"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <span className="mt-2 text-steel-400 text-xs tracking-wider group-hover:text-pine-400 transition-colors">
+                  EPS BUILDINGS
+                </span>
+              </a>
+            </div>
+            <p className="mt-8 text-steel-300 text-sm max-w-lg mx-auto leading-relaxed">
+              Two industry leaders combining expertise to deliver exceptional custom homes
+              with innovative building solutions.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="py-8 bg-steel-900 border-t border-steel-800">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          <p className="text-steel-500 text-sm">
-            © {new Date().getFullYear()} Built by Kiefer. All rights reserved.
-          </p>
+      <footer className="py-8 bg-steel-900 border-t border-steel-700/30">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <p className="text-white font-bold tracking-wider text-sm">BUILT BY KIEFER</p>
+              <p className="text-steel-400 text-xs tracking-wider mt-1">Custom Homes &middot; Northern Colorado</p>
+            </div>
+            <nav className="flex gap-6" aria-label="Social links">
+              <a href="https://www.facebook.com/KieferBuiltContracting" target="_blank" rel="noopener noreferrer"
+                className="text-steel-400 hover:text-pine-400 transition-colors text-sm">Facebook</a>
+              <a href="https://www.instagram.com/kieferbuiltco" target="_blank" rel="noopener noreferrer"
+                className="text-steel-400 hover:text-pine-400 transition-colors text-sm">Instagram</a>
+              <a href="https://kbuiltco.com" target="_blank" rel="noopener noreferrer"
+                className="text-steel-400 hover:text-pine-400 transition-colors text-sm">kbuiltco.com</a>
+            </nav>
+            <div className="text-center md:text-right">
+              <p className="text-steel-500 text-xs">
+                &copy; {new Date().getFullYear()} Kiefer Built Contracting. All rights reserved.
+              </p>
+              <p className="text-steel-600 text-xs mt-1">
+                Created and Powered by{" "}
+                <a href="https://nexgenstudio.io" target="_blank" rel="noopener noreferrer"
+                  className="text-pine-500/70 hover:text-pine-400 transition-colors">Nexgen Studio</a>
+              </p>
+            </div>
+          </div>
         </div>
       </footer>
 
