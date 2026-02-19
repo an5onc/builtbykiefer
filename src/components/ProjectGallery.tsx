@@ -48,11 +48,11 @@ const projects = [
   },
   {
     id: "project-2",
-    title: "Demuth Residence",
+    title: "Mountain Modern",
     subtitle: "Mountain custom home — dark steel, boulder walls, and Colorado pine",
     location: "Colorado Mountains",
     year: "2024-2025",
-    href: "/projects/demuth-residence",
+    href: "/projects/mountain-modern",
     heroImage: "/images/project-2/exterior-front-facade.jpg",
     categories: ["Exterior"] as const,
     images: [
