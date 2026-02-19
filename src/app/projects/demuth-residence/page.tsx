@@ -108,7 +108,7 @@ export default function DemuthProject() {
         <motion.div className="absolute inset-0" style={{ y: heroParallax }}>
           <Image
             src="/images/project-2/exterior-front-facade.jpg"
-            alt="4815 Demuth — finished custom home"
+            alt="Demuth Residence — finished custom home"
             fill
             className="object-cover"
             priority
@@ -124,7 +124,7 @@ export default function DemuthProject() {
           >
             <div className="w-16 h-1 bg-pine-400 mb-6" />
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-3 tracking-tight">
-              4815 Demuth
+              Demuth Residence
             </h1>
             <p className="text-steel-200 text-lg sm:text-xl max-w-xl">
               A custom mountain home built from the ground up — dark steel, natural stone, and Colorado pine.
@@ -165,7 +165,7 @@ export default function DemuthProject() {
           <SectionHeader
             tag="Process"
             title="Build Phases"
-            desc="Every custom home follows a proven path — here's how 4815 Demuth came to life."
+            desc="Every custom home follows a proven path — here's how the Demuth Residence came to life."
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {phases.map((phase, i) => (
