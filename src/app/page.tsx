@@ -11,7 +11,7 @@ import Process from "@/components/Process";
 import Testimonials from "@/components/Testimonials";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
-import CurrentlyBuilding from "@/components/CurrentlyBuilding";
+
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -31,21 +31,6 @@ export default function Home() {
       <Header />
       <main id="main-content">
         <Hero />
-
-        {/* Currently Building Section */}
-        <section className="relative bg-sand-50 py-16 px-4 border-y border-sand-200">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-charcoal-900 mb-3">
-                Currently Building
-              </h2>
-              <p className="text-charcoal-600 text-lg">
-                Active development project in progress
-              </p>
-            </div>
-            <CurrentlyBuilding />
-          </div>
-        </section>
 
         <Partnership />
         <About />
