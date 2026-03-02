@@ -34,7 +34,7 @@ export default function CurrentlyBuilding() {
               <span className="text-charcoal-500">&gt;</span>
               <div>
                 <span className="text-charcoal-400">PROJECT:</span>
-                <span className="text-sand-100 ml-2 font-semibold">BAFN 302 Finance Toolkit</span>
+                <span className="text-sand-100 ml-2 font-semibold">CryptoTraq</span>
               </div>
             </div>
 
@@ -43,7 +43,7 @@ export default function CurrentlyBuilding() {
               <span className="text-charcoal-500">&gt;</span>
               <div>
                 <span className="text-charcoal-400">STACK:</span>
-                <span className="text-sand-200 ml-2">Vanilla JS · Cloudflare Pages</span>
+                <span className="text-sand-200 ml-2">React · TypeScript · Railway</span>
               </div>
             </div>
 
