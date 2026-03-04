@@ -15,6 +15,7 @@ const projects = [
     year: "2024",
     href: null, // no dedicated page yet — stays as in-page gallery
     heroImage: "/images/project-1/exterior-1.jpg",
+    techStack: ["React", "Next.js", "TypeScript", "Tailwind"],
     categories: ["Exterior", "Kitchen", "Interior"] as const,
     images: [
       { src: "/images/project-1/exterior-1.jpg", alt: "Modern craftsman front elevation with covered porch, stone columns, and wood-clad garage doors", category: "Exterior" },
@@ -54,6 +55,7 @@ const projects = [
     year: "2024-2025",
     href: "/projects/mountain-modern",
     heroImage: "/images/project-2/exterior-front-facade.jpg",
+    techStack: ["Node.js", "TypeScript", "React"],
     categories: ["Exterior"] as const,
     images: [
       { src: "/images/project-2/exterior-front-balcony.jpg", alt: "Dark metal siding with cedar post balcony, cable railing, and boulder retaining wall", category: "Exterior" },
@@ -90,7 +92,17 @@ export default function ProjectGallery() {
   const inView = useInView(sectionRef, { once: true, margin: "-80px" });
 
   const [activeProject, setActiveProject] = useState(0);
+  const [techFilter, setTechFilter] = useState<string>("All");
   const project = projects[activeProject];
+
+  // Get all unique tech stacks
+  const techStacks = ["All", "React", "Next.js", "TypeScript", "Node.js", "Tailwind"];
+
+  // Filter projects based on selected tech
+  const filteredProjects = useMemo(() => {
+    if (techFilter === "All") return projects;
+    return projects.filter(p => p.techStack.includes(techFilter));
+  }, [techFilter]);
 
   // Category filter for active project
   const allCats = ["All", ...project.categories] as const;
@@ -130,6 +142,21 @@ export default function ProjectGallery() {
     setPage([0, 0]);
   }, []);
 
+  const handleTechFilterChange = useCallback((tech: string) => {
+    setTechFilter(tech);
+    // Reset to first filtered project if current project is not in filtered list
+    if (tech !== "All") {
+      const filtered = projects.filter(p => p.techStack.includes(tech));
+      const currentProjectInFilter = filtered.some(p => p.id === projects[activeProject].id);
+      if (!currentProjectInFilter && filtered.length > 0) {
+        const newIndex = projects.indexOf(filtered[0]);
+        setActiveProject(newIndex);
+        setFilter("All");
+        setPage([0, 0]);
+      }
+    }
+  }, [activeProject]);
+
   return (
     <LazyMotion features={domAnimation} strict>
       <section id="projects" className="py-24 md:py-32 bg-charcoal-800" ref={sectionRef as any} aria-labelledby="projects-heading">
@@ -148,42 +175,87 @@ export default function ProjectGallery() {
             </p>
           </m.div>
 
-          {/* ── Project selector cards ────────────────────────────── */}
-          <div className="flex flex-wrap justify-center gap-4 mb-10">
-            {projects.map((proj, idx) => (
-              <button
-                key={proj.id}
-                onClick={() => handleProjectChange(idx)}
-                className={`group relative overflow-hidden rounded-lg transition-all duration-300 cursor-pointer ${
-                  activeProject === idx
-                    ? "ring-2 ring-walnut-500 shadow-lg shadow-walnut-500/20 scale-[1.02]"
-                    : "ring-1 ring-charcoal-600 hover:ring-charcoal-400 opacity-70 hover:opacity-100"
+          {/* ── Tech Stack Filter Pills ────────────────────────────── */}
+          <m.div
+            className="flex flex-wrap justify-center gap-2 mb-10"
+            initial={{ opacity: 0, y: 10 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            role="group"
+            aria-label="Filter projects by technology"
+          >
+            {techStacks.map((tech, idx) => (
+              <m.button
+                key={tech}
+                onClick={() => handleTechFilterChange(tech)}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: idx * 0.05 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                aria-pressed={techFilter === tech}
+                aria-label={`Filter by ${tech}`}
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${
+                  techFilter === tech
+                    ? "bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20"
+                    : "bg-slate-700 text-slate-200 hover:bg-slate-600"
                 }`}
               >
-                <div className="relative w-64 h-36 sm:w-72 sm:h-40">
-                  <Image
-                    src={proj.heroImage}
-                    alt={proj.title}
-                    fill
-                    className="object-cover"
-                    sizes="288px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <h3 className="text-white font-semibold text-sm">{proj.title}</h3>
-                    <p className="text-white/60 text-xs">{proj.location} · {proj.year}</p>
-                  </div>
-                  {proj.href && (
-                    <div className="absolute top-2 right-2">
-                      <span className="text-[10px] bg-walnut-500/90 text-white px-2 py-0.5 rounded-full">
-                        Full Story →
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </button>
+                {tech}
+              </m.button>
             ))}
-          </div>
+          </m.div>
+
+          {/* ── Project selector cards ────────────────────────────── */}
+          <AnimatePresence mode="popLayout">
+            <m.div
+              className="flex flex-wrap justify-center gap-4 mb-10"
+              layout
+            >
+              {filteredProjects.map((proj, idx) => {
+                const originalIdx = projects.indexOf(proj);
+                return (
+                  <m.button
+                    key={proj.id}
+                    onClick={() => handleProjectChange(originalIdx)}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.3 }}
+                    whileHover={{ y: -4 }}
+                    className={`group relative overflow-hidden rounded-lg transition-all duration-300 cursor-pointer ${
+                      activeProject === originalIdx
+                        ? "ring-2 ring-walnut-500 shadow-lg shadow-walnut-500/20 scale-[1.02]"
+                        : "ring-1 ring-charcoal-600 hover:ring-charcoal-400 opacity-70 hover:opacity-100"
+                    }`}
+                  >
+                    <div className="relative w-64 h-36 sm:w-72 sm:h-40">
+                      <Image
+                        src={proj.heroImage}
+                        alt={proj.title}
+                        fill
+                        className="object-cover"
+                        sizes="288px"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 className="text-white font-semibold text-sm">{proj.title}</h3>
+                        <p className="text-white/60 text-xs">{proj.location} · {proj.year}</p>
+                      </div>
+                      {proj.href && (
+                        <div className="absolute top-2 right-2">
+                          <span className="text-[10px] bg-walnut-500/90 text-white px-2 py-0.5 rounded-full">
+                            Full Story →
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </m.button>
+                );
+              })}
+            </m.div>
+          </AnimatePresence>
 
           {/* ── "View Full Project" link if project has dedicated page ── */}
           {project.href && (
