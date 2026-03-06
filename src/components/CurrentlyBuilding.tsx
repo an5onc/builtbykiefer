@@ -34,7 +34,7 @@ export default function CurrentlyBuilding() {
               <span className="text-charcoal-500">&gt;</span>
               <div>
                 <span className="text-charcoal-400">PROJECT:</span>
-                <span className="text-sand-100 ml-2 font-semibold">CryptoTraq</span>
+                <span className="text-sand-100 ml-2 font-semibold">CryptoOracle</span>
               </div>
             </div>
 
@@ -43,7 +43,7 @@ export default function CurrentlyBuilding() {
               <span className="text-charcoal-500">&gt;</span>
               <div>
                 <span className="text-charcoal-400">STACK:</span>
-                <span className="text-sand-200 ml-2">React · TypeScript · Railway</span>
+                <span className="text-sand-200 ml-2">Python · Solana · Jupiter DEX · AsyncIO</span>
               </div>
             </div>
 
@@ -52,7 +52,7 @@ export default function CurrentlyBuilding() {
               <span className="text-charcoal-500">&gt;</span>
               <div className="flex items-center">
                 <span className="text-charcoal-400">STATUS:</span>
-                <span className="text-sand-200 ml-2">In Progress</span>
+                <span className="text-sand-200 ml-2">Live — 24/7 autonomous</span>
 
                 {/* Pulsing green dot */}
                 <div className="relative ml-2">
