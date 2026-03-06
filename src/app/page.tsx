@@ -9,6 +9,7 @@ import About from "@/components/About";
 import ProjectGallery from "@/components/ProjectGallery";
 import Process from "@/components/Process";
 import Testimonials from "@/components/Testimonials";
+import ServiceArea from "@/components/ServiceArea";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -37,6 +38,7 @@ export default function Home() {
         <ProjectGallery />
         <Process />
         <Testimonials />
+        <ServiceArea />
         <Contact />
       </main>
       <Footer />
