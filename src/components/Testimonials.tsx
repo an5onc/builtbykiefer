@@ -32,6 +32,13 @@ const testimonials = [
     text: "The primary bathroom they designed and built is like a spa retreat. The floating vanity, freestanding tub, and walk-in shower with dual heads — it's the room we dreamed of. Flawless execution.",
     rating: 5,
   },
+  {
+    name: "The Petersons",
+    project: "Garage Addition & Workshop",
+    location: "Timnath, CO",
+    text: "We needed a 3-car garage with an attached workshop and Kiefer Built delivered beyond expectations. The insulated walls, in-floor heating, and custom storage system turned a functional need into something we're genuinely proud of.",
+    rating: 5,
+  },
 ];
 
 function Stars({ count }: { count: number }) {
