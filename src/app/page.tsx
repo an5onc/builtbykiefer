@@ -8,6 +8,7 @@ import Partnership from "@/components/Partnership";
 import About from "@/components/About";
 import ProjectGallery from "@/components/ProjectGallery";
 import Process from "@/components/Process";
+import CostEstimator from "@/components/CostEstimator";
 import Testimonials from "@/components/Testimonials";
 import ServiceArea from "@/components/ServiceArea";
 import Contact from "@/components/Contact";
@@ -37,6 +38,7 @@ export default function Home() {
         <About />
         <ProjectGallery />
         <Process />
+        <CostEstimator />
         <Testimonials />
         <ServiceArea />
         <Contact />
