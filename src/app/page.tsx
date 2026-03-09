@@ -3,11 +3,11 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
+import ScrollFrameHero from "@/components/ScrollFrameHero";
 import Partnership from "@/components/Partnership";
 import About from "@/components/About";
 import ProjectGallery from "@/components/ProjectGallery";
-import ProjectTimeline from "@/components/ProjectTimeline";
+
 import Process from "@/components/Process";
 import CostEstimator from "@/components/CostEstimator";
 import Testimonials from "@/components/Testimonials";
@@ -33,12 +33,12 @@ export default function Home() {
       />
       <Header />
       <main id="main-content">
-        <Hero />
+        <ScrollFrameHero />
 
         <Partnership />
         <About />
         <ProjectGallery />
-        <ProjectTimeline />
+
         <Process />
         <CostEstimator />
         <Testimonials />
