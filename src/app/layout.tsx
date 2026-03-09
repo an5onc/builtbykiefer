@@ -199,6 +199,8 @@ const faqSchema = {
   ],
 };
 
+import FloatingCTA from "@/components/FloatingCTA";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -207,6 +209,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
+        {/* Google Analytics 4 */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BBCR31BJSM" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-BBCR31BJSM');
+            `,
+          }}
+        />
         <link rel="preconnect" href="https://buildertrend.net" />
         <link rel="dns-prefetch" href="https://buildertrend.net" />
         <script
@@ -220,6 +234,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <FloatingCTA />
       </body>
     </html>
   );

@@ -51,6 +51,81 @@
   --color-stone-300: #C8C0B4;
   --color-stone-400: #ADA396;
 
+  /* 4815 Demuth — dark metal siding + mountain palette */
+  --color-steel-50: #F0F0EE;
+  --color-steel-100: #D8D6D2;
+  --color-steel-200: #B0ADA6;
+  --color-steel-300: #807B72;
+  --color-steel-400: #5C5750;
+  --color-steel-500: #3E3A34;
+  --color-steel-600: #33302B;
+  --color-steel-700: #282622;
+  --color-steel-800: #1D1B18;
+  --color-steel-900: #12110F;
+
+  --color-pine-50: #E8F0E8;
+  --color-pine-100: #C8D8C8;
+  --color-pine-200: #94B094;
+  --color-pine-300: #5C8A5C;
+  --color-pine-400: #3D6B3D;
+  --color-pine-500: #2A4F2A;
+  --color-pine-600: #224222;
+  --color-pine-700: #1A331A;
+  --color-pine-800: #122412;
+  --color-pine-900: #0A160A;
+
+  --color-boulder-50: #F2F0ED;
+  --color-boulder-100: #E0DCD6;
+  --color-boulder-200: #C4BDB3;
+  --color-boulder-300: #A8A090;
+  --color-boulder-400: #8C836E;
+  --color-boulder-500: #6E6454;
+
+  /* Contemporary Ranch — cream, sage, honey */
+  --color-cream-50: #FDFCF9;
+  --color-cream-100: #F9F6F0;
+  --color-cream-200: #F0EBE0;
+  --color-cream-300: #E4DDD0;
+  --color-cream-400: #D4CABC;
+  --color-cream-500: #BFB4A4;
+  --color-cream-600: #A09282;
+  --color-cream-700: #7A6E60;
+  --color-cream-800: #524A3E;
+  --color-cream-900: #2E2820;
+
+  --color-sage-50: #F2F6F1;
+  --color-sage-100: #DFF0DB;
+  --color-sage-200: #BBDDB4;
+  --color-sage-300: #8EC486;
+  --color-sage-400: #6AAF60;
+  --color-sage-500: #4E9443;
+  --color-sage-600: #3D7835;
+  --color-sage-700: #2E5C28;
+  --color-sage-800: #1F401C;
+  --color-sage-900: #122510;
+
+  --color-honey-50: #FDF8EE;
+  --color-honey-100: #FAEFD5;
+  --color-honey-200: #F5DDAG;
+  --color-honey-300: #EEC97A;
+  --color-honey-400: #E5B04E;
+  --color-honey-500: #D4922A;
+  --color-honey-600: #B07320;
+  --color-honey-700: #8A5618;
+  --color-honey-800: #623C10;
+  --color-honey-900: #3E250A;
+
+  --color-slate-50: #F8F9FA;
+  --color-slate-100: #F0F2F4;
+  --color-slate-200: #DDE2E8;
+  --color-slate-300: #C4CDD8;
+  --color-slate-400: #8E9BAC;
+  --color-slate-500: #5C6B7E;
+  --color-slate-600: #3E5060;
+  --color-slate-700: #2A3848;
+  --color-slate-800: #1A2530;
+  --color-slate-900: #0E151E;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

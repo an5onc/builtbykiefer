@@ -7,9 +7,14 @@ import Hero from "@/components/Hero";
 import Partnership from "@/components/Partnership";
 import About from "@/components/About";
 import ProjectGallery from "@/components/ProjectGallery";
+import ProjectTimeline from "@/components/ProjectTimeline";
 import Process from "@/components/Process";
+import CostEstimator from "@/components/CostEstimator";
+import Testimonials from "@/components/Testimonials";
+import ServiceArea from "@/components/ServiceArea";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,10 +34,15 @@ export default function Home() {
       <Header />
       <main id="main-content">
         <Hero />
+
         <Partnership />
         <About />
         <ProjectGallery />
+        <ProjectTimeline />
         <Process />
+        <CostEstimator />
+        <Testimonials />
+        <ServiceArea />
         <Contact />
       </main>
       <Footer />
