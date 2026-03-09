@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import RanchGallery from "@/components/RanchGallery";
 
 /* ── Types ─────────────────────────────────────────────────────── */
 type Photo = { src: string; alt: string; caption: string; category: string };
@@ -70,57 +71,12 @@ const phases = [
   { name: "Landscaping", icon: "🌿", desc: "Sod lawn, river rock borders, decorative boulders, ornamental plantings" },
 ];
 
-const categories = ["All", "Exterior", "Aerial", "Kitchen", "Interior"] as const;
-type Category = typeof categories[number];
-
-/* ── Lightbox ──────────────────────────────────────────────────── */
-function Lightbox({ photos, idx, onClose, onPrev, onNext }: {
-  photos: Photo[];
-  idx: number;
-  onClose: () => void;
-  onPrev: () => void;
-  onNext: () => void;
-}) {
-  const photo = photos[idx];
-  return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/92 backdrop-blur-sm"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-    >
-      <button onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl z-10 cursor-pointer select-none">‹</button>
-      <button onClick={(e) => { e.stopPropagation(); onNext(); }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-5xl z-10 cursor-pointer select-none">›</button>
-      <button onClick={onClose}
-        className="absolute top-6 right-6 text-white/70 hover:text-white text-3xl z-10 cursor-pointer">✕</button>
-      <div className="relative w-[92vw] h-[82vh] max-w-7xl" onClick={(e) => e.stopPropagation()}>
-        <Image src={photo.src} alt={photo.alt} fill className="object-contain" sizes="92vw" />
-        <p className="absolute bottom-3 left-0 right-0 text-center text-white/75 text-sm px-8">{photo.caption}</p>
-      </div>
-      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/40 text-xs tracking-wider">{idx + 1} / {photos.length}</p>
-    </motion.div>
-  );
-}
-
 /* ── Main Page ─────────────────────────────────────────────────── */
 export default function ContemporaryRanchProject() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const heroParallax = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
-
-  const [activeCategory, setActiveCategory] = useState<Category>("All");
-  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
-
-  const filtered = activeCategory === "All" ? photos : photos.filter(p => p.category === activeCategory);
-
-  const openLightbox = (i: number) => setLightboxIdx(i);
-  const closeLightbox = () => setLightboxIdx(null);
-  const prevPhoto = () => setLightboxIdx(i => i !== null ? (i - 1 + filtered.length) % filtered.length : null);
-  const nextPhoto = () => setLightboxIdx(i => i !== null ? (i + 1) % filtered.length : null);
 
   return (
     <div ref={containerRef} className="min-h-screen" style={{ background: "var(--color-cream-50)" }}>
@@ -238,90 +194,7 @@ export default function ContemporaryRanchProject() {
       </SectionWrapper>
 
       {/* ════════ GALLERY ════════ */}
-      <SectionWrapper id="gallery" bg="white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Gallery"
-            title="Inside & Out"
-            desc="29 photos across exterior, aerial, kitchen, and interior — every finish, every detail."
-          />
-
-          {/* Category filter */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10" role="group" aria-label="Filter photos by category">
-            {categories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => { setActiveCategory(cat); setLightboxIdx(null); }}
-                aria-pressed={activeCategory === cat}
-                className="px-4 py-2 text-xs tracking-wider uppercase rounded-full font-medium transition-all cursor-pointer"
-                style={activeCategory === cat ? {
-                  background: "var(--color-sage-500)",
-                  color: "white",
-                  boxShadow: "0 2px 8px rgba(78,148,67,0.25)"
-                } : {
-                  background: "var(--color-cream-100)",
-                  color: "var(--color-slate-600)",
-                  border: "1px solid var(--color-cream-300)"
-                }}
-              >
-                {cat} {cat !== "All" && `(${photos.filter(p => p.category === cat).length})`}
-              </button>
-            ))}
-          </div>
-
-          {/* Hero image */}
-          {filtered.length > 0 && (
-            <motion.div
-              className="mb-4 rounded-2xl overflow-hidden shadow-lg cursor-pointer border"
-              style={{ borderColor: "var(--color-cream-200)" }}
-              whileHover={{ scale: 1.003 }}
-              onClick={() => openLightbox(0)}
-              layout
-            >
-              <div className="relative aspect-[21/9]">
-                <Image src={filtered[0].src} alt={filtered[0].alt} fill className="object-cover" sizes="100vw" priority />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(14,21,30,0.55) 0%, transparent 50%)" }} />
-                <p className="absolute bottom-4 left-6 text-white/90 text-sm font-medium">{filtered[0].caption}</p>
-                <span className="absolute top-4 right-4 text-[10px] px-2.5 py-1 rounded-full font-medium uppercase tracking-wider"
-                  style={{ background: "var(--color-sage-500)", color: "white" }}>
-                  {filtered[0].category}
-                </span>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {filtered.slice(1).map((photo, i) => (
-              <motion.div
-                key={photo.src}
-                className="relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer border group shadow-sm hover:shadow-md transition-all"
-                style={{ borderColor: "var(--color-cream-200)" }}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => openLightbox(i + 1)}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
-                layout
-              >
-                <Image src={photo.src} alt={photo.alt} fill className="object-cover" sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw" loading="lazy" />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ background: "linear-gradient(to top, rgba(14,21,30,0.65) 0%, transparent 60%)" }} />
-                <p className="absolute bottom-2 left-2 right-2 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity truncate text-white/90">{photo.caption}</p>
-                <span className="absolute top-2 right-2 text-[9px] px-1.5 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-wider font-medium"
-                  style={{ background: "rgba(78,148,67,0.85)", color: "white" }}>
-                  {photo.category}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-
-          {filtered.length === 0 && (
-            <p className="text-center py-12" style={{ color: "var(--color-slate-400)" }}>No photos in this category.</p>
-          )}
-        </div>
-      </SectionWrapper>
+      <RanchGallery photos={photos} />
 
       {/* ════════ CTA ════════ */}
       <SectionWrapper id="cta" bg="var(--color-cream-100)">
@@ -389,12 +262,6 @@ export default function ContemporaryRanchProject() {
         </div>
       </footer>
 
-      {/* Lightbox */}
-      <AnimatePresence>
-        {lightboxIdx !== null && (
-          <Lightbox photos={filtered} idx={lightboxIdx} onClose={closeLightbox} onPrev={prevPhoto} onNext={nextPhoto} />
-        )}
-      </AnimatePresence>
     </div>
   );
 }
