@@ -7,6 +7,7 @@ import Hero from "@/components/Hero";
 import Partnership from "@/components/Partnership";
 import About from "@/components/About";
 import ProjectGallery from "@/components/ProjectGallery";
+import ProjectTimeline from "@/components/ProjectTimeline";
 import Process from "@/components/Process";
 import CostEstimator from "@/components/CostEstimator";
 import Testimonials from "@/components/Testimonials";
@@ -37,6 +38,7 @@ export default function Home() {
         <Partnership />
         <About />
         <ProjectGallery />
+        <ProjectTimeline />
         <Process />
         <CostEstimator />
         <Testimonials />
