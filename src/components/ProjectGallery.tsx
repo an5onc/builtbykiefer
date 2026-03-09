@@ -62,6 +62,26 @@ const projects = [
       { src: "/images/project-2/exterior-driveway-mountains.jpg", alt: "Gravel driveway with boulder accents, solar shed, and mountain vista", category: "Exterior" },
     ],
   },
+  {
+    id: "project-3",
+    title: "Contemporary Ranch",
+    subtitle: "Northern Colorado spec home — stacked stone, dark wood, and open-concept living",
+    location: "Northern Colorado",
+    year: "2025",
+    href: "/projects/contemporary-ranch",
+    heroImage: "/images/project-3/exterior-twilight-front.jpg",
+    categories: ["Exterior", "Kitchen", "Interior"] as const,
+    images: [
+      { src: "/images/project-3/exterior-twilight-front.jpg", alt: "Contemporary ranch front elevation at twilight with stacked ledgestone columns and arched entry portico", category: "Exterior" },
+      { src: "/images/project-3/exterior-front-angled.jpg", alt: "Angled front elevation with barrel-vault portico and layered roofline at twilight", category: "Exterior" },
+      { src: "/images/project-3/aerial-front-twilight.jpg", alt: "Aerial drone view of full property at twilight showing ranch footprint and circular driveway", category: "Exterior" },
+      { src: "/images/project-3/kitchen-overview.jpg", alt: "Open-concept kitchen with dark charcoal island, walnut cabinetry, and white quartz counters", category: "Kitchen" },
+      { src: "/images/project-3/kitchen-island-front.jpg", alt: "Kitchen island with dark cabinetry, white quartz countertop, and calacatta quartz backsplash", category: "Kitchen" },
+      { src: "/images/project-3/interior-great-room-fireplace.jpg", alt: "Great room with floor-to-ceiling stacked stone fireplace and vaulted ceilings", category: "Interior" },
+      { src: "/images/project-3/interior-open-plan.jpg", alt: "Full open-concept main floor with kitchen, great room, and groin vault foyer", category: "Interior" },
+      { src: "/images/project-3/interior-primary-bath.jpg", alt: "Primary bathroom with dual walnut vanity, dark slate tile accent wall, and oval mirrors", category: "Interior" },
+    ],
+  },
 ];
 
 /* ── Page-flip animation variants ──────────────────────────────── */
