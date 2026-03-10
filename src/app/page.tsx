@@ -11,6 +11,7 @@ import ProjectGallery from "@/components/ProjectGallery";
 import Process from "@/components/Process";
 import CostEstimator from "@/components/CostEstimator";
 import Testimonials from "@/components/Testimonials";
+import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import ServiceArea from "@/components/ServiceArea";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -41,6 +42,7 @@ export default function Home() {
 
         <Process />
         <CostEstimator />
+        <TestimonialsCarousel />
         <Testimonials />
         <ServiceArea />
         <Contact />
