@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const navLinks = [
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
+  { label: "Service Areas", href: "/service-areas" },
   { label: "Process", href: "#process" },
   { label: "Contact", href: "#contact" },
 ];
@@ -40,7 +41,7 @@ export default function Header() {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="#" className="flex flex-col">
+          <a href="/" className="flex flex-col">
             <span
               className={`text-xl font-bold tracking-wider transition-colors ${
                 scrolled ? "text-sand-100" : "text-white"
