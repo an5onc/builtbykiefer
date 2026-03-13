@@ -200,6 +200,7 @@ const faqSchema = {
 };
 
 import FloatingCTA from "@/components/FloatingCTA";
+import ProjectUpdateNotification from "@/components/ProjectUpdateNotification";
 
 export default function RootLayout({
   children,
@@ -235,6 +236,7 @@ export default function RootLayout({
       >
         {children}
         <FloatingCTA />
+        <ProjectUpdateNotification />
       </body>
     </html>
   );
