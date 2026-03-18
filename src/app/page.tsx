@@ -13,6 +13,7 @@ import CostEstimator from "@/components/CostEstimator";
 import Testimonials from "@/components/Testimonials";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import ServiceArea from "@/components/ServiceArea";
+import ProjectTimeline from "@/components/ProjectTimeline";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -39,6 +40,7 @@ export default function Home() {
         <Partnership />
         <About />
         <ProjectGallery />
+        <ProjectTimeline />
 
         <Process />
         <CostEstimator />
