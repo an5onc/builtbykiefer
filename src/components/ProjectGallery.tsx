@@ -13,6 +13,9 @@ const projects = [
     subtitle: "Custom home with stone accents, walnut cabinetry, and premium finishes",
     location: "Northern Colorado",
     year: "2024",
+    projectType: "Custom Home",
+    budget: "$850,000+",
+    sqft: "4,200 sq ft",
     href: null, // no dedicated page yet — stays as in-page gallery
     heroImage: "/images/project-1/exterior-1.jpg",
     categories: ["Exterior", "Kitchen", "Interior"] as const,
@@ -52,6 +55,9 @@ const projects = [
     subtitle: "Mountain custom home — dark steel, boulder walls, and Colorado pine",
     location: "Colorado Mountains",
     year: "2024-2025",
+    projectType: "Custom Home",
+    budget: "$1,200,000+",
+    sqft: "3,800 sq ft",
     href: "/projects/mountain-modern",
     heroImage: "/images/project-2/exterior-front-facade.jpg",
     categories: ["Exterior"] as const,
@@ -68,6 +74,9 @@ const projects = [
     subtitle: "Northern Colorado spec home — stacked stone, dark wood, and open-concept living",
     location: "Northern Colorado",
     year: "2025",
+    projectType: "Spec Home",
+    budget: "$650,000",
+    sqft: "3,200 sq ft",
     href: "/projects/contemporary-ranch",
     heroImage: "/images/project-3/exterior-twilight-front.jpg",
     categories: ["Exterior", "Kitchen", "Interior"] as const,
@@ -109,8 +118,17 @@ export default function ProjectGallery() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-80px" });
 
+  // Project type filter
+  const projectTypes = ["All Projects", "Custom Home", "Spec Home"];
+  const [selectedType, setSelectedType] = useState("All Projects");
+
+  const filteredProjects = useMemo(() => {
+    if (selectedType === "All Projects") return projects;
+    return projects.filter(p => p.projectType === selectedType);
+  }, [selectedType]);
+
   const [activeProject, setActiveProject] = useState(0);
-  const project = projects[activeProject];
+  const project = filteredProjects[Math.min(activeProject, filteredProjects.length - 1)] || filteredProjects[0];
 
   // Category filter for active project
   const allCats = ["All", ...project.categories] as const;
@@ -150,6 +168,13 @@ export default function ProjectGallery() {
     setPage([0, 0]);
   }, []);
 
+  const handleTypeChange = useCallback((type: string) => {
+    setSelectedType(type);
+    setActiveProject(0);
+    setFilter("All");
+    setPage([0, 0]);
+  }, []);
+
   return (
     <LazyMotion features={domAnimation} strict>
       <section id="projects" className="py-24 md:py-32 bg-charcoal-800" ref={sectionRef as any} aria-labelledby="projects-heading">
@@ -168,9 +193,31 @@ export default function ProjectGallery() {
             </p>
           </m.div>
 
+          {/* ── Project Type Filter ────────────────────────────── */}
+          <m.div
+            className="flex flex-wrap justify-center gap-2 mb-8"
+            initial={{ opacity: 0, y: 10 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.45, ease: "easeOut", delay: 0.1 }}
+          >
+            {projectTypes.map((type) => (
+              <button
+                key={type}
+                onClick={() => handleTypeChange(type)}
+                className={`px-5 py-2 rounded-full font-medium text-sm transition-all duration-300 ${
+                  selectedType === type
+                    ? "bg-walnut-500 text-white shadow-lg shadow-walnut-500/25"
+                    : "bg-charcoal-700 text-charcoal-300 hover:bg-charcoal-600 hover:text-sand-100"
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+          </m.div>
+
           {/* ── Project selector cards ────────────────────────────── */}
           <div className="flex flex-wrap justify-center gap-4 mb-10">
-            {projects.map((proj, idx) => (
+            {filteredProjects.map((proj, idx) => (
               <button
                 key={proj.id}
                 onClick={() => handleProjectChange(idx)}
@@ -192,6 +239,7 @@ export default function ProjectGallery() {
                   <div className="absolute bottom-0 left-0 right-0 p-4">
                     <h3 className="text-white font-semibold text-sm">{proj.title}</h3>
                     <p className="text-white/60 text-xs">{proj.location} · {proj.year}</p>
+                    <p className="text-white/50 text-xs mt-1">{proj.sqft} · {proj.budget}</p>
                   </div>
                   {proj.href && (
                     <div className="absolute top-2 right-2">
