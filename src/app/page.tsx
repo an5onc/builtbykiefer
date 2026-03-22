@@ -14,6 +14,7 @@ import Testimonials from "@/components/Testimonials";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 import ServiceArea from "@/components/ServiceArea";
 import ProjectTimeline from "@/components/ProjectTimeline";
+import MaterialsShowcase from "@/components/MaterialsShowcase";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
@@ -43,6 +44,7 @@ export default function Home() {
         <ProjectTimeline />
 
         <Process />
+        <MaterialsShowcase />
         <CostEstimator />
         <TestimonialsCarousel />
         <Testimonials />
