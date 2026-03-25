@@ -7,6 +7,7 @@ import ScrollFrameHero from "@/components/ScrollFrameHero";
 import Partnership from "@/components/Partnership";
 import About from "@/components/About";
 import ProjectGallery from "@/components/ProjectGallery";
+import BeforeAfterShowcase from "@/components/BeforeAfterShowcase";
 
 import Process from "@/components/Process";
 import CostEstimator from "@/components/CostEstimator";
@@ -41,6 +42,7 @@ export default function Home() {
         <Partnership />
         <About />
         <ProjectGallery />
+        <BeforeAfterShowcase />
         <ProjectTimeline />
 
         <Process />
