@@ -51,32 +51,31 @@ const activeProjects: Project[] = [
     name: 'Modern Farmhouse',
     location: 'Windsor, CO',
     type: 'Custom Home Build',
-    startDate: '2024-01-15',
-    estimatedCompletion: '2024-06-30',
-    progress: 65,
+    startDate: '2026-01-15',
+    estimatedCompletion: '2026-07-30',
+    progress: 45,
     phases: [
       {
         id: 'foundation',
         title: 'Foundation & Framing',
         description: 'Site prep, foundation pour, and structural framing',
         status: 'completed',
-        completedDate: '2024-02-28',
+        completedDate: '2026-02-28',
         icon: Home
       },
       {
         id: 'rough',
         title: 'Rough-In Work',
         description: 'Plumbing, electrical, and HVAC installation',
-        status: 'completed',
-        completedDate: '2024-03-15',
+        status: 'in-progress',
+        startDate: '2026-03-01',
         icon: Hammer
       },
       {
         id: 'interior',
         title: 'Interior Finishes',
         description: 'Drywall, flooring, cabinets, and trim work',
-        status: 'in-progress',
-        startDate: '2024-03-16',
+        status: 'upcoming',
         icon: Paintbrush
       },
       {
@@ -90,43 +89,42 @@ const activeProjects: Project[] = [
   },
   {
     id: '2',
-    name: 'Kitchen Remodel',
-    location: 'Fort Collins, CO',
-    type: 'Renovation',
-    startDate: '2024-02-20',
-    estimatedCompletion: '2024-04-15',
-    progress: 80,
+    name: 'Master Suite Addition',
+    location: 'Loveland, CO',
+    type: 'Home Addition',
+    startDate: '2026-02-01',
+    estimatedCompletion: '2026-05-15',
+    progress: 60,
     phases: [
       {
         id: 'demo',
-        title: 'Demolition',
-        description: 'Remove old cabinets, appliances, and fixtures',
+        title: 'Structural Work',
+        description: 'Foundation extension and structural framing',
         status: 'completed',
-        completedDate: '2024-02-25',
+        completedDate: '2026-02-25',
         icon: Hammer
       },
       {
         id: 'rough',
-        title: 'Rough-In Updates',
-        description: 'Update plumbing and electrical for new layout',
+        title: 'Systems Installation',
+        description: 'Plumbing, electrical, and HVAC connections',
         status: 'completed',
-        completedDate: '2024-03-05',
+        completedDate: '2026-03-10',
         icon: Home
       },
       {
         id: 'install',
-        title: 'Cabinet & Counter Install',
-        description: 'Install custom cabinets and granite countertops',
-        status: 'completed',
-        completedDate: '2024-03-20',
+        title: 'Interior Build-Out',
+        description: 'Insulation, drywall, and flooring installation',
+        status: 'in-progress',
+        startDate: '2026-03-15',
         icon: Paintbrush
       },
       {
         id: 'finish',
-        title: 'Finishing Touches',
-        description: 'Backsplash, lighting, and final details',
-        status: 'in-progress',
-        startDate: '2024-03-21',
+        title: 'Final Finishes',
+        description: 'Bathroom fixtures, paint, and trim work',
+        status: 'upcoming',
         icon: Sparkles
       }
     ]
