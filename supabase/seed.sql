@@ -1,0 +1,2 @@
+-- Phase 1 seed data is represented in src/lib/admin/demo-data.ts for the sales demo.
+-- Once Supabase credentials are connected, mirror those records here with stable UUIDs.
