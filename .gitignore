@@ -25,6 +25,7 @@
 *.pem
 .superpowers/
 .worktrees/
+supabase/.temp/
 
 # debug
 npm-debug.log*
