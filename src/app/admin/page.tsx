@@ -6,10 +6,13 @@ import StatusBadge from "@/components/admin/StatusBadge";
 import { formatCurrency, formatHours } from "@/lib/admin/formatters";
 import { getDashboardMetrics, getLeads, getProjects } from "@/lib/admin/queries";
 
-export default function AdminDashboardPage() {
-  const metrics = getDashboardMetrics();
-  const projects = getProjects();
-  const leads = getLeads().slice(0, 4);
+export default async function AdminDashboardPage() {
+  const [metrics, projects, leads] = await Promise.all([
+    getDashboardMetrics(),
+    getProjects(),
+    getLeads(),
+  ]);
+  const leadFollowUps = leads.slice(0, 4);
 
   return (
     <AdminShell title="Command Center" eyebrow="Kiefer Built Operations">
@@ -75,7 +78,7 @@ export default function AdminDashboardPage() {
         <section className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
           <h2 className="mb-5 text-lg font-bold">Lead Follow-Ups</h2>
           <div className="space-y-4">
-            {leads.map((lead) => (
+            {leadFollowUps.map((lead) => (
               <div
                 key={lead.id}
                 className="border-b border-black/10 pb-4 last:border-0 last:pb-0"

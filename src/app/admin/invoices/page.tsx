@@ -2,10 +2,16 @@ import AdminShell from "@/components/admin/AdminShell";
 import InvoiceDownloadButton from "@/components/admin/InvoiceDownloadButton";
 import StatusBadge from "@/components/admin/StatusBadge";
 import { formatCurrency, formatDate, invoiceTotal } from "@/lib/admin/formatters";
-import { getClient, getInvoices, getProject } from "@/lib/admin/queries";
+import { getClients, getInvoices, getProjects } from "@/lib/admin/queries";
 
-export default function InvoicesPage() {
-  const invoices = getInvoices();
+export default async function InvoicesPage() {
+  const [invoices, projects, clients] = await Promise.all([
+    getInvoices(),
+    getProjects(),
+    getClients(),
+  ]);
+  const projectsById = new Map(projects.map((project) => [project.id, project]));
+  const clientsById = new Map(clients.map((client) => [client.id, client]));
 
   return (
     <AdminShell title="Invoices" eyebrow="Branded PDF Generation">
@@ -19,8 +25,8 @@ export default function InvoicesPage() {
             <span>Download</span>
           </div>
           {invoices.map((invoice) => {
-            const project = getProject(invoice.projectId);
-            const client = getClient(invoice.clientId);
+            const project = projectsById.get(invoice.projectId);
+            const client = clientsById.get(invoice.clientId);
             return (
               <div
                 key={invoice.id}

@@ -510,7 +510,7 @@ export default function ProjectTimelinesPage() {
           <div className="max-w-3xl mx-auto bg-gradient-to-br from-charcoal-800 to-charcoal-900 text-white rounded-2xl p-12 text-center">
             <h3 className="text-3xl font-bold mb-4">Ready to Start Your Project?</h3>
             <p className="text-lg text-gray-300 mb-8 max-w-xl mx-auto">
-              Every project is unique. Let's discuss your specific needs and create a detailed timeline for your construction project.
+              Every project is unique. Let&apos;s discuss your specific needs and create a detailed timeline for your construction project.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

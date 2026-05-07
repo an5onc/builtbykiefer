@@ -2,8 +2,8 @@ import AdminShell from "@/components/admin/AdminShell";
 import StatusBadge from "@/components/admin/StatusBadge";
 import { getLeads } from "@/lib/admin/queries";
 
-export default function LeadsPage() {
-  const leads = getLeads();
+export default async function LeadsPage() {
+  const leads = await getLeads();
 
   return (
     <AdminShell title="Lead + Client CRM" eyebrow="Sales Pipeline">

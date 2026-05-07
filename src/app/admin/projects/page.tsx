@@ -3,16 +3,17 @@ import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
 import ProjectProgress from "@/components/admin/ProjectProgress";
 import StatusBadge from "@/components/admin/StatusBadge";
-import { getClient, getProjects } from "@/lib/admin/queries";
+import { getClients, getProjects } from "@/lib/admin/queries";
 
-export default function ProjectsPage() {
-  const projects = getProjects();
+export default async function ProjectsPage() {
+  const [projects, clients] = await Promise.all([getProjects(), getClients()]);
+  const clientsById = new Map(clients.map((client) => [client.id, client]));
 
   return (
     <AdminShell title="Projects" eyebrow="Active Work">
       <div className="grid gap-5 lg:grid-cols-3">
         {projects.map((project) => {
-          const client = getClient(project.clientId);
+          const client = clientsById.get(project.clientId);
 
           return (
             <Link

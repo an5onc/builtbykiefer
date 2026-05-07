@@ -181,7 +181,7 @@ export default function ServiceAreasPage() {
               </h2>
               <p className="text-charcoal-300 max-w-xl mx-auto leading-relaxed">
                 Our primary service area spans Weld and Larimer Counties in Northern Colorado.
-                We're willing to travel for the right project — contact us about your location.
+                We&apos;re willing to travel for the right project — contact us about your location.
               </p>
             </motion.div>
 
@@ -285,7 +285,7 @@ export default function ServiceAreasPage() {
                 Construction Services Across All Areas
               </h2>
               <p className="text-charcoal-300 max-w-xl mx-auto leading-relaxed">
-                Whether you're in Windsor or Wellington, we provide the same comprehensive
+                Whether you&apos;re in Windsor or Wellington, we provide the same comprehensive
                 construction services with the highest quality standards.
               </p>
             </motion.div>
@@ -384,7 +384,7 @@ export default function ServiceAreasPage() {
                 Contact Kiefer Built Contracting
               </h2>
               <p className="text-xl text-charcoal-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-                Whether you're in one of our primary service areas or nearby, we'd love to
+                Whether you&apos;re in one of our primary service areas or nearby, we&apos;d love to
                 discuss your construction project. Call us or fill out our contact form to
                 get started.
               </p>
@@ -395,12 +395,12 @@ export default function ServiceAreasPage() {
                 >
                   Call (970) 515-5059
                 </a>
-                <a
+                <Link
                   href="/#contact"
                   className="inline-flex items-center justify-center px-8 py-4 bg-charcoal-800 border border-walnut-400/30 text-walnut-300 hover:text-walnut-400 font-semibold rounded-lg transition-colors hover:border-walnut-400/60"
                 >
                   Get a Quote Online
-                </a>
+                </Link>
               </div>
             </motion.div>
           </div>

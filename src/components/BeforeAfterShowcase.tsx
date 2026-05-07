@@ -97,7 +97,7 @@ export default function BeforeAfterShowcase() {
             Before & After Transformations
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            See the dramatic transformations we\'ve achieved for homeowners across Northern Colorado
+            See the dramatic transformations we&apos;ve achieved for homeowners across Northern Colorado
           </p>
         </div>
 
@@ -209,7 +209,7 @@ export default function BeforeAfterShowcase() {
         {/* CTA */}
         <div className="mt-12 text-center">
           <p className="text-lg text-gray-600 mb-6">
-            Ready to transform your home? Let\'s discuss your project.
+            Ready to transform your home? Let&apos;s discuss your project.
           </p>
           <div className="flex gap-4 justify-center">
             <a

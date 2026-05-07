@@ -11,14 +11,16 @@ export async function GET(
   { params }: { params: Promise<{ invoiceId: string }> },
 ) {
   const { invoiceId } = await params;
-  const invoice = getInvoice(invoiceId);
+  const invoice = await getInvoice(invoiceId);
 
   if (!invoice) {
     return new Response("Invoice not found", { status: 404 });
   }
 
-  const client = getClient(invoice.clientId);
-  const project = getProject(invoice.projectId);
+  const [client, project] = await Promise.all([
+    getClient(invoice.clientId),
+    getProject(invoice.projectId),
+  ]);
 
   if (!client || !project) {
     return new Response("Invoice relations not found", { status: 404 });

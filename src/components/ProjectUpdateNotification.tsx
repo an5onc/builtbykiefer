@@ -214,7 +214,7 @@ export default function ProjectUpdateNotification() {
                     <Bell className="w-12 h-12 mb-4 text-gray-300" />
                     <p className="text-center">No updates yet</p>
                     <p className="text-sm text-center mt-2">
-                      We\'ll notify you when there\'s progress on your projects
+                      We&apos;ll notify you when there&apos;s progress on your projects
                     </p>
                   </div>
                 )}

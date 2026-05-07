@@ -66,6 +66,35 @@ Open:
 - Admin console: http://localhost:3000/admin
 - Invoice PDF demo: http://localhost:3000/admin/invoices/invoice-1/download
 
+## Supabase Backend Setup
+
+This repo is wired for Supabase Auth, Postgres, and private Storage, while keeping demo data available when Supabase is not configured.
+
+1. Create a Supabase project.
+2. Apply `supabase/migrations/0001_phase_1_schema.sql` in the Supabase SQL editor or with the Supabase CLI.
+3. Apply `supabase/seed.sql` if you want the hosted database to mirror the demo records.
+4. Create the first admin user in Supabase Auth.
+5. Promote that user after signup:
+
+```sql
+update profiles
+set role = 'admin'
+where email = 'owner@example.com';
+```
+
+6. Set local/hosting env vars:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+NEXT_PUBLIC_DEMO_MODE=false
+ADMIN_EMAIL=owner@example.com
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+The migration creates private `project-documents`, `project-photos`, and `invoice-pdfs` buckets. Admin users can manage these objects through RLS; customer and employee policies should be added only when those portals exist.
+
 ## Project Structure
 
 ```

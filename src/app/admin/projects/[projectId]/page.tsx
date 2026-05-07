@@ -17,7 +17,7 @@ import {
   getProjectFiles,
   getProjectInvoices,
   getProjectTimeEntries,
-  getWorker,
+  getWorkers,
 } from "@/lib/admin/queries";
 
 export default async function ProjectDetailPage({
@@ -26,16 +26,20 @@ export default async function ProjectDetailPage({
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
-  const project = getProject(projectId);
+  const project = await getProject(projectId);
 
   if (!project) {
     notFound();
   }
 
-  const client = getClient(project.clientId);
-  const files = getProjectFiles(project.id);
-  const timeEntries = getProjectTimeEntries(project.id);
-  const invoices = getProjectInvoices(project.id);
+  const [client, files, timeEntries, invoices, workers] = await Promise.all([
+    getClient(project.clientId),
+    getProjectFiles(project.id),
+    getProjectTimeEntries(project.id),
+    getProjectInvoices(project.id),
+    getWorkers(),
+  ]);
+  const workersById = new Map(workers.map((worker) => [worker.id, worker]));
 
   return (
     <AdminShell title={project.name} eyebrow={`${project.location} · ${project.type}`}>
@@ -123,7 +127,7 @@ export default async function ProjectDetailPage({
           <h2 className="mb-4 text-lg font-bold">Time Logs</h2>
           <div className="space-y-3">
             {timeEntries.map((entry) => {
-              const worker = getWorker(entry.workerId);
+              const worker = workersById.get(entry.workerId);
               return (
                 <div key={entry.id} className="rounded-md border border-black/10 p-3">
                   <p className="font-medium">{worker?.name}</p>

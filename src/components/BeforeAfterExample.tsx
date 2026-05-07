@@ -169,7 +169,7 @@ export default function BeforeAfterExample() {
           <div className="space-y-3 max-w-2xl mx-auto text-sm" style={{ color: "var(--color-charcoal-600)" }}>
             <div className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: "var(--color-walnut-500)" }}>1</span>
-              <p>Import the component: <code className="px-2 py-0.5 rounded bg-sand-100 font-mono text-xs">import BeforeAfterSlider from "@/components/BeforeAfterSlider";</code></p>
+              <p>Import the component: <code className="px-2 py-0.5 rounded bg-sand-100 font-mono text-xs">import BeforeAfterSlider from &quot;@/components/BeforeAfterSlider&quot;;</code></p>
             </div>
             <div className="flex gap-3">
               <span className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: "var(--color-walnut-500)" }}>2</span>
