@@ -39,6 +39,33 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 npm run build
 ```
 
+## Local Operations Demo
+
+Create `.env.local` from `.env.example`:
+
+```bash
+cp .env.example .env.local
+```
+
+For the Phase 1 demo, keep:
+
+```env
+NEXT_PUBLIC_DEMO_MODE=true
+```
+
+Run locally:
+
+```bash
+npm run dev
+```
+
+Open:
+
+- Public site: http://localhost:3000
+- Admin login: http://localhost:3000/login
+- Admin console: http://localhost:3000/admin
+- Invoice PDF demo: http://localhost:3000/admin/invoices/invoice-1/download
+
 ## Project Structure
 
 ```
