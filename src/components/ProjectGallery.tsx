@@ -152,7 +152,7 @@ export default function ProjectGallery() {
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <section id="projects" className="py-24 md:py-32 bg-charcoal-800" ref={sectionRef as any} aria-labelledby="projects-heading">
+      <section id="projects" className="py-24 md:py-32 bg-charcoal-800" ref={sectionRef} aria-labelledby="projects-heading">
         <div className="max-w-[90rem] mx-auto px-4 sm:px-6">
           {/* Header */}
           <m.div
@@ -299,7 +299,7 @@ export default function ProjectGallery() {
                     <div className="text-center flex-1 min-w-0 px-4">
                       <p className="text-sand-200 text-sm sm:text-base truncate">{current?.alt}</p>
                       <p className="text-charcoal-400 text-xs mt-1 tracking-wider uppercase">
-                        {(current as any)?.category} &middot; {safeIndex + 1} of {filtered.length}
+                        {current?.category} &middot; {safeIndex + 1} of {filtered.length}
                       </p>
                     </div>
                     <button

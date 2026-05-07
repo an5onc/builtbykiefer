@@ -120,6 +120,7 @@ export function InvoicePdf({
       <Page size="LETTER" style={styles.page}>
         <View style={styles.header}>
           <View>
+            {/* eslint-disable-next-line jsx-a11y/alt-text -- @react-pdf Image does not support alt text. */}
             <Image src={logoSrc} style={styles.logo} />
             <Text>Kiefer Built Contracting</Text>
             <Text style={styles.muted}>Windsor, Colorado</Text>
