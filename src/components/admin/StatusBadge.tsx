@@ -18,7 +18,7 @@ const styles: Record<string, string> = {
 export default function StatusBadge({ status }: { status: string }) {
   return (
     <span
-      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold capitalize ring-1 ${
+      className={`inline-flex w-fit items-center justify-center self-center justify-self-start whitespace-nowrap rounded-full px-2.5 py-1 text-center text-xs font-semibold leading-none capitalize ring-1 ${
         styles[status] ?? styles.completed
       }`}
     >
