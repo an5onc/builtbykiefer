@@ -26,6 +26,12 @@ export function getDisplayAdminEmail() {
   return getAllowedAdminEmail() ?? "demo-admin@kbuiltco.com";
 }
 
+export function buildAuthCallbackUrl(origin: string, next = "/admin") {
+  const url = new URL("/auth/callback", origin);
+  url.searchParams.set("next", next.startsWith("/") ? next : "/admin");
+  return url.toString();
+}
+
 export function canUseAdminSession({
   userEmail,
   profileRole,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canUseAdminSession } from "./auth";
+import { buildAuthCallbackUrl, canUseAdminSession } from "./auth";
 
 describe("admin auth guard", () => {
   it("allows only admin profiles matching the configured admin email when one is configured", () => {
@@ -36,5 +36,11 @@ describe("admin auth guard", () => {
         allowedAdminEmail: null,
       }),
     ).toBe(true);
+  });
+
+  it("builds magic-link callback URLs that preserve the destination", () => {
+    expect(buildAuthCallbackUrl("http://localhost:3000", "/admin")).toBe(
+      "http://localhost:3000/auth/callback?next=%2Fadmin",
+    );
   });
 });
