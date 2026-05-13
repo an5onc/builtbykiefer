@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getDisplayAdminEmail, isDemoMode } from "@/lib/admin/auth";
 import { sendMagicLink, signIn } from "./actions";
+import PasswordField from "./PasswordField";
 
 export default async function LoginPage({
   searchParams,
@@ -68,16 +69,7 @@ export default async function LoginPage({
                   required
                 />
               </label>
-              <label className="block text-sm font-semibold text-white/80">
-                Password
-                <input
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  className="mt-2 w-full rounded-md border border-white/10 bg-black/30 px-3 py-3 text-white outline-none transition focus:border-[#e04a36]"
-                  required
-                />
-              </label>
+              <PasswordField />
               <button
                 type="submit"
                 className="inline-flex w-full items-center justify-center rounded-md bg-[#b92516] px-4 py-3 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#951e13]"

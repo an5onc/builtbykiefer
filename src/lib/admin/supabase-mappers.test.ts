@@ -3,6 +3,7 @@ import {
   mapClientRow,
   mapInvoiceRow,
   mapLeadRow,
+  mapProposalRow,
   mapProjectFileRow,
   mapProjectRow,
   mapTimeEntryRow,
@@ -138,6 +139,50 @@ describe("Supabase admin row mappers", () => {
     ).toMatchObject({
       invoiceNumber: "KBC-2026-001",
       lineItems: [{ quantity: 42.5, unitPrice: 86 }],
+    });
+
+    expect(
+      mapProposalRow({
+        id: "proposal-1",
+        lead_id: "lead-1",
+        proposal_number: "KBP-2026-001",
+        title: "Guest Suite Addition",
+        status: "draft",
+        client_name: "Harper Stone",
+        client_email: "harper@example.com",
+        scope_summary: "Garage and guest suite pricing.",
+        internal_notes: "Hold until site visit.",
+        valid_until: "2026-06-15",
+        created_at: "2026-05-12T10:00:00Z",
+        proposal_line_items: [
+          {
+            id: "proposal-line-2",
+            section: "Allowance",
+            description: "Tile allowance",
+            quantity: "1.00",
+            unit_price: "4200.00",
+            is_optional: true,
+            sort_order: 2,
+          },
+          {
+            id: "proposal-line-1",
+            section: "Base Scope",
+            description: "Framing labor",
+            quantity: "12.50",
+            unit_price: "95.00",
+            is_optional: false,
+            sort_order: 1,
+          },
+        ],
+      }),
+    ).toMatchObject({
+      leadId: "lead-1",
+      proposalNumber: "KBP-2026-001",
+      clientName: "Harper Stone",
+      lineItems: [
+        { description: "Framing labor", quantity: 12.5, unitPrice: 95, isOptional: false },
+        { description: "Tile allowance", quantity: 1, unitPrice: 4200, isOptional: true },
+      ],
     });
   });
 });

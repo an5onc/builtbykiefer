@@ -1,4 +1,4 @@
-import type { Client, Invoice, Lead, Project, ProjectFile, TimeEntry, Worker } from "./types";
+import type { Client, Invoice, Lead, Project, ProjectFile, Proposal, TimeEntry, Worker } from "./types";
 
 export const clients: Client[] = [
   { id: "client-1", name: "Avery Thompson", email: "avery@example.com", phone: "(970) 555-0181" },
@@ -178,6 +178,49 @@ export const invoices: Invoice[] = [
     lineItems: [
       { id: "line-1", description: "Exterior punch labor", quantity: 31, unitPrice: 82 },
       { id: "line-2", description: "Metal siding closeout materials", quantity: 1, unitPrice: 1900 },
+    ],
+  },
+];
+
+export const proposals: Proposal[] = [
+  {
+    id: "proposal-1",
+    leadId: "lead-3",
+    proposalNumber: "KBP-2026-001",
+    title: "Garage and Guest Suite Addition",
+    status: "draft",
+    clientName: "Harper Stone",
+    clientEmail: "harper@example.com",
+    scopeSummary:
+      "Preconstruction proposal for separating garage shell work from the finished guest suite scope.",
+    internalNotes: "Confirm utility trenching and steel allowance before sending.",
+    validUntil: "2026-06-15",
+    createdAt: "2026-05-12T10:00:00-06:00",
+    lineItems: [
+      {
+        id: "proposal-line-1",
+        section: "Base Scope",
+        description: "Garage framing and dried-in shell allowance",
+        quantity: 1,
+        unitPrice: 84000,
+        isOptional: false,
+      },
+      {
+        id: "proposal-line-2",
+        section: "Guest Suite",
+        description: "Interior finish allowance for guest suite",
+        quantity: 1,
+        unitPrice: 126000,
+        isOptional: false,
+      },
+      {
+        id: "proposal-line-3",
+        section: "Optional Upgrade",
+        description: "Heated bathroom floor allowance",
+        quantity: 1,
+        unitPrice: 3800,
+        isOptional: true,
+      },
     ],
   },
 ];

@@ -3,6 +3,7 @@ export type ProjectStatus = "planning" | "active" | "paused" | "completed";
 export type ProjectPhaseStatus = "completed" | "in-progress" | "upcoming";
 export type FileVisibility = "internal" | "customer";
 export type InvoiceStatus = "draft" | "sent" | "paid";
+export type ProposalStatus = "draft" | "sent" | "approved" | "declined";
 export type WorkerStatus = "active" | "inactive";
 
 export interface Lead {
@@ -92,4 +93,28 @@ export interface Invoice {
   dueDate: string;
   notes: string;
   lineItems: InvoiceLineItem[];
+}
+
+export interface ProposalLineItem {
+  id: string;
+  section: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  isOptional: boolean;
+}
+
+export interface Proposal {
+  id: string;
+  leadId: string;
+  proposalNumber: string;
+  title: string;
+  status: ProposalStatus;
+  clientName: string;
+  clientEmail: string;
+  scopeSummary: string;
+  internalNotes: string;
+  validUntil: string;
+  createdAt: string;
+  lineItems: ProposalLineItem[];
 }

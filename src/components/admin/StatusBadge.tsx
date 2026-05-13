@@ -5,6 +5,8 @@ const styles: Record<string, string> = {
   draft: "bg-amber-50 text-amber-700 ring-amber-200",
   sent: "bg-blue-50 text-blue-700 ring-blue-200",
   paid: "bg-green-50 text-green-700 ring-green-200",
+  approved: "bg-green-50 text-green-700 ring-green-200",
+  declined: "bg-neutral-100 text-neutral-500 ring-neutral-200",
   qualified: "bg-blue-50 text-blue-700 ring-blue-200",
   proposal: "bg-purple-50 text-purple-700 ring-purple-200",
   contacted: "bg-neutral-100 text-neutral-700 ring-neutral-200",

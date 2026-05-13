@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   BarChart3,
   Clock,
+  FileText,
   FolderKanban,
   Home,
   LogOut,
@@ -15,6 +16,7 @@ import { signOut } from "@/app/login/actions";
 const navItems = [
   { href: "/admin", label: "Command Center", icon: Home },
   { href: "/admin/leads", label: "Leads", icon: Users },
+  { href: "/admin/proposals", label: "Proposals", icon: FileText },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
   { href: "/admin/time", label: "Time", icon: Clock },
   { href: "/admin/invoices", label: "Invoices", icon: ReceiptText },

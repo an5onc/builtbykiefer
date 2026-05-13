@@ -2,16 +2,20 @@ import {
   clients as demoClients,
   invoices as demoInvoices,
   leads as demoLeads,
+  proposals as demoProposals,
   projectFiles as demoProjectFiles,
   projects as demoProjects,
   timeEntries as demoTimeEntries,
   workers as demoWorkers,
 } from "./demo-data";
 import { invoiceTotal, timeEntryHours } from "./formatters";
+import type { LeadCreateInput, LeadUpdateInput } from "./leads";
+import type { ProposalCreateInput } from "./proposals";
 import {
   mapClientRow,
   mapInvoiceRow,
   mapLeadRow,
+  mapProposalRow,
   mapProjectFileRow,
   mapProjectRow,
   mapTimeEntryRow,
@@ -19,6 +23,10 @@ import {
 } from "./supabase-mappers";
 import { getPublicEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
+
+type UpdateResult = { ok: true } | { ok: false; reason: string };
+type CreateLeadResult = { ok: true; leadId: string } | { ok: false; reason: string };
+type CreateProposalResult = { ok: true; proposalId: string } | { ok: false; reason: string };
 
 async function getSupabaseClientOrNull() {
   const env = getPublicEnv();
@@ -94,6 +102,216 @@ export async function getLeads() {
   }
 
   return (data ?? []).map(mapLeadRow);
+}
+
+export async function getLead(leadId: string) {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoLeads.find((lead) => lead.id === leadId) ?? null;
+  }
+
+  const { data, error } = await supabase
+    .from("leads")
+    .select("id, name, email, phone, project_type, budget_range, status, next_follow_up, notes")
+    .eq("id", leadId)
+    .maybeSingle();
+
+  if (error) {
+    logSupabaseFallback("lead", error);
+    return demoLeads.find((lead) => lead.id === leadId) ?? null;
+  }
+
+  return data ? mapLeadRow(data) : null;
+}
+
+export async function updateLead(leadId: string, input: LeadUpdateInput): Promise<UpdateResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode lead updates are not persisted." };
+  }
+
+  const { error } = await supabase
+    .from("leads")
+    .update({
+      status: input.status,
+      next_follow_up: input.nextFollowUp,
+      notes: input.notes,
+    })
+    .eq("id", leadId);
+
+  if (error) {
+    return { ok: false, reason: "Could not update the lead. Please try again." };
+  }
+
+  return { ok: true };
+}
+
+export async function createLead(input: LeadCreateInput): Promise<CreateLeadResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode lead creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("leads")
+    .insert({
+      name: input.name,
+      email: input.email,
+      phone: input.phone,
+      project_type: input.projectType,
+      budget_range: input.budgetRange,
+      status: input.status,
+      next_follow_up: input.nextFollowUp,
+      notes: input.notes,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the lead. Please try again." };
+  }
+
+  return { ok: true, leadId: data.id };
+}
+
+function makeProposalNumber() {
+  const year = new Date().getFullYear();
+  return `KBP-${year}-${Date.now().toString().slice(-6)}`;
+}
+
+const proposalSelect = `
+  id,
+  lead_id,
+  proposal_number,
+  title,
+  status,
+  client_name,
+  client_email,
+  scope_summary,
+  internal_notes,
+  valid_until,
+  created_at,
+  proposal_line_items (
+    id,
+    section,
+    description,
+    quantity,
+    unit_price,
+    is_optional,
+    sort_order
+  )
+`;
+
+export async function getProposals() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProposals;
+  }
+
+  const { data, error } = await supabase
+    .from("proposals")
+    .select(proposalSelect)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("proposals", error);
+    return demoProposals;
+  }
+
+  return (data ?? []).map(mapProposalRow);
+}
+
+export async function getLeadProposals(leadId: string) {
+  const proposals = await getProposals();
+  return proposals.filter((proposal) => proposal.leadId === leadId);
+}
+
+export async function getProposal(proposalId: string) {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProposals.find((proposal) => proposal.id === proposalId) ?? null;
+  }
+
+  const { data, error } = await supabase
+    .from("proposals")
+    .select(proposalSelect)
+    .eq("id", proposalId)
+    .maybeSingle();
+
+  if (error) {
+    logSupabaseFallback("proposal", error);
+    return demoProposals.find((proposal) => proposal.id === proposalId) ?? null;
+  }
+
+  return data ? mapProposalRow(data) : null;
+}
+
+export async function createProposalFromLead(
+  leadId: string,
+  input: ProposalCreateInput,
+): Promise<CreateProposalResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode proposal creation is not persisted." };
+  }
+
+  const lead = await getLead(leadId);
+
+  if (!lead) {
+    return { ok: false, reason: "Lead not found." };
+  }
+
+  const { data: proposal, error: proposalError } = await supabase
+    .from("proposals")
+    .insert({
+      lead_id: lead.id,
+      proposal_number: makeProposalNumber(),
+      title: input.title,
+      status: "draft",
+      client_name: lead.name,
+      client_email: lead.email,
+      scope_summary: input.scopeSummary,
+      internal_notes: input.internalNotes,
+      valid_until: input.validUntil,
+    })
+    .select("id")
+    .single();
+
+  if (proposalError || !proposal?.id) {
+    return { ok: false, reason: "Could not create the proposal. Please try again." };
+  }
+
+  const { error: lineItemError } = await supabase.from("proposal_line_items").insert(
+    input.lineItems.map((item, index) => ({
+      proposal_id: proposal.id,
+      section: item.section,
+      description: item.description,
+      quantity: item.quantity,
+      unit_price: item.unitPrice,
+      is_optional: item.isOptional,
+      sort_order: index,
+    })),
+  );
+
+  if (lineItemError) {
+    await supabase.from("proposals").delete().eq("id", proposal.id);
+    return { ok: false, reason: "Could not create the proposal line items. Please try again." };
+  }
+
+  await supabase
+    .from("leads")
+    .update({ status: "proposal" })
+    .eq("id", lead.id)
+    .neq("status", "won")
+    .neq("status", "lost");
+
+  return { ok: true, proposalId: proposal.id };
 }
 
 export async function getProjects() {

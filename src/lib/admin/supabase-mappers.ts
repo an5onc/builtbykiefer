@@ -3,6 +3,8 @@ import type {
   Invoice,
   InvoiceLineItem,
   Lead,
+  Proposal,
+  ProposalLineItem,
   Project,
   ProjectFile,
   ProjectPhase,
@@ -54,6 +56,31 @@ interface InvoiceRow {
   due_date: string;
   notes: string;
   invoice_line_items?: InvoiceLineItemRow[] | null;
+}
+
+interface ProposalLineItemRow {
+  id: string;
+  section: string;
+  description: string;
+  quantity: number | string;
+  unit_price: number | string;
+  is_optional: boolean;
+  sort_order?: number | null;
+}
+
+interface ProposalRow {
+  id: string;
+  lead_id: string;
+  proposal_number: string;
+  title: string;
+  status: Proposal["status"];
+  client_name: string;
+  client_email: string;
+  scope_summary: string;
+  internal_notes: string;
+  valid_until: string;
+  created_at: string;
+  proposal_line_items?: ProposalLineItemRow[] | null;
 }
 
 export function mapClientRow(row: {
@@ -199,5 +226,35 @@ export function mapInvoiceRow(row: InvoiceRow): Invoice {
     lineItems: [...(row.invoice_line_items ?? [])]
       .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
       .map(mapInvoiceLineItemRow),
+  };
+}
+
+export function mapProposalLineItemRow(row: ProposalLineItemRow): ProposalLineItem {
+  return {
+    id: row.id,
+    section: row.section,
+    description: row.description,
+    quantity: Number(row.quantity),
+    unitPrice: Number(row.unit_price),
+    isOptional: row.is_optional,
+  };
+}
+
+export function mapProposalRow(row: ProposalRow): Proposal {
+  return {
+    id: row.id,
+    leadId: row.lead_id,
+    proposalNumber: row.proposal_number,
+    title: row.title,
+    status: row.status,
+    clientName: row.client_name,
+    clientEmail: row.client_email,
+    scopeSummary: row.scope_summary,
+    internalNotes: row.internal_notes,
+    validUntil: row.valid_until,
+    createdAt: row.created_at,
+    lineItems: [...(row.proposal_line_items ?? [])]
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+      .map(mapProposalLineItemRow),
   };
 }
