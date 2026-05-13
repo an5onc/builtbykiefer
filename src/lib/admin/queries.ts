@@ -1,23 +1,30 @@
 import {
+  changeOrders as demoChangeOrders,
   clients as demoClients,
   invoices as demoInvoices,
   leads as demoLeads,
   proposals as demoProposals,
   projectFiles as demoProjectFiles,
+  projectUpdates as demoProjectUpdates,
   projects as demoProjects,
   timeEntries as demoTimeEntries,
   workers as demoWorkers,
 } from "./demo-data";
-import { invoiceTotal, timeEntryHours } from "./formatters";
+import { changeOrderTotal, invoiceTotal, timeEntryHours } from "./formatters";
+import type { ChangeOrderCreateInput } from "./change-orders";
 import type { LeadCreateInput, LeadUpdateInput } from "./leads";
+import type { ProjectFileCreateInput } from "./project-files";
+import type { ProjectUpdateCreateInput } from "./project-updates";
 import type { ProposalCreateInput } from "./proposals";
 import {
   mapClientRow,
+  mapChangeOrderRow,
   mapInvoiceRow,
   mapLeadRow,
   mapProposalRow,
   mapProjectFileRow,
   mapProjectRow,
+  mapProjectUpdateRow,
   mapTimeEntryRow,
   mapWorkerRow,
 } from "./supabase-mappers";
@@ -27,6 +34,9 @@ import { createClient } from "@/lib/supabase/server";
 type UpdateResult = { ok: true } | { ok: false; reason: string };
 type CreateLeadResult = { ok: true; leadId: string } | { ok: false; reason: string };
 type CreateProposalResult = { ok: true; proposalId: string } | { ok: false; reason: string };
+type CreateChangeOrderResult = { ok: true; changeOrderId: string } | { ok: false; reason: string };
+type CreateProjectUpdateResult = { ok: true; updateId: string } | { ok: false; reason: string };
+type CreateProjectFileResult = { ok: true; fileId: string } | { ok: false; reason: string };
 
 async function getSupabaseClientOrNull() {
   const env = getPublicEnv();
@@ -43,23 +53,28 @@ function logSupabaseFallback(scope: string, error: unknown) {
 }
 
 export async function getDashboardMetrics() {
-  const [projects, projectFiles, timeEntries, invoices, leads] = await Promise.all([
+  const [projects, projectFiles, timeEntries, invoices, leads, changeOrders] = await Promise.all([
     getProjects(),
     getAllProjectFiles(),
     getTimeEntries(),
     getInvoices(),
     getLeads(),
+    getChangeOrders(),
   ]);
   const weeklyHours = timeEntries.reduce((sum, entry) => sum + timeEntryHours(entry.clockIn, entry.clockOut), 0);
   const draftInvoiceTotal = invoices
     .filter((invoice) => invoice.status === "draft")
     .reduce((sum, invoice) => sum + invoiceTotal(invoice.lineItems), 0);
+  const pendingChangeOrderTotal = changeOrders
+    .filter((changeOrder) => changeOrder.status === "draft" || changeOrder.status === "sent")
+    .reduce((sum, changeOrder) => sum + changeOrderTotal(changeOrder.lineItems), 0);
 
   return {
     activeProjects: projects.filter((project) => project.status === "active").length,
     recentUploads: projectFiles.length,
     weeklyHours,
     draftInvoiceTotal,
+    pendingChangeOrderTotal,
     openLeads: leads.filter((lead) => lead.status !== "won" && lead.status !== "lost").length,
   };
 }
@@ -181,6 +196,33 @@ function makeProposalNumber() {
   const year = new Date().getFullYear();
   return `KBP-${year}-${Date.now().toString().slice(-6)}`;
 }
+
+function makeChangeOrderNumber() {
+  const year = new Date().getFullYear();
+  return `KBCO-${year}-${Date.now().toString().slice(-6)}`;
+}
+
+const changeOrderSelect = `
+  id,
+  change_order_number,
+  project_id,
+  client_id,
+  title,
+  status,
+  reason,
+  schedule_impact_days,
+  client_message,
+  internal_notes,
+  created_at,
+  approved_at,
+  change_order_line_items (
+    id,
+    description,
+    quantity,
+    unit_price,
+    sort_order
+  )
+`;
 
 const proposalSelect = `
   id,
@@ -408,7 +450,7 @@ async function getAllProjectFiles() {
 
   const { data, error } = await supabase
     .from("project_files")
-    .select("id, project_id, name, file_type, visibility, uploaded_at, size_label")
+    .select("id, project_id, name, file_type, visibility, storage_bucket, storage_path, uploaded_at, size_label")
     .order("uploaded_at", { ascending: false });
 
   if (error) {
@@ -419,9 +461,107 @@ async function getAllProjectFiles() {
   return (data ?? []).map(mapProjectFileRow);
 }
 
+async function getAllProjectUpdates() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProjectUpdates;
+  }
+
+  const { data, error } = await supabase
+    .from("project_updates")
+    .select("id, project_id, title, body, visibility, update_date, created_at")
+    .order("update_date", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("project-updates", error);
+    return demoProjectUpdates;
+  }
+
+  return (data ?? []).map(mapProjectUpdateRow);
+}
+
 export async function getProjectFiles(projectId: string) {
   const files = await getAllProjectFiles();
   return files.filter((file) => file.projectId === projectId);
+}
+
+export async function createProjectFile(
+  projectId: string,
+  input: ProjectFileCreateInput,
+): Promise<CreateProjectFileResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode file uploads are not persisted." };
+  }
+
+  const { error: uploadError } = await supabase.storage
+    .from(input.storageBucket)
+    .upload(input.storagePath, input.file, {
+      contentType: input.file.type || undefined,
+      upsert: false,
+    });
+
+  if (uploadError) {
+    return { ok: false, reason: "Could not upload the file. Check Supabase Storage bucket settings." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_files")
+    .insert({
+      project_id: projectId,
+      name: input.name,
+      file_type: input.type,
+      visibility: input.visibility,
+      storage_bucket: input.storageBucket,
+      storage_path: input.storagePath,
+      size_label: input.sizeLabel,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    await supabase.storage.from(input.storageBucket).remove([input.storagePath]);
+    return { ok: false, reason: "Could not save the file record. Please try again." };
+  }
+
+  return { ok: true, fileId: data.id };
+}
+
+export async function getProjectUpdates(projectId: string) {
+  const updates = await getAllProjectUpdates();
+  return updates.filter((update) => update.projectId === projectId);
+}
+
+export async function createProjectUpdate(
+  projectId: string,
+  input: ProjectUpdateCreateInput,
+): Promise<CreateProjectUpdateResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode project update creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_updates")
+    .insert({
+      project_id: projectId,
+      title: input.title,
+      body: input.body,
+      visibility: input.visibility,
+      update_date: input.updateDate,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the project update. Please try again." };
+  }
+
+  return { ok: true, updateId: data.id };
 }
 
 export async function getProjectTimeEntries(projectId: string) {
@@ -432,6 +572,106 @@ export async function getProjectTimeEntries(projectId: string) {
 export async function getProjectInvoices(projectId: string) {
   const invoices = await getInvoices();
   return invoices.filter((invoice) => invoice.projectId === projectId);
+}
+
+export async function getChangeOrders() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoChangeOrders;
+  }
+
+  const { data, error } = await supabase
+    .from("change_orders")
+    .select(changeOrderSelect)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("change-orders", error);
+    return demoChangeOrders;
+  }
+
+  return (data ?? []).map(mapChangeOrderRow);
+}
+
+export async function getProjectChangeOrders(projectId: string) {
+  const changeOrders = await getChangeOrders();
+  return changeOrders.filter((changeOrder) => changeOrder.projectId === projectId);
+}
+
+export async function getChangeOrder(changeOrderId: string) {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoChangeOrders.find((changeOrder) => changeOrder.id === changeOrderId) ?? null;
+  }
+
+  const { data, error } = await supabase
+    .from("change_orders")
+    .select(changeOrderSelect)
+    .eq("id", changeOrderId)
+    .maybeSingle();
+
+  if (error) {
+    logSupabaseFallback("change-order", error);
+    return demoChangeOrders.find((changeOrder) => changeOrder.id === changeOrderId) ?? null;
+  }
+
+  return data ? mapChangeOrderRow(data) : null;
+}
+
+export async function createChangeOrderForProject(
+  projectId: string,
+  input: ChangeOrderCreateInput,
+): Promise<CreateChangeOrderResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode change order creation is not persisted." };
+  }
+
+  const project = await getProject(projectId);
+
+  if (!project) {
+    return { ok: false, reason: "Project not found." };
+  }
+
+  const { data: changeOrder, error: changeOrderError } = await supabase
+    .from("change_orders")
+    .insert({
+      change_order_number: makeChangeOrderNumber(),
+      project_id: project.id,
+      client_id: project.clientId,
+      title: input.title,
+      status: "draft",
+      reason: input.reason,
+      schedule_impact_days: input.scheduleImpactDays,
+      client_message: input.clientMessage,
+      internal_notes: input.internalNotes,
+    })
+    .select("id")
+    .single();
+
+  if (changeOrderError || !changeOrder?.id) {
+    return { ok: false, reason: "Could not create the change order. Please try again." };
+  }
+
+  const { error: lineItemError } = await supabase.from("change_order_line_items").insert(
+    input.lineItems.map((item, index) => ({
+      change_order_id: changeOrder.id,
+      description: item.description,
+      quantity: item.quantity,
+      unit_price: item.unitPrice,
+      sort_order: index,
+    })),
+  );
+
+  if (lineItemError) {
+    await supabase.from("change_orders").delete().eq("id", changeOrder.id);
+    return { ok: false, reason: "Could not create the change order line items. Please try again." };
+  }
+
+  return { ok: true, changeOrderId: changeOrder.id };
 }
 
 export async function getWorkers() {

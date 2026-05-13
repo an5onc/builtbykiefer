@@ -10,7 +10,7 @@ export default async function ProjectsPage() {
   const clientsById = new Map(clients.map((client) => [client.id, client]));
 
   return (
-    <AdminShell title="Projects" eyebrow="Active Work">
+    <AdminShell title="Jobs" eyebrow="Active Work">
       <div className="grid gap-5 lg:grid-cols-3">
         {projects.map((project) => {
           const client = clientsById.get(project.clientId);

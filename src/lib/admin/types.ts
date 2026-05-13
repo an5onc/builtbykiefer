@@ -2,6 +2,7 @@ export type LeadStatus = "new" | "contacted" | "qualified" | "proposal" | "won" 
 export type ProjectStatus = "planning" | "active" | "paused" | "completed";
 export type ProjectPhaseStatus = "completed" | "in-progress" | "upcoming";
 export type FileVisibility = "internal" | "customer";
+export type ChangeOrderStatus = "draft" | "sent" | "approved" | "declined";
 export type InvoiceStatus = "draft" | "sent" | "paid";
 export type ProposalStatus = "draft" | "sent" | "approved" | "declined";
 export type WorkerStatus = "active" | "inactive";
@@ -39,8 +40,20 @@ export interface ProjectFile {
   name: string;
   type: "photo" | "document" | "invoice";
   visibility: FileVisibility;
+  storageBucket: string;
+  storagePath: string;
   uploadedAt: string;
   sizeLabel: string;
+}
+
+export interface ProjectUpdate {
+  id: string;
+  projectId: string;
+  title: string;
+  body: string;
+  visibility: FileVisibility;
+  updateDate: string;
+  createdAt: string;
 }
 
 export interface Project {
@@ -93,6 +106,29 @@ export interface Invoice {
   dueDate: string;
   notes: string;
   lineItems: InvoiceLineItem[];
+}
+
+export interface ChangeOrderLineItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface ChangeOrder {
+  id: string;
+  changeOrderNumber: string;
+  projectId: string;
+  clientId: string;
+  title: string;
+  status: ChangeOrderStatus;
+  reason: string;
+  scheduleImpactDays: number;
+  clientMessage: string;
+  internalNotes: string;
+  createdAt: string;
+  approvedAt: string | null;
+  lineItems: ChangeOrderLineItem[];
 }
 
 export interface ProposalLineItem {

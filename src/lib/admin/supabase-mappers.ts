@@ -1,5 +1,7 @@
 import type {
   Client,
+  ChangeOrder,
+  ChangeOrderLineItem,
   Invoice,
   InvoiceLineItem,
   Lead,
@@ -8,6 +10,7 @@ import type {
   Project,
   ProjectFile,
   ProjectPhase,
+  ProjectUpdate,
   TimeEntry,
   Worker,
 } from "./types";
@@ -56,6 +59,30 @@ interface InvoiceRow {
   due_date: string;
   notes: string;
   invoice_line_items?: InvoiceLineItemRow[] | null;
+}
+
+interface ChangeOrderLineItemRow {
+  id: string;
+  description: string;
+  quantity: number | string;
+  unit_price: number | string;
+  sort_order?: number | null;
+}
+
+interface ChangeOrderRow {
+  id: string;
+  change_order_number: string;
+  project_id: string;
+  client_id: string;
+  title: string;
+  status: ChangeOrder["status"];
+  reason: string;
+  schedule_impact_days: number;
+  client_message: string;
+  internal_notes: string;
+  created_at: string;
+  approved_at: string | null;
+  change_order_line_items?: ChangeOrderLineItemRow[] | null;
 }
 
 interface ProposalLineItemRow {
@@ -158,6 +185,8 @@ export function mapProjectFileRow(row: {
   name: string;
   file_type: ProjectFile["type"];
   visibility: ProjectFile["visibility"];
+  storage_bucket: string;
+  storage_path: string;
   uploaded_at: string;
   size_label: string;
 }): ProjectFile {
@@ -167,8 +196,30 @@ export function mapProjectFileRow(row: {
     name: row.name,
     type: row.file_type,
     visibility: row.visibility,
+    storageBucket: row.storage_bucket,
+    storagePath: row.storage_path,
     uploadedAt: row.uploaded_at,
     sizeLabel: row.size_label,
+  };
+}
+
+export function mapProjectUpdateRow(row: {
+  id: string;
+  project_id: string;
+  title: string;
+  body: string;
+  visibility: ProjectUpdate["visibility"];
+  update_date: string;
+  created_at: string;
+}): ProjectUpdate {
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    title: row.title,
+    body: row.body,
+    visibility: row.visibility,
+    updateDate: row.update_date,
+    createdAt: row.created_at,
   };
 }
 
@@ -226,6 +277,35 @@ export function mapInvoiceRow(row: InvoiceRow): Invoice {
     lineItems: [...(row.invoice_line_items ?? [])]
       .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
       .map(mapInvoiceLineItemRow),
+  };
+}
+
+export function mapChangeOrderLineItemRow(row: ChangeOrderLineItemRow): ChangeOrderLineItem {
+  return {
+    id: row.id,
+    description: row.description,
+    quantity: Number(row.quantity),
+    unitPrice: Number(row.unit_price),
+  };
+}
+
+export function mapChangeOrderRow(row: ChangeOrderRow): ChangeOrder {
+  return {
+    id: row.id,
+    changeOrderNumber: row.change_order_number,
+    projectId: row.project_id,
+    clientId: row.client_id,
+    title: row.title,
+    status: row.status,
+    reason: row.reason,
+    scheduleImpactDays: row.schedule_impact_days,
+    clientMessage: row.client_message,
+    internalNotes: row.internal_notes,
+    createdAt: row.created_at,
+    approvedAt: row.approved_at,
+    lineItems: [...(row.change_order_line_items ?? [])]
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+      .map(mapChangeOrderLineItemRow),
   };
 }
 

@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   mapClientRow,
+  mapChangeOrderRow,
   mapInvoiceRow,
   mapLeadRow,
   mapProposalRow,
   mapProjectFileRow,
   mapProjectRow,
+  mapProjectUpdateRow,
   mapTimeEntryRow,
   mapWorkerRow,
 } from "./supabase-mappers";
@@ -93,10 +95,38 @@ describe("Supabase admin row mappers", () => {
         name: "Rough-in packet.pdf",
         file_type: "document",
         visibility: "internal",
+        storage_bucket: "project-documents",
+        storage_path: "project-1/documents/rough-in-packet.pdf",
         uploaded_at: "2026-05-04T12:00:00Z",
         size_label: "1.8 MB",
       }),
-    ).toMatchObject({ projectId: "project-1", type: "document", uploadedAt: "2026-05-04T12:00:00Z" });
+    ).toMatchObject({
+      projectId: "project-1",
+      type: "document",
+      storageBucket: "project-documents",
+      storagePath: "project-1/documents/rough-in-packet.pdf",
+      uploadedAt: "2026-05-04T12:00:00Z",
+    });
+
+    expect(
+      mapProjectUpdateRow({
+        id: "update-1",
+        project_id: "project-1",
+        title: "Rough-in inspection passed",
+        body: "Electrical and plumbing rough-ins passed.",
+        visibility: "customer",
+        update_date: "2026-05-13",
+        created_at: "2026-05-13T10:00:00Z",
+      }),
+    ).toEqual({
+      id: "update-1",
+      projectId: "project-1",
+      title: "Rough-in inspection passed",
+      body: "Electrical and plumbing rough-ins passed.",
+      visibility: "customer",
+      updateDate: "2026-05-13",
+      createdAt: "2026-05-13T10:00:00Z",
+    });
 
     expect(mapWorkerRow({ id: "worker-1", name: "Caleb", role: "Lead", is_active: true })).toEqual({
       id: "worker-1",
@@ -182,6 +212,48 @@ describe("Supabase admin row mappers", () => {
       lineItems: [
         { description: "Framing labor", quantity: 12.5, unitPrice: 95, isOptional: false },
         { description: "Tile allowance", quantity: 1, unitPrice: 4200, isOptional: true },
+      ],
+    });
+
+    expect(
+      mapChangeOrderRow({
+        id: "change-order-1",
+        change_order_number: "KBCO-2026-001",
+        project_id: "project-1",
+        client_id: "client-1",
+        title: "Add covered patio",
+        status: "draft",
+        reason: "Owner requested larger outdoor living.",
+        schedule_impact_days: 5,
+        client_message: "Covered patio framing and electrical prep.",
+        internal_notes: "Check beam lead time.",
+        created_at: "2026-05-13T10:00:00Z",
+        approved_at: null,
+        change_order_line_items: [
+          {
+            id: "co-line-2",
+            description: "Electrical rough-in allowance",
+            quantity: "1.00",
+            unit_price: "2400.00",
+            sort_order: 2,
+          },
+          {
+            id: "co-line-1",
+            description: "Patio framing labor",
+            quantity: "18.00",
+            unit_price: "92.00",
+            sort_order: 1,
+          },
+        ],
+      }),
+    ).toMatchObject({
+      changeOrderNumber: "KBCO-2026-001",
+      projectId: "project-1",
+      scheduleImpactDays: 5,
+      approvedAt: null,
+      lineItems: [
+        { description: "Patio framing labor", quantity: 18, unitPrice: 92 },
+        { description: "Electrical rough-in allowance", quantity: 1, unitPrice: 2400 },
       ],
     });
   });

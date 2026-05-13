@@ -1,4 +1,15 @@
-import type { Client, Invoice, Lead, Project, ProjectFile, Proposal, TimeEntry, Worker } from "./types";
+import type {
+  ChangeOrder,
+  Client,
+  Invoice,
+  Lead,
+  Project,
+  ProjectFile,
+  ProjectUpdate,
+  Proposal,
+  TimeEntry,
+  Worker,
+} from "./types";
 
 export const clients: Client[] = [
   { id: "client-1", name: "Avery Thompson", email: "avery@example.com", phone: "(970) 555-0181" },
@@ -130,10 +141,71 @@ export const projects: Project[] = [
 ];
 
 export const projectFiles: ProjectFile[] = [
-  { id: "file-1", projectId: "project-1", name: "Rough-in inspection packet.pdf", type: "document", visibility: "internal", uploadedAt: "2026-05-04", sizeLabel: "1.8 MB" },
-  { id: "file-2", projectId: "project-1", name: "Kitchen progress photo set", type: "photo", visibility: "customer", uploadedAt: "2026-05-05", sizeLabel: "12 photos" },
-  { id: "file-3", projectId: "project-2", name: "Exterior punch notes.pdf", type: "document", visibility: "internal", uploadedAt: "2026-05-02", sizeLabel: "420 KB" },
-  { id: "file-4", projectId: "project-3", name: "Preconstruction estimate.pdf", type: "document", visibility: "customer", uploadedAt: "2026-04-28", sizeLabel: "936 KB" },
+  {
+    id: "file-1",
+    projectId: "project-1",
+    name: "Rough-in inspection packet.pdf",
+    type: "document",
+    visibility: "internal",
+    storageBucket: "project-documents",
+    storagePath: "project-1/documents/rough-in-inspection-packet.pdf",
+    uploadedAt: "2026-05-04",
+    sizeLabel: "1.8 MB",
+  },
+  {
+    id: "file-2",
+    projectId: "project-1",
+    name: "Kitchen progress photo set",
+    type: "photo",
+    visibility: "customer",
+    storageBucket: "project-photos",
+    storagePath: "project-1/photos/kitchen-progress.jpg",
+    uploadedAt: "2026-05-05",
+    sizeLabel: "12 photos",
+  },
+  {
+    id: "file-3",
+    projectId: "project-2",
+    name: "Exterior punch notes.pdf",
+    type: "document",
+    visibility: "internal",
+    storageBucket: "project-documents",
+    storagePath: "project-2/documents/exterior-punch-notes.pdf",
+    uploadedAt: "2026-05-02",
+    sizeLabel: "420 KB",
+  },
+  {
+    id: "file-4",
+    projectId: "project-3",
+    name: "Preconstruction estimate.pdf",
+    type: "document",
+    visibility: "customer",
+    storageBucket: "project-documents",
+    storagePath: "project-3/documents/preconstruction-estimate.pdf",
+    uploadedAt: "2026-04-28",
+    sizeLabel: "936 KB",
+  },
+];
+
+export const projectUpdates: ProjectUpdate[] = [
+  {
+    id: "update-1",
+    projectId: "project-1",
+    title: "Rough-in inspection passed",
+    body: "Electrical and plumbing rough-ins passed inspection. Insulation prep is next.",
+    visibility: "customer",
+    updateDate: "2026-05-13",
+    createdAt: "2026-05-13T10:00:00-06:00",
+  },
+  {
+    id: "update-2",
+    projectId: "project-1",
+    title: "Internal blocking list",
+    body: "Verify backing in primary bath before drywall.",
+    visibility: "internal",
+    updateDate: "2026-05-13",
+    createdAt: "2026-05-13T11:00:00-06:00",
+  },
 ];
 
 export const workers: Worker[] = [
@@ -178,6 +250,29 @@ export const invoices: Invoice[] = [
     lineItems: [
       { id: "line-1", description: "Exterior punch labor", quantity: 31, unitPrice: 82 },
       { id: "line-2", description: "Metal siding closeout materials", quantity: 1, unitPrice: 1900 },
+    ],
+  },
+];
+
+export const changeOrders: ChangeOrder[] = [
+  {
+    id: "change-order-1",
+    changeOrderNumber: "KBCO-2026-001",
+    projectId: "project-1",
+    clientId: "client-1",
+    title: "Covered Patio Expansion",
+    status: "draft",
+    reason: "Owner requested a larger covered outdoor living area after framing review.",
+    scheduleImpactDays: 5,
+    clientMessage:
+      "This change order adds covered patio framing, roof tie-in labor, and electrical prep for future heaters.",
+    internalNotes: "Confirm beam lead time and roof flashing details before sending.",
+    createdAt: "2026-05-13T09:30:00-06:00",
+    approvedAt: null,
+    lineItems: [
+      { id: "co-line-1", description: "Patio framing labor", quantity: 18, unitPrice: 92 },
+      { id: "co-line-2", description: "Roof tie-in material allowance", quantity: 1, unitPrice: 4200 },
+      { id: "co-line-3", description: "Electrical rough-in allowance", quantity: 1, unitPrice: 2400 },
     ],
   },
 ];
