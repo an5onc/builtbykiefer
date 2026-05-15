@@ -71,6 +71,51 @@ export interface ChangeOrderImpact {
   scheduleDaysAdded: number;
 }
 
+export interface JobCostVarianceInput {
+  budgetedCost: number;
+  actualCost: number;
+  committedCost: number;
+  pendingExposure: number;
+  contingencyPercent: number;
+}
+
+export interface JobCostVariance {
+  projectedFinalCost: number;
+  varianceAmount: number;
+  variancePercent: number;
+  contingencyAllowance: number;
+  remainingBudget: number;
+  status: "on-track" | "watch" | "over-budget";
+  managerNote: string;
+}
+
+export interface ProjectCashFlowForecastInput {
+  contractValue: number;
+  approvedChangeOrders: number;
+  percentComplete: number;
+  retainagePercent: number;
+  paidToDate: number;
+  pendingDrawsSubmitted: number;
+  vendorPaymentsDue: number;
+  payrollDue: number;
+  overheadDue: number;
+  cashOnHand: number;
+}
+
+export interface ProjectCashFlowForecast {
+  adjustedContractValue: number;
+  grossEarnedToDate: number;
+  retainageHeldToDate: number;
+  netEarnedToDate: number;
+  currentDrawReady: number;
+  expectedCashIn: number;
+  scheduledCashOut: number;
+  projectedEndingCash: number;
+  cashGap: number;
+  status: "healthy" | "tight" | "funding-needed";
+  managerNote: string;
+}
+
 function roundMoney(value: number) {
   return Math.round(value * 100) / 100;
 }
@@ -284,5 +329,85 @@ export function calculateChangeOrderImpact({
     marginGap: roundWholeDollars(marginGap),
     isMarginProtected: normalizedProposedPrice >= recommendedBillingAmount,
     scheduleDaysAdded: roundWholeDollars(nonNegative(scheduleDaysAdded)),
+  };
+}
+
+export function calculateJobCostVariance({
+  budgetedCost,
+  actualCost,
+  committedCost,
+  pendingExposure,
+  contingencyPercent,
+}: JobCostVarianceInput): JobCostVariance {
+  const normalizedBudget = nonNegative(budgetedCost);
+  const projectedFinalCost = [actualCost, committedCost, pendingExposure].map(nonNegative).reduce((sum, cost) => sum + cost, 0);
+  const varianceAmount = projectedFinalCost - normalizedBudget;
+  const variancePercent = normalizedBudget > 0 ? (varianceAmount / normalizedBudget) * 100 : 0;
+  const contingencyAllowance = normalizedBudget * (clampPercent(contingencyPercent) / 100);
+  const remainingBudget = Math.max(normalizedBudget - projectedFinalCost, 0);
+  const status: JobCostVariance["status"] =
+    varianceAmount <= 0 ? "on-track" : varianceAmount <= contingencyAllowance ? "watch" : "over-budget";
+  const managerNote =
+    status === "on-track"
+      ? "Projected cost is tracking within budget."
+      : status === "watch"
+        ? "Projected cost is above budget but inside the contingency allowance."
+        : "Projected cost is beyond the contingency allowance. Review commitments and scope exposure.";
+
+  return {
+    projectedFinalCost: roundWholeDollars(projectedFinalCost),
+    varianceAmount: roundWholeDollars(varianceAmount),
+    variancePercent: roundMoney(variancePercent),
+    contingencyAllowance: roundWholeDollars(contingencyAllowance),
+    remainingBudget: roundWholeDollars(remainingBudget),
+    status,
+    managerNote,
+  };
+}
+
+export function calculateProjectCashFlowForecast({
+  contractValue,
+  approvedChangeOrders,
+  percentComplete,
+  retainagePercent,
+  paidToDate,
+  pendingDrawsSubmitted,
+  vendorPaymentsDue,
+  payrollDue,
+  overheadDue,
+  cashOnHand,
+}: ProjectCashFlowForecastInput): ProjectCashFlowForecast {
+  const adjustedContractValue = nonNegative(contractValue) + nonNegative(approvedChangeOrders);
+  const grossEarnedToDate = adjustedContractValue * (clampPercent(percentComplete) / 100);
+  const retainageHeldToDate = grossEarnedToDate * (clampPercent(retainagePercent) / 100);
+  const netEarnedToDate = grossEarnedToDate - retainageHeldToDate;
+  const normalizedPaidToDate = nonNegative(paidToDate);
+  const normalizedPendingDraws = nonNegative(pendingDrawsSubmitted);
+  const currentDrawReady = Math.max(netEarnedToDate - normalizedPaidToDate - normalizedPendingDraws, 0);
+  const expectedCashIn = normalizedPendingDraws + currentDrawReady;
+  const scheduledCashOut = [vendorPaymentsDue, payrollDue, overheadDue].map(nonNegative).reduce((sum, value) => sum + value, 0);
+  const projectedEndingCash = nonNegative(cashOnHand) + expectedCashIn - scheduledCashOut;
+  const cashGap = Math.max(-projectedEndingCash, 0);
+  const status: ProjectCashFlowForecast["status"] =
+    projectedEndingCash < 0 ? "funding-needed" : projectedEndingCash < scheduledCashOut * 0.25 ? "tight" : "healthy";
+  const managerNote =
+    status === "healthy"
+      ? "Expected receipts and reserves cover the near-term project cash needs."
+      : status === "tight"
+        ? "Cash covers the forecast, but the cushion is thin. Watch payment timing closely."
+        : "Projected outflows exceed cash plus expected receipts. Review draw timing or short-term funding.";
+
+  return {
+    adjustedContractValue: roundWholeDollars(adjustedContractValue),
+    grossEarnedToDate: roundWholeDollars(grossEarnedToDate),
+    retainageHeldToDate: roundWholeDollars(retainageHeldToDate),
+    netEarnedToDate: roundWholeDollars(netEarnedToDate),
+    currentDrawReady: roundWholeDollars(currentDrawReady),
+    expectedCashIn: roundWholeDollars(expectedCashIn),
+    scheduledCashOut: roundWholeDollars(scheduledCashOut),
+    projectedEndingCash: roundWholeDollars(projectedEndingCash),
+    cashGap: roundWholeDollars(cashGap),
+    status,
+    managerNote,
   };
 }

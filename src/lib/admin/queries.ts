@@ -19,6 +19,8 @@ import {
   purchaseOrders as demoPurchaseOrders,
   timeEntries as demoTimeEntries,
   vendors as demoVendors,
+  vendorRfiResponses as demoVendorRfiResponses,
+  vendorSubmittals as demoVendorSubmittals,
   warrantyItems as demoWarrantyItems,
   workers as demoWorkers,
 } from "./demo-data";
@@ -36,6 +38,8 @@ import type { ProposalCreateInput } from "./proposals";
 import type { RfiCreateInput } from "./rfis";
 import type { SelectionApprovalInput, SelectionCreateInput } from "./selections";
 import type { ProjectTaskCreateInput } from "./tasks";
+import type { VendorRfiResponseCreateInput } from "./vendor-rfi-responses";
+import type { VendorSubmittalCreateInput } from "./vendor-submittals";
 import type { ProjectVendorAssignmentCreateInput, VendorCreateInput } from "./vendors";
 import type { WarrantyItemCreateInput } from "./warranty";
 import { logSupabaseFallback } from "./supabase-fallback";
@@ -60,6 +64,8 @@ import {
   mapPurchaseOrderRow,
   mapTimeEntryRow,
   mapVendorRow,
+  mapVendorRfiResponseRow,
+  mapVendorSubmittalRow,
   mapWarrantyItemRow,
   mapWorkerRow,
 } from "./supabase-mappers";
@@ -79,6 +85,8 @@ type CreateProjectCommentResult = { ok: true; commentId: string } | { ok: false;
 type CreateProjectSelectionResult = { ok: true; selectionId: string } | { ok: false; reason: string };
 type ApproveProjectSelectionResult = { ok: true } | { ok: false; reason: string };
 type CreateProjectRfiResult = { ok: true; rfiId: string } | { ok: false; reason: string };
+type CreateVendorRfiResponseResult = { ok: true; responseId: string } | { ok: false; reason: string };
+type CreateVendorSubmittalResult = { ok: true; submittalId: string } | { ok: false; reason: string };
 type CreateDailyLogResult = { ok: true; dailyLogId: string } | { ok: false; reason: string };
 type CreatePurchaseOrderResult = { ok: true; purchaseOrderId: string } | { ok: false; reason: string };
 type CreateBillResult = { ok: true; billId: string } | { ok: false; reason: string };
@@ -311,6 +319,7 @@ const vendorSelect = `
   company_type,
   trade,
   email,
+  auth_email,
   phone,
   status,
   portal_access,
@@ -980,6 +989,129 @@ export async function getProjectRfis(projectId: string) {
   return rfis.filter((rfi) => rfi.projectId === projectId);
 }
 
+export async function getVendorRfiResponses() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoVendorRfiResponses;
+  }
+
+  const { data, error } = await supabase
+    .from("vendor_rfi_responses")
+    .select("id, project_id, rfi_id, vendor_id, assignment_id, responder_name, response_body, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("vendor-rfi-responses", error);
+    return demoVendorRfiResponses;
+  }
+
+  return (data ?? []).map(mapVendorRfiResponseRow);
+}
+
+export async function getVendorSubmittals() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoVendorSubmittals;
+  }
+
+  const { data, error } = await supabase
+    .from("vendor_submittals")
+    .select("id, project_id, vendor_id, assignment_id, title, category, status, storage_bucket, storage_path, mime_type, size_label, submitted_at, reviewed_at")
+    .order("submitted_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("vendor-submittals", error);
+    return demoVendorSubmittals;
+  }
+
+  return (data ?? []).map(mapVendorSubmittalRow);
+}
+
+export async function getProjectVendorSubmittals(projectId: string) {
+  const submittals = await getVendorSubmittals();
+  return submittals.filter((submittal) => submittal.projectId === projectId);
+}
+
+export async function getProjectVendorRfiResponses(projectId: string) {
+  const responses = await getVendorRfiResponses();
+  return responses.filter((response) => response.projectId === projectId);
+}
+
+export async function createVendorRfiResponse(
+  input: VendorRfiResponseCreateInput,
+): Promise<CreateVendorRfiResponseResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode RFI responses are not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("vendor_rfi_responses")
+    .insert({
+      project_id: input.projectId,
+      rfi_id: input.rfiId,
+      vendor_id: input.vendorId,
+      assignment_id: input.assignmentId,
+      responder_name: input.responderName,
+      response_body: input.responseBody,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not save the RFI response. Please try again." };
+  }
+
+  return { ok: true, responseId: data.id };
+}
+
+export async function createVendorSubmittal(
+  input: VendorSubmittalCreateInput,
+): Promise<CreateVendorSubmittalResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode vendor submittals are not persisted." };
+  }
+
+  const { error: uploadError } = await supabase.storage
+    .from(input.storageBucket)
+    .upload(input.storagePath, input.file, {
+      contentType: input.file.type || undefined,
+      upsert: false,
+    });
+
+  if (uploadError) {
+    return { ok: false, reason: "Could not upload the vendor submittal. Check Supabase Storage access." };
+  }
+
+  const { data, error } = await supabase
+    .from("vendor_submittals")
+    .insert({
+      project_id: input.projectId,
+      vendor_id: input.vendorId,
+      assignment_id: input.assignmentId,
+      title: input.title,
+      category: input.category,
+      storage_bucket: input.storageBucket,
+      storage_path: input.storagePath,
+      mime_type: input.mimeType,
+      size_label: input.sizeLabel,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    await supabase.storage.from(input.storageBucket).remove([input.storagePath]);
+    return { ok: false, reason: "Could not save the vendor submittal record. Please try again." };
+  }
+
+  return { ok: true, submittalId: data.id };
+}
+
 export async function getWarrantyItems() {
   const supabase = await getSupabaseClientOrNull();
 
@@ -1075,6 +1207,7 @@ export async function createVendor(input: VendorCreateInput): Promise<CreateVend
       company_type: input.companyType,
       trade: input.trade,
       email: input.email,
+      auth_email: input.email.toLowerCase(),
       phone: input.phone,
       status: input.status,
       portal_access: input.portalAccess,

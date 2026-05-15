@@ -23,6 +23,8 @@ import type {
   PurchaseOrder,
   TimeEntry,
   Vendor,
+  VendorRfiResponse,
+  VendorSubmittal,
   WarrantyItem,
   Worker,
 } from "./types";
@@ -132,6 +134,7 @@ interface VendorRow {
   company_type: Vendor["companyType"];
   trade: string;
   email: string;
+  auth_email?: string | null;
   phone: string;
   status: Vendor["status"];
   portal_access: boolean;
@@ -158,6 +161,22 @@ interface ProjectFinancialTargetRow {
   target_margin_percent: number | string;
   contingency_percent: number | string;
   updated_at: string;
+}
+
+interface VendorSubmittalRow {
+  id: string;
+  project_id: string;
+  vendor_id: string;
+  assignment_id: string;
+  title: string;
+  category: VendorSubmittal["category"];
+  status: VendorSubmittal["status"];
+  storage_bucket: string;
+  storage_path: string;
+  mime_type: string;
+  size_label: string;
+  submitted_at: string;
+  reviewed_at: string | null;
 }
 
 interface ProposalLineItemRow {
@@ -278,6 +297,24 @@ export function mapProjectFileRow(row: {
   };
 }
 
+export function mapVendorSubmittalRow(row: VendorSubmittalRow): VendorSubmittal {
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    vendorId: row.vendor_id,
+    assignmentId: row.assignment_id,
+    title: row.title,
+    category: row.category,
+    status: row.status,
+    storageBucket: row.storage_bucket,
+    storagePath: row.storage_path,
+    mimeType: row.mime_type,
+    sizeLabel: row.size_label,
+    submittedAt: row.submitted_at,
+    reviewedAt: row.reviewed_at,
+  };
+}
+
 export function mapProjectPhotoRow(row: ProjectPhotoRow): ProjectPhoto {
   return {
     id: row.id,
@@ -392,6 +429,28 @@ export function mapProjectRfiRow(row: {
   };
 }
 
+export function mapVendorRfiResponseRow(row: {
+  id: string;
+  project_id: string;
+  rfi_id: string;
+  vendor_id: string;
+  assignment_id: string;
+  responder_name: string;
+  response_body: string;
+  created_at: string;
+}): VendorRfiResponse {
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    rfiId: row.rfi_id,
+    vendorId: row.vendor_id,
+    assignmentId: row.assignment_id,
+    responderName: row.responder_name,
+    responseBody: row.response_body,
+    createdAt: row.created_at,
+  };
+}
+
 export function mapWarrantyItemRow(row: WarrantyItemRow): WarrantyItem {
   return {
     id: row.id,
@@ -477,6 +536,7 @@ export function mapVendorRow(row: VendorRow): Vendor {
     companyType: row.company_type,
     trade: row.trade,
     email: row.email,
+    authEmail: row.auth_email ?? "",
     phone: row.phone,
     status: row.status,
     portalAccess: row.portal_access,

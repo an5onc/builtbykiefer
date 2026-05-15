@@ -16,6 +16,8 @@ export type ProjectPhotoCategory = "progress" | "selections" | "issue" | "before
 export type VendorCompanyType = "subcontractor" | "vendor";
 export type VendorStatus = "active" | "inactive";
 export type ProjectVendorAssignmentStatus = "invited" | "scheduled" | "active" | "complete";
+export type VendorSubmittalCategory = "insurance" | "w9" | "submittal" | "closeout" | "warranty" | "other";
+export type VendorSubmittalStatus = "submitted" | "reviewed";
 export type PurchaseOrderStatus = "draft" | "sent" | "approved" | "received";
 export type BillStatus = "draft" | "received" | "paid";
 export type WorkerStatus = "active" | "inactive";
@@ -134,6 +136,33 @@ export interface ProjectRfi {
   answeredAt: string | null;
 }
 
+export interface VendorRfiResponse {
+  id: string;
+  projectId: string;
+  rfiId: string;
+  vendorId: string;
+  assignmentId: string;
+  responderName: string;
+  responseBody: string;
+  createdAt: string;
+}
+
+export interface VendorSubmittal {
+  id: string;
+  projectId: string;
+  vendorId: string;
+  assignmentId: string;
+  title: string;
+  category: VendorSubmittalCategory;
+  status: VendorSubmittalStatus;
+  storageBucket: string;
+  storagePath: string;
+  mimeType: string;
+  sizeLabel: string;
+  submittedAt: string;
+  reviewedAt: string | null;
+}
+
 export interface WarrantyItem {
   id: string;
   projectId: string;
@@ -173,6 +202,7 @@ export interface Vendor {
   companyType: VendorCompanyType;
   trade: string;
   email: string;
+  authEmail: string;
   phone: string;
   status: VendorStatus;
   portalAccess: boolean;

@@ -328,6 +328,7 @@ const vendors: Vendor[] = [
     companyType: "subcontractor",
     trade: "Cabinetry",
     email: "schedule@frcabinetry.example",
+    authEmail: "schedule@frcabinetry.example",
     phone: "(970) 555-0199",
     status: "active",
     portalAccess: true,

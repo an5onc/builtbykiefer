@@ -2,14 +2,21 @@ import Link from "next/link";
 import { MessageCircleQuestion, PlusCircle } from "lucide-react";
 import AdminShell from "@/components/admin/AdminShell";
 import StatusBadge from "@/components/admin/StatusBadge";
-import { formatDate } from "@/lib/admin/formatters";
-import { getProjects, getRfis } from "@/lib/admin/queries";
+import { formatDate, formatDateTime } from "@/lib/admin/formatters";
+import { getProjects, getRfis, getVendorRfiResponses } from "@/lib/admin/queries";
 
 export default async function RfisPage() {
-  const [rfis, projects] = await Promise.all([getRfis(), getProjects()]);
+  const [rfis, projects, responses] = await Promise.all([getRfis(), getProjects(), getVendorRfiResponses()]);
   const projectsById = new Map(projects.map((project) => [project.id, project]));
+  const responsesByRfiId = new Map<string, typeof responses>();
+
+  for (const response of responses) {
+    responsesByRfiId.set(response.rfiId, [...(responsesByRfiId.get(response.rfiId) ?? []), response]);
+  }
+
   const openCount = rfis.filter((rfi) => rfi.status === "open").length;
   const clientVisibleCount = rfis.filter((rfi) => rfi.visibility === "customer").length;
+  const vendorResponseCount = responses.length;
 
   return (
     <AdminShell title="RFIs" eyebrow="Messaging">
@@ -44,6 +51,10 @@ export default async function RfisPage() {
             <p className="text-sm font-semibold text-[#655c52]">Client-visible</p>
             <p className="mt-2 text-3xl font-bold">{clientVisibleCount}</p>
           </div>
+          <div className="rounded-lg border border-black/10 bg-white p-4 shadow-sm">
+            <p className="text-sm font-semibold text-[#655c52]">Vendor responses</p>
+            <p className="mt-2 text-3xl font-bold">{vendorResponseCount}</p>
+          </div>
         </aside>
       </div>
 
@@ -59,6 +70,8 @@ export default async function RfisPage() {
         {rfis.length > 0 ? (
           rfis.map((rfi) => {
             const project = projectsById.get(rfi.projectId);
+            const rfiResponses = responsesByRfiId.get(rfi.id) ?? [];
+            const latestResponse = rfiResponses[0];
 
             return (
               <Link
@@ -72,6 +85,17 @@ export default async function RfisPage() {
                     {rfi.title}
                   </p>
                   <p className="mt-1 text-sm leading-6 text-[#655c52]">{rfi.question}</p>
+                  {latestResponse ? (
+                    <div className="mt-3 rounded-md bg-[#f9f6f0] p-3 text-sm leading-6 text-[#655c52]">
+                      <p className="font-semibold text-[#171717]">
+                        Latest vendor response from {latestResponse.responderName}
+                      </p>
+                      <p className="mt-1">{latestResponse.responseBody}</p>
+                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#8a8177]">
+                        {formatDateTime(latestResponse.createdAt)}
+                      </p>
+                    </div>
+                  ) : null}
                 </div>
                 <div>
                   <p className="font-semibold">{project?.name ?? "Unknown job"}</p>

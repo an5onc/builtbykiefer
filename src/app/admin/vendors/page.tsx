@@ -1,9 +1,17 @@
 import Link from "next/link";
-import { PlusCircle, Users } from "lucide-react";
+import { FileText, MessageSquare, PlusCircle, Users } from "lucide-react";
 import AdminShell from "@/components/admin/AdminShell";
 import StatusBadge from "@/components/admin/StatusBadge";
 import { formatDate } from "@/lib/admin/formatters";
-import { getProjectVendorAssignments, getProjects, getVendors } from "@/lib/admin/queries";
+import {
+  getAllProjectFiles,
+  getProjectVendorAssignments,
+  getProjects,
+  getRfis,
+  getVendorSubmittals,
+  getVendors,
+} from "@/lib/admin/queries";
+import { buildVendorPortalView } from "@/lib/admin/vendor-portal";
 
 export default async function AdminVendorsPage({
   searchParams,
@@ -11,18 +19,30 @@ export default async function AdminVendorsPage({
   searchParams: Promise<{ notice?: string }>;
 }) {
   const { notice } = await searchParams;
-  const [vendors, assignments, projects] = await Promise.all([
+  const [vendors, assignments, projects, files, rfis, submittals] = await Promise.all([
     getVendors(),
     getProjectVendorAssignments(),
     getProjects(),
+    getAllProjectFiles(),
+    getRfis(),
+    getVendorSubmittals(),
   ]);
   const projectsById = new Map(projects.map((project) => [project.id, project]));
+  const vendorPortalView = buildVendorPortalView({ vendors, assignments, projects, files, rfis, submittals });
   const assignmentCountByVendorId = new Map<string, number>();
+  const submittalCountByVendorId = new Map<string, number>();
 
   for (const assignment of assignments) {
     assignmentCountByVendorId.set(
       assignment.vendorId,
       (assignmentCountByVendorId.get(assignment.vendorId) ?? 0) + 1,
+    );
+  }
+
+  for (const submittal of submittals) {
+    submittalCountByVendorId.set(
+      submittal.vendorId,
+      (submittalCountByVendorId.get(submittal.vendorId) ?? 0) + 1,
     );
   }
 
@@ -36,7 +56,7 @@ export default async function AdminVendorsPage({
         </p>
       ) : null}
 
-      <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_0.42fr]">
+      <div className="mb-6 grid gap-4 lg:grid-cols-[1fr_0.56fr]">
         <section className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
@@ -58,7 +78,7 @@ export default async function AdminVendorsPage({
           </div>
         </section>
 
-        <aside className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+        <aside className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-black/10 bg-white p-4 shadow-sm">
             <p className="text-sm font-semibold text-[#655c52]">Partners</p>
             <p className="mt-2 text-3xl font-bold">{vendors.length}</p>
@@ -66,6 +86,27 @@ export default async function AdminVendorsPage({
           <div className="rounded-lg border border-black/10 bg-white p-4 shadow-sm">
             <p className="text-sm font-semibold text-[#655c52]">Portal-enabled</p>
             <p className="mt-2 text-3xl font-bold">{activePortalCount}</p>
+          </div>
+          <div className="rounded-lg border border-black/10 bg-white p-4 shadow-sm">
+            <p className="flex items-center gap-2 text-sm font-semibold text-[#655c52]">
+              <FileText className="size-4 text-[#b92516]" />
+              Shared docs
+            </p>
+            <p className="mt-2 text-3xl font-bold">{vendorPortalView.totals.sharedDocuments}</p>
+          </div>
+          <div className="rounded-lg border border-black/10 bg-white p-4 shadow-sm">
+            <p className="flex items-center gap-2 text-sm font-semibold text-[#655c52]">
+              <MessageSquare className="size-4 text-[#b92516]" />
+              Open RFIs
+            </p>
+            <p className="mt-2 text-3xl font-bold">{vendorPortalView.totals.openRfis}</p>
+          </div>
+          <div className="rounded-lg border border-black/10 bg-white p-4 shadow-sm sm:col-span-2">
+            <p className="flex items-center gap-2 text-sm font-semibold text-[#655c52]">
+              <FileText className="size-4 text-[#b92516]" />
+              Vendor submittals
+            </p>
+            <p className="mt-2 text-3xl font-bold">{vendorPortalView.totals.submittedDocuments}</p>
           </div>
         </aside>
       </div>
@@ -92,6 +133,9 @@ export default async function AdminVendorsPage({
                   {vendor.name}
                 </p>
                 <p className="mt-1 text-sm capitalize text-[#655c52]">{vendor.companyType}</p>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#8a8176]">
+                  {submittalCountByVendorId.get(vendor.id) ?? 0} submittals
+                </p>
               </div>
               <p className="text-sm font-semibold">{vendor.trade}</p>
               <div className="text-sm text-[#655c52]">
@@ -105,6 +149,48 @@ export default async function AdminVendorsPage({
           ))
         ) : (
           <p className="px-5 py-5 text-sm text-[#655c52]">No trade partners yet.</p>
+        )}
+      </section>
+
+      <section className="mt-6 rounded-lg border border-black/10 bg-white shadow-sm">
+        <div className="border-b border-black/10 px-5 py-4">
+          <h2 className="text-lg font-bold">Recent Vendor Submittals</h2>
+        </div>
+        {submittals.length > 0 ? (
+          <div className="divide-y divide-black/10">
+            {submittals.slice(0, 8).map((submittal) => {
+              const vendor = vendors.find((item) => item.id === submittal.vendorId);
+              const project = projectsById.get(submittal.projectId);
+
+              return (
+                <div
+                  key={submittal.id}
+                  className="grid gap-4 px-5 py-4 md:grid-cols-[0.75fr_0.75fr_1fr_0.4fr_0.45fr]"
+                >
+                  <div>
+                    <p className="font-semibold">{vendor?.name ?? "Unknown partner"}</p>
+                    <p className="mt-1 text-sm text-[#655c52]">{vendor?.trade ?? "No trade"}</p>
+                  </div>
+                  <p className="font-semibold">{project?.name ?? "Unknown job"}</p>
+                  <div>
+                    <p className="font-semibold">{submittal.title}</p>
+                    <p className="mt-1 text-sm text-[#655c52]">
+                      {submittal.category} · {submittal.sizeLabel} · {formatDate(submittal.submittedAt)}
+                    </p>
+                  </div>
+                  <StatusBadge status={submittal.status} />
+                  <Link
+                    href={`/admin/vendor-submittals/${submittal.id}/download`}
+                    className="text-sm font-bold uppercase tracking-[0.14em] text-[#b92516] transition hover:text-[#171717]"
+                  >
+                    Download
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="px-5 py-5 text-sm text-[#655c52]">No vendor submittals have been uploaded yet.</p>
         )}
       </section>
 

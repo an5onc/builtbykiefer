@@ -8,6 +8,8 @@ import AdminShell from "@/components/admin/AdminShell";
 import ChangeOrderImpactChecker from "@/components/admin/ChangeOrderImpactChecker";
 import DrawRetainagePlanner from "@/components/admin/DrawRetainagePlanner";
 import InvestmentDecisionCheck from "@/components/admin/InvestmentDecisionCheck";
+import JobCostVarianceTool from "@/components/admin/JobCostVarianceTool";
+import ProjectCashFlowForecastTool from "@/components/admin/ProjectCashFlowForecastTool";
 import { formatCurrency } from "@/lib/admin/formatters";
 import {
   calculateEffectiveAnnualRate,
@@ -44,7 +46,7 @@ export default function FinanceToolsPage() {
             </p>
             <h2 className="mt-2 text-2xl font-bold">Kiefer Built Field-Tested Finance Checks</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-[#655c52]">
-              Quick planning tools for draw billing, retainage, change order margin protection, equipment financing, lender term checks, and project finance conversations. These use standard finance formulas packaged in Kiefer Built workflows.
+              Quick planning tools for job cost variance, draw billing, retainage, change order margin protection, equipment financing, lender term checks, and project finance conversations. These use standard finance formulas packaged in Kiefer Built workflows.
             </p>
           </div>
           <Link
@@ -67,6 +69,14 @@ export default function FinanceToolsPage() {
 
       <div className="mb-6">
         <ChangeOrderImpactChecker />
+      </div>
+
+      <div className="mb-6">
+        <JobCostVarianceTool />
+      </div>
+
+      <div className="mb-6">
+        <ProjectCashFlowForecastTool />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_0.82fr]">
@@ -143,9 +153,9 @@ export default function FinanceToolsPage() {
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b92516]">
           Next Kiefer Built Calculator
         </p>
-        <h2 className="mt-1 text-lg font-bold">Job Cost Variance Tool</h2>
+        <h2 className="mt-1 text-lg font-bold">Finance Toolkit Expansion</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#655c52]">
-          The next accounting expansion should compare budget, committed cost, actual cost, and projected cost by job so Kiefer can spot cost drift earlier.
+          Next useful finance improvements are live project data presets, draw schedule snapshots, and exporting finance checks into proposal or lender-review packets.
         </p>
       </section>
     </AdminShell>

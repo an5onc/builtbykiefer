@@ -8,6 +8,7 @@ import {
   ClipboardPenLine,
   ClipboardList,
   ExternalLink,
+  FileText,
   ListChecks,
   MessageCircleQuestion,
   MessageSquareText,
@@ -48,6 +49,8 @@ import {
   getProjectTimeEntries,
   getProjectUpdates,
   getProjectVendorAssignmentsForProject,
+  getProjectVendorSubmittals,
+  getProjectVendorRfiResponses,
   getProjectWarrantyItems,
   getVendors,
   getWorkers,
@@ -87,6 +90,8 @@ export default async function ProjectDetailPage({
     projectPhotos,
     vendors,
     vendorAssignments,
+    vendorSubmittals,
+    vendorRfiResponses,
     financialTarget,
     workers,
   ] = await Promise.all([
@@ -107,11 +112,30 @@ export default async function ProjectDetailPage({
     getProjectPhotoGallery(project.id),
     getVendors(),
     getProjectVendorAssignmentsForProject(project.id),
+    getProjectVendorSubmittals(project.id),
+    getProjectVendorRfiResponses(project.id),
     getProjectFinancialTarget(project.id),
     getWorkers(),
   ]);
   const workersById = new Map(workers.map((worker) => [worker.id, worker]));
   const vendorsById = new Map(vendors.map((vendor) => [vendor.id, vendor]));
+  const vendorSubmittalsByAssignmentId = new Map<string, typeof vendorSubmittals>();
+  const vendorRfiResponsesByRfiId = new Map<string, typeof vendorRfiResponses>();
+
+  for (const submittal of vendorSubmittals) {
+    vendorSubmittalsByAssignmentId.set(submittal.assignmentId, [
+      ...(vendorSubmittalsByAssignmentId.get(submittal.assignmentId) ?? []),
+      submittal,
+    ]);
+  }
+
+  for (const response of vendorRfiResponses) {
+    vendorRfiResponsesByRfiId.set(response.rfiId, [
+      ...(vendorRfiResponsesByRfiId.get(response.rfiId) ?? []),
+      response,
+    ]);
+  }
+
   const projectReport = buildOperationsReports({
     projects: [project],
     tasks,
@@ -352,25 +376,54 @@ export default async function ProjectDetailPage({
           <div className="divide-y divide-black/10">
             {vendorAssignments.map((assignment) => {
               const vendor = vendorsById.get(assignment.vendorId);
+              const assignmentSubmittals = vendorSubmittalsByAssignmentId.get(assignment.id) ?? [];
 
               return (
                 <article
                   key={assignment.id}
-                  className="grid gap-3 px-5 py-4 md:grid-cols-[0.9fr_1.2fr_0.65fr_0.55fr_0.55fr]"
+                  className="px-5 py-4"
                 >
-                  <div>
-                    <p className="font-semibold">{vendor?.name ?? "Unknown partner"}</p>
-                    <p className="mt-1 text-sm text-[#655c52]">
-                      {vendor?.trade ?? "No trade"} · {vendor?.companyType ?? "partner"}
+                  <div className="grid gap-3 md:grid-cols-[0.9fr_1.2fr_0.65fr_0.55fr_0.55fr]">
+                    <div>
+                      <p className="font-semibold">{vendor?.name ?? "Unknown partner"}</p>
+                      <p className="mt-1 text-sm text-[#655c52]">
+                        {vendor?.trade ?? "No trade"} · {vendor?.companyType ?? "partner"}
+                      </p>
+                    </div>
+                    <p className="text-sm leading-6 text-[#655c52]">{assignment.scope}</p>
+                    <p className="text-sm font-semibold">
+                      {formatDate(assignment.startDate)}
+                      {assignment.endDate ? ` - ${formatDate(assignment.endDate)}` : ""}
                     </p>
+                    <StatusBadge status={assignment.visibility} />
+                    <StatusBadge status={assignment.status} />
                   </div>
-                  <p className="text-sm leading-6 text-[#655c52]">{assignment.scope}</p>
-                  <p className="text-sm font-semibold">
-                    {formatDate(assignment.startDate)}
-                    {assignment.endDate ? ` - ${formatDate(assignment.endDate)}` : ""}
-                  </p>
-                  <StatusBadge status={assignment.visibility} />
-                  <StatusBadge status={assignment.status} />
+                  {assignmentSubmittals.length > 0 ? (
+                    <div className="mt-4 rounded-md bg-[#f9f6f0] p-4">
+                      <p className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-[#655c52]">
+                        <FileText className="size-4 text-[#b92516]" />
+                        Vendor Submittals
+                      </p>
+                      <div className="divide-y divide-black/10">
+                        {assignmentSubmittals.map((submittal) => (
+                          <div key={submittal.id} className="flex flex-wrap items-center justify-between gap-3 py-2">
+                            <div>
+                              <p className="text-sm font-semibold">{submittal.title}</p>
+                              <p className="mt-1 text-xs text-[#655c52]">
+                                {submittal.category} · {submittal.sizeLabel} · {formatDateTime(submittal.submittedAt)}
+                              </p>
+                            </div>
+                            <Link
+                              href={`/admin/vendor-submittals/${submittal.id}/download`}
+                              className="text-xs font-bold uppercase tracking-[0.14em] text-[#b92516] transition hover:text-[#171717]"
+                            >
+                              Download
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
                 </article>
               );
             })}
@@ -582,28 +635,48 @@ export default async function ProjectDetailPage({
 
         {rfis.length > 0 ? (
           <div className="divide-y divide-black/10">
-            {rfis.map((rfi) => (
-              <article key={rfi.id} className="px-5 py-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="font-semibold">{rfi.title}</p>
-                    <p className="mt-1 text-sm text-[#655c52]">
-                      Requested by {rfi.requestedBy} · Due {formatDate(rfi.dueDate)}
+            {rfis.map((rfi) => {
+              const rfiResponses = vendorRfiResponsesByRfiId.get(rfi.id) ?? [];
+
+              return (
+                <article key={rfi.id} className="px-5 py-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold">{rfi.title}</p>
+                      <p className="mt-1 text-sm text-[#655c52]">
+                        Requested by {rfi.requestedBy} · Due {formatDate(rfi.dueDate)}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <StatusBadge status={rfi.visibility} />
+                      <StatusBadge status={rfi.status} />
+                    </div>
+                  </div>
+                  <p className="mt-3 max-w-4xl text-sm leading-6 text-[#655c52]">{rfi.question}</p>
+                  {rfi.answer ? (
+                    <p className="mt-2 max-w-4xl rounded-md bg-[#f9f6f0] p-3 text-sm leading-6 text-[#655c52]">
+                      {rfi.answer}
                     </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <StatusBadge status={rfi.visibility} />
-                    <StatusBadge status={rfi.status} />
-                  </div>
-                </div>
-                <p className="mt-3 max-w-4xl text-sm leading-6 text-[#655c52]">{rfi.question}</p>
-                {rfi.answer ? (
-                  <p className="mt-2 max-w-4xl rounded-md bg-[#f9f6f0] p-3 text-sm leading-6 text-[#655c52]">
-                    {rfi.answer}
-                  </p>
-                ) : null}
-              </article>
-            ))}
+                  ) : null}
+                  {rfiResponses.length > 0 ? (
+                    <div className="mt-3 max-w-4xl space-y-2">
+                      {rfiResponses.map((response) => (
+                        <div key={response.id} className="rounded-md border border-black/10 bg-[#f9f6f0] p-3">
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#b92516]">
+                            Vendor response
+                          </p>
+                          <p className="mt-1 text-sm font-semibold">{response.responderName}</p>
+                          <p className="mt-1 text-sm leading-6 text-[#655c52]">{response.responseBody}</p>
+                          <p className="mt-2 text-xs font-semibold text-[#8a8177]">
+                            {formatDateTime(response.createdAt)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                </article>
+              );
+            })}
           </div>
         ) : (
           <p className="px-5 py-5 text-sm text-[#655c52]">

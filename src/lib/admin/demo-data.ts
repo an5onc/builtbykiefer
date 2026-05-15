@@ -19,6 +19,8 @@ import type {
   PurchaseOrder,
   TimeEntry,
   Vendor,
+  VendorRfiResponse,
+  VendorSubmittal,
   WarrantyItem,
   Worker,
 } from "./types";
@@ -174,6 +176,17 @@ export const projectFiles: ProjectFile[] = [
     storagePath: "project-1/photos/kitchen-progress.jpg",
     uploadedAt: "2026-05-05",
     sizeLabel: "12 photos",
+  },
+  {
+    id: "file-5",
+    projectId: "project-1",
+    name: "Cabinet finish schedule.pdf",
+    type: "document",
+    visibility: "customer",
+    storageBucket: "project-documents",
+    storagePath: "project-1/documents/cabinet-finish-schedule.pdf",
+    uploadedAt: "2026-05-15",
+    sizeLabel: "820 KB",
   },
   {
     id: "file-3",
@@ -427,6 +440,50 @@ export const projectRfis: ProjectRfi[] = [
     createdAt: "2026-05-13T12:00:00-06:00",
     answeredAt: "2026-05-14T11:30:00-06:00",
   },
+  {
+    id: "rfi-3",
+    projectId: "project-1",
+    title: "Cabinet pull confirmation",
+    question: "Confirm drawer pull centerlines before the cabinet package goes into production.",
+    answer: "",
+    requestedBy: "Maya Torres",
+    dueDate: "2026-05-25",
+    status: "open",
+    visibility: "customer",
+    createdAt: "2026-05-15T08:15:00-06:00",
+    answeredAt: null,
+  },
+];
+
+export const vendorRfiResponses: VendorRfiResponse[] = [
+  {
+    id: "vendor-rfi-response-1",
+    projectId: "project-1",
+    rfiId: "rfi-3",
+    vendorId: "vendor-1",
+    assignmentId: "vendor-assignment-1",
+    responderName: "Morgan Fields",
+    responseBody: "Drawer pull centerlines are confirmed and the cabinet package can proceed.",
+    createdAt: "2026-05-15T10:15:00-06:00",
+  },
+];
+
+export const vendorSubmittals: VendorSubmittal[] = [
+  {
+    id: "vendor-submittal-1",
+    projectId: "project-1",
+    vendorId: "vendor-1",
+    assignmentId: "vendor-assignment-1",
+    title: "Cabinet shop drawings",
+    category: "submittal",
+    status: "submitted",
+    storageBucket: "project-documents",
+    storagePath: "project-1/vendor-submittals/vendor-1/cabinet-shop-drawings.pdf",
+    mimeType: "application/pdf",
+    sizeLabel: "640 KB",
+    submittedAt: "2026-05-15T11:00:00-06:00",
+    reviewedAt: null,
+  },
 ];
 
 export const dailyLogs: ProjectDailyLog[] = [
@@ -609,6 +666,7 @@ export const vendors: Vendor[] = [
     companyType: "subcontractor",
     trade: "Cabinetry",
     email: "schedule@frcabinetry.example",
+    authEmail: "schedule@frcabinetry.example",
     phone: "(970) 555-0199",
     status: "active",
     portalAccess: true,
@@ -621,6 +679,7 @@ export const vendors: Vendor[] = [
     companyType: "subcontractor",
     trade: "Tile",
     email: "dispatch@rmtile.example",
+    authEmail: "dispatch@rmtile.example",
     phone: "(970) 555-0188",
     status: "active",
     portalAccess: true,
@@ -633,6 +692,7 @@ export const vendors: Vendor[] = [
     companyType: "vendor",
     trade: "Lighting",
     email: "orders@lightingcollective.example",
+    authEmail: "orders@lightingcollective.example",
     phone: "(970) 555-0177",
     status: "active",
     portalAccess: false,

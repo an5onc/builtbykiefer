@@ -194,12 +194,23 @@ Sales proposal angle:
 
 **Vendor portal workboard**
 - Route: `/vendor`
-- Shows portal-enabled active vendors and their project assignments.
+- Requires a signed-in Supabase vendor account and filters the workboard to that vendor's assigned project records.
+- Vendor records include an auth email so Kiefer can control which subcontractor user is allowed into each trade partner workboard.
 - Presents job, location, current phase, scope, schedule window, and assignment status.
+- Shows shared project documents for assigned portal-enabled trade partners while keeping internal-only files out of the vendor view.
+- Shows shared RFIs by assignment with status, due date, manager question, existing answer, and a branded response form.
+- Stores vendor RFI responses in Supabase with responder name, response text, assignment, vendor, project, and timestamp.
+- Vendor RFI responses require authenticated vendor context; anonymous inserts are blocked by RLS.
+- Allows authenticated vendors to upload project submittals, insurance documents, W-9s, warranty files, closeout documents, and other assigned-job files from the secured workboard.
+- Vendor submittals store private Supabase Storage paths plus project, assignment, vendor, category, size, status, and submitted timestamp.
+- Admin project pages and the Trade Partners page surface vendor submittals with signed download links for managers.
+- Admin RFIs and project detail pages show submitted vendor responses back to managers.
+- Admin Trade Partners page surfaces shared-document and open-RFI counts so managers can tell whether the vendor workboard has active exchange items.
 
 Sales proposal angle:
 - Moves subcontractor coordination into the Kiefer-owned system instead of relying only on email/text threads.
-- Creates a future path for vendors to receive assignments, updates, documents, and payment context in one branded portal.
+- Gives Kiefer a branded subcontractor exchange layer for assignments, documents, and RFIs while avoiding Buildertrend as the coordination hub.
+- Gives each authenticated vendor a focused workboard for assignments, updates, documents, RFIs, and future payment context in one branded portal.
 
 ### Financial Operations
 
@@ -263,6 +274,8 @@ Source reviewed: [BAFN 302 Toolkit](https://bafn302unco.com/)
 - Includes Draw & Retainage Planner for contract value, percent complete, retainage held, paid-to-date, current draw due, remaining contract value, and remaining cash to collect.
 - Includes NPV / IRR Decision Check for equipment, truck, or major tool purchases using initial investment, hurdle rate, expected annual cash benefits, net present value, internal rate of return, payback period, and pass/review signal.
 - Includes Change Order Margin Impact Checker for proposed client price, labor/material/sub/vendor/other costs, target margin, schedule days, recommended billing amount, margin gap, gross margin, markup, and approval readiness.
+- Includes Job Cost Variance Tool for budgeted cost, actual cost, open commitments, pending exposure, contingency allowance, projected final cost, variance dollars/percent, remaining budget, and on-track/watch/over-budget status.
+- Includes Project Cash-Flow Forecast for adjusted contract value, earned revenue, retainage held, pending draw receipts, vendor payments, payroll, overhead, projected ending cash, cash gaps, and healthy/tight/funding-needed signals.
 - Includes Kiefer Built Payment Planner for equipment, truck, or short-term financing checks.
 - Includes Kiefer Built Rate Check for monthly periodic rate and effective annual rate review.
 - Uses construction/accounting examples instead of generic classroom calculator language.
@@ -275,10 +288,12 @@ Useful finance tools from that toolkit concept that could fit this CRM:
 - Cash-flow calculator for retainage, draw schedules, delayed payments, or owner financing scenarios. Draw and retainage planner built first.
 - NPV/IRR decision helper for major equipment purchases or investment-like project choices. Built first.
 - Change order impact checker for margin and schedule decisions before client approval. Built first.
+- Job cost variance calculator for budget, actual, committed, pending exposure, and contingency monitoring. Built first.
+- Cash-flow forecast by project for draw receipts, vendor payments, payroll pressure, overhead, and cash gaps. Built first.
 
 Best fit for Kiefer:
 - Keep `/admin/finance-tools` separate from job records so accountants can run quick calculations without affecting live project data.
-- Next practical calculator should be the job cost variance tool because it compares budget, committed cost, actual cost, and projected cost by job.
+- Next practical calculator should connect finance tools to live project records so managers can load real project defaults instead of typing every number manually.
 
 ### Client Portal
 
@@ -330,6 +345,8 @@ Migrations added for:
 - Project photo storage bucket public-delivery configuration.
 - Project financial targets.
 - Finance tools.
+- Vendor auth email, authenticated vendor workboard access, and vendor RFI response RLS.
+- Vendor submittals table, private Storage upload policies, and anonymous grant tightening.
 
 Data model principles:
 
@@ -350,7 +367,7 @@ Recommended demo order for Kiefer Built:
 6. Show change orders and purchasing as margin-protection workflows.
 7. Show warranty and punch-list tracking for closeout control.
 8. Show project photos as the visual job record.
-9. Show the trade partner directory and `/vendor` workboard.
+9. Show the trade partner directory, vendor login, authenticated `/vendor` workboard, RFI replies, and vendor submittal upload.
 10. Open `/admin/reports` to show job cost exposure, margin forecasting, needs-attention items, and vendor commitments.
 11. Open `/admin/finance-tools` to show Kiefer Built finance utilities.
 12. Open `/portal` to show the client dashboard.
@@ -368,5 +385,6 @@ Recommended demo order for Kiefer Built:
 
 ## Next Features To Track
 
-- Vendor-facing document/RFI exchange after vendor authentication exists.
-- Finance tools: job cost variance tool.
+- Deployment to production or a Vercel preview URL for hosted Kiefer review.
+- Live-project presets for finance tools.
+- Vendor submittal review/approval statuses and manager comments.

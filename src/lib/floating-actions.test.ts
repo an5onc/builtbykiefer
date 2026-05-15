@@ -15,4 +15,9 @@ describe("global floating action policy", () => {
     expect(getFloatingActionForPathname("/admin/daily-logs")).toBeNull();
     expect(getFloatingActionForPathname("/login")).toBeNull();
   });
+
+  it("hides public floating actions on vendor portal pages", () => {
+    expect(getFloatingActionForPathname("/vendor")).toBeNull();
+    expect(getFloatingActionForPathname("/vendor/login")).toBeNull();
+  });
 });
