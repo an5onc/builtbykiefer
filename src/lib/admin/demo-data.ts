@@ -483,6 +483,8 @@ export const vendorSubmittals: VendorSubmittal[] = [
     sizeLabel: "640 KB",
     submittedAt: "2026-05-15T11:00:00-06:00",
     reviewedAt: null,
+    reviewComment: "",
+    reviewedBy: null,
   },
 ];
 

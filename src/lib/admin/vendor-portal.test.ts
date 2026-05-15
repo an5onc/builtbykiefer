@@ -162,7 +162,9 @@ const submittals: VendorSubmittal[] = [
     mimeType: "application/pdf",
     sizeLabel: "640 KB",
     submittedAt: "2026-05-15T11:00:00-06:00",
-    reviewedAt: null,
+    reviewedAt: "2026-05-15T12:00:00-06:00",
+    reviewComment: "Approved for fabrication.",
+    reviewedBy: "admin-user-1",
   },
 ];
 
@@ -211,7 +213,8 @@ describe("vendor portal projection", () => {
         storagePath: "project-1/vendor-submittals/vendor-1/cabinet-shop-drawings.pdf",
         sizeLabel: "640 KB",
         submittedAt: "2026-05-15T11:00:00-06:00",
-        reviewedAt: null,
+        reviewedAt: "2026-05-15T12:00:00-06:00",
+        reviewComment: "Approved for fabrication.",
       },
     ]);
   });

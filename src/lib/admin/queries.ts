@@ -32,6 +32,7 @@ import type { BillCreateInput, PurchaseOrderCreateInput } from "./purchasing";
 import type { ProjectCommentCreateInput } from "./project-comments";
 import type { ProjectFinancialTargetInput } from "./project-financials";
 import type { ProjectFileCreateInput } from "./project-files";
+import type { ProjectFinanceSnapshotDraft } from "./finance-snapshots";
 import type { ProjectPhotoCreateInput } from "./project-photos";
 import type { ProjectUpdateCreateInput } from "./project-updates";
 import type { ProposalCreateInput } from "./proposals";
@@ -39,7 +40,7 @@ import type { RfiCreateInput } from "./rfis";
 import type { SelectionApprovalInput, SelectionCreateInput } from "./selections";
 import type { ProjectTaskCreateInput } from "./tasks";
 import type { VendorRfiResponseCreateInput } from "./vendor-rfi-responses";
-import type { VendorSubmittalCreateInput } from "./vendor-submittals";
+import type { VendorSubmittalCreateInput, VendorSubmittalReviewInput } from "./vendor-submittals";
 import type { ProjectVendorAssignmentCreateInput, VendorCreateInput } from "./vendors";
 import type { WarrantyItemCreateInput } from "./warranty";
 import { logSupabaseFallback } from "./supabase-fallback";
@@ -54,6 +55,7 @@ import {
   mapProjectCommentRow,
   mapProjectFinancialTargetRow,
   mapProjectFileRow,
+  mapProjectFinanceSnapshotRow,
   mapProjectPhotoRow,
   mapProjectRfiRow,
   mapProjectSelectionRow,
@@ -87,6 +89,7 @@ type ApproveProjectSelectionResult = { ok: true } | { ok: false; reason: string 
 type CreateProjectRfiResult = { ok: true; rfiId: string } | { ok: false; reason: string };
 type CreateVendorRfiResponseResult = { ok: true; responseId: string } | { ok: false; reason: string };
 type CreateVendorSubmittalResult = { ok: true; submittalId: string } | { ok: false; reason: string };
+type CreateProjectFinanceSnapshotResult = { ok: true; snapshotId: string } | { ok: false; reason: string };
 type CreateDailyLogResult = { ok: true; dailyLogId: string } | { ok: false; reason: string };
 type CreatePurchaseOrderResult = { ok: true; purchaseOrderId: string } | { ok: false; reason: string };
 type CreateBillResult = { ok: true; billId: string } | { ok: false; reason: string };
@@ -1018,7 +1021,7 @@ export async function getVendorSubmittals() {
 
   const { data, error } = await supabase
     .from("vendor_submittals")
-    .select("id, project_id, vendor_id, assignment_id, title, category, status, storage_bucket, storage_path, mime_type, size_label, submitted_at, reviewed_at")
+    .select("id, project_id, vendor_id, assignment_id, title, category, status, storage_bucket, storage_path, mime_type, size_label, submitted_at, reviewed_at, review_comment, reviewed_by")
     .order("submitted_at", { ascending: false });
 
   if (error) {
@@ -1032,6 +1035,53 @@ export async function getVendorSubmittals() {
 export async function getProjectVendorSubmittals(projectId: string) {
   const submittals = await getVendorSubmittals();
   return submittals.filter((submittal) => submittal.projectId === projectId);
+}
+
+export async function getProjectFinanceSnapshots(projectId?: string) {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return [];
+  }
+
+  let query = supabase
+    .from("project_finance_snapshots")
+    .select("id, project_id, projects(name), title, notes, inputs, outputs, created_by, created_at")
+    .order("created_at", { ascending: false });
+
+  if (projectId) {
+    query = query.eq("project_id", projectId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    logSupabaseFallback("project-finance-snapshots", error);
+    return [];
+  }
+
+  return (data ?? []).map((row) => mapProjectFinanceSnapshotRow(row));
+}
+
+export async function getProjectFinanceSnapshot(snapshotId: string) {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("project_finance_snapshots")
+    .select("id, project_id, projects(name), title, notes, inputs, outputs, created_by, created_at")
+    .eq("id", snapshotId)
+    .maybeSingle();
+
+  if (error) {
+    logSupabaseFallback("project-finance-snapshot", error);
+    return null;
+  }
+
+  return data ? mapProjectFinanceSnapshotRow(data) : null;
 }
 
 export async function getProjectVendorRfiResponses(projectId: string) {
@@ -1110,6 +1160,61 @@ export async function createVendorSubmittal(
   }
 
   return { ok: true, submittalId: data.id };
+}
+
+export async function updateVendorSubmittalReview(
+  submittalId: string,
+  input: VendorSubmittalReviewInput,
+): Promise<UpdateResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode vendor submittal reviews are not persisted." };
+  }
+
+  const shouldMarkReviewed = input.status !== "submitted" || input.reviewComment.length > 0;
+  const { error } = await supabase
+    .from("vendor_submittals")
+    .update({
+      status: input.status,
+      review_comment: input.reviewComment,
+      reviewed_at: shouldMarkReviewed ? new Date().toISOString() : null,
+    })
+    .eq("id", submittalId);
+
+  if (error) {
+    return { ok: false, reason: "Could not save the vendor submittal review. Please try again." };
+  }
+
+  return { ok: true };
+}
+
+export async function createProjectFinanceSnapshot(
+  snapshot: ProjectFinanceSnapshotDraft,
+): Promise<CreateProjectFinanceSnapshotResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode finance snapshots are not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_finance_snapshots")
+    .insert({
+      project_id: snapshot.projectId,
+      title: snapshot.title,
+      notes: snapshot.notes,
+      inputs: snapshot.inputs,
+      outputs: snapshot.outputs,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not save the finance snapshot. Please try again." };
+  }
+
+  return { ok: true, snapshotId: data.id };
 }
 
 export async function getWarrantyItems() {

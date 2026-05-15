@@ -177,6 +177,11 @@ export default async function AdminVendorsPage({
                     <p className="mt-1 text-sm text-[#655c52]">
                       {submittal.category} · {submittal.sizeLabel} · {formatDate(submittal.submittedAt)}
                     </p>
+                    {submittal.reviewComment ? (
+                      <p className="mt-2 text-sm leading-6 text-[#655c52]">
+                        Manager: {submittal.reviewComment}
+                      </p>
+                    ) : null}
                   </div>
                   <StatusBadge status={submittal.status} />
                   <Link

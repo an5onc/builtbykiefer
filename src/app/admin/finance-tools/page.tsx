@@ -1,7 +1,9 @@
 import Link from "next/link";
 import {
   BadgeDollarSign,
+  Download,
   Percent,
+  Save,
   Truck,
 } from "lucide-react";
 import AdminShell from "@/components/admin/AdminShell";
@@ -10,7 +12,8 @@ import DrawRetainagePlanner from "@/components/admin/DrawRetainagePlanner";
 import InvestmentDecisionCheck from "@/components/admin/InvestmentDecisionCheck";
 import JobCostVarianceTool from "@/components/admin/JobCostVarianceTool";
 import ProjectCashFlowForecastTool from "@/components/admin/ProjectCashFlowForecastTool";
-import { formatCurrency } from "@/lib/admin/formatters";
+import { createFinanceSnapshotAction } from "./actions";
+import { formatCurrency, formatDateTime } from "@/lib/admin/formatters";
 import {
   calculateEffectiveAnnualRate,
   calculateLoanPaymentPlan,
@@ -22,6 +25,7 @@ import {
   getChangeOrders,
   getInvoices,
   getProjectFinancialTargets,
+  getProjectFinanceSnapshots,
   getProjects,
   getPurchaseOrders,
   getTimeEntries,
@@ -48,9 +52,9 @@ const effectiveAnnualRate = calculateEffectiveAnnualRate({
 export default async function FinanceToolsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ projectId?: string }>;
+  searchParams: Promise<{ projectId?: string; notice?: string; error?: string }>;
 }) {
-  const { projectId } = await searchParams;
+  const { projectId, notice, error } = await searchParams;
   const [projects, financialTargets, invoices, bills, purchaseOrders, changeOrders, timeEntries] = await Promise.all([
     getProjects(),
     getProjectFinancialTargets(),
@@ -73,9 +77,21 @@ export default async function FinanceToolsPage({
         timeEntries: timeEntries.filter((entry) => entry.projectId === selectedProject.id),
       })
     : null;
+  const financeSnapshots = selectedProjectId ? await getProjectFinanceSnapshots(selectedProjectId) : [];
 
   return (
     <AdminShell title="Kiefer Built Finance Tools" eyebrow="Accounting Utilities">
+      {notice ? (
+        <p className="mb-4 rounded-md border border-green-600/20 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
+          {notice}
+        </p>
+      ) : null}
+      {error ? (
+        <p className="mb-4 rounded-md border border-[#b92516]/30 bg-[#fbe9e7] px-4 py-3 text-sm font-semibold text-[#9b2015]">
+          {error}
+        </p>
+      ) : null}
+
       <section className="mb-6 rounded-lg border border-black/10 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -144,6 +160,80 @@ export default async function FinanceToolsPage({
             No projects are available to load yet. The calculators below will use Kiefer Built example values.
           </p>
         )}
+      </section>
+
+      <section className="mb-6 rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+        <div className="grid gap-5 xl:grid-cols-[0.8fr_1fr]">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b92516]">
+              Saved Finance Snapshots
+            </p>
+            <h2 className="mt-1 text-lg font-bold">Export Project Finance Reviews</h2>
+            <p className="mt-2 text-sm leading-6 text-[#655c52]">
+              Save the selected job&apos;s draw, variance, and cash-flow checks as a dated Kiefer Built packet for lender calls, owner updates, and internal accounting review.
+            </p>
+            {selectedPreset ? (
+              <form action={createFinanceSnapshotAction} className="mt-4 space-y-3 rounded-md border border-black/10 bg-[#f9f6f0] p-4">
+                <input type="hidden" name="projectId" value={selectedPreset.projectId} />
+                <label className="block text-xs font-bold uppercase tracking-[0.14em] text-[#655c52]">
+                  Snapshot Title
+                  <input
+                    name="title"
+                    defaultValue={`${selectedPreset.projectName} finance snapshot`}
+                    className="mt-2 w-full rounded-md border border-black/15 bg-white px-3 py-2 text-sm font-semibold text-[#171717] outline-none transition focus:border-[#b92516]"
+                  />
+                </label>
+                <label className="block text-xs font-bold uppercase tracking-[0.14em] text-[#655c52]">
+                  Manager Notes
+                  <textarea
+                    name="notes"
+                    rows={3}
+                    className="mt-2 w-full rounded-md border border-black/15 bg-white px-3 py-2 text-sm text-[#171717] outline-none transition focus:border-[#b92516]"
+                    placeholder="Use this snapshot for draw review, lender packet, or owner finance update..."
+                  />
+                </label>
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-2 rounded-md bg-[#b92516] px-4 py-2.5 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#951e13]"
+                >
+                  <Save className="size-4" />
+                  Save Snapshot
+                </button>
+              </form>
+            ) : null}
+          </div>
+
+          <div className="rounded-md border border-black/10">
+            {financeSnapshots.length > 0 ? (
+              <div className="divide-y divide-black/10">
+                {financeSnapshots.slice(0, 6).map((snapshot) => (
+                  <article key={snapshot.id} className="flex flex-wrap items-center justify-between gap-4 p-4">
+                    <div>
+                      <p className="font-semibold">{snapshot.title}</p>
+                      <p className="mt-1 text-sm text-[#655c52]">
+                        {snapshot.projectName} · {formatDateTime(snapshot.createdAt)}
+                      </p>
+                      {snapshot.notes ? (
+                        <p className="mt-2 text-sm leading-6 text-[#655c52]">{snapshot.notes}</p>
+                      ) : null}
+                    </div>
+                    <Link
+                      href={`/admin/finance-snapshots/${snapshot.id}/download`}
+                      className="inline-flex items-center gap-2 rounded-md border border-black/10 px-3 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[#171717] transition hover:border-[#b92516]/30 hover:text-[#b92516]"
+                    >
+                      <Download className="size-4" />
+                      Export
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <p className="p-4 text-sm leading-6 text-[#655c52]">
+                No finance snapshots have been saved for this project yet.
+              </p>
+            )}
+          </div>
+        </div>
       </section>
 
       <div className="mb-6">

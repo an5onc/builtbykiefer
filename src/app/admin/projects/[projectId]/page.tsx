@@ -56,16 +56,18 @@ import {
   getWorkers,
 } from "@/lib/admin/queries";
 import { buildOperationsReports } from "@/lib/admin/reports";
+import { vendorSubmittalReviewStatusOptions } from "@/lib/admin/vendor-submittals";
+import { updateVendorSubmittalReviewAction } from "@/app/admin/vendor-submittals/actions";
 
 export default async function ProjectDetailPage({
   params,
   searchParams,
 }: {
   params: Promise<{ projectId: string }>;
-  searchParams: Promise<{ notice?: string }>;
+  searchParams: Promise<{ notice?: string; error?: string }>;
 }) {
   const { projectId } = await params;
-  const { notice } = await searchParams;
+  const { notice, error } = await searchParams;
   const project = await getProject(projectId);
 
   if (!project) {
@@ -157,6 +159,11 @@ export default async function ProjectDetailPage({
       {notice ? (
         <p className="mb-4 rounded-md border border-green-600/20 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
           {notice}
+        </p>
+      ) : null}
+      {error ? (
+        <p className="mb-4 rounded-md border border-[#b92516]/30 bg-[#fbe9e7] px-4 py-3 text-sm font-semibold text-[#9b2015]">
+          {error}
         </p>
       ) : null}
 
@@ -406,19 +413,68 @@ export default async function ProjectDetailPage({
                       </p>
                       <div className="divide-y divide-black/10">
                         {assignmentSubmittals.map((submittal) => (
-                          <div key={submittal.id} className="flex flex-wrap items-center justify-between gap-3 py-2">
+                          <div key={submittal.id} className="grid gap-3 py-3 lg:grid-cols-[1fr_0.9fr]">
                             <div>
-                              <p className="text-sm font-semibold">{submittal.title}</p>
-                              <p className="mt-1 text-xs text-[#655c52]">
-                                {submittal.category} · {submittal.sizeLabel} · {formatDateTime(submittal.submittedAt)}
-                              </p>
+                              <div className="flex flex-wrap items-start justify-between gap-3">
+                                <div>
+                                  <p className="text-sm font-semibold">{submittal.title}</p>
+                                  <p className="mt-1 text-xs text-[#655c52]">
+                                    {submittal.category} · {submittal.sizeLabel} · {formatDateTime(submittal.submittedAt)}
+                                  </p>
+                                </div>
+                                <StatusBadge status={submittal.status} />
+                              </div>
+                              {submittal.reviewComment ? (
+                                <p className="mt-3 rounded-md border border-black/10 bg-white p-3 text-sm leading-6 text-[#655c52]">
+                                  <span className="block text-xs font-bold uppercase tracking-[0.14em] text-[#171717]">
+                                    Manager Comment
+                                  </span>
+                                  {submittal.reviewComment}
+                                </p>
+                              ) : null}
+                              <Link
+                                href={`/admin/vendor-submittals/${submittal.id}/download`}
+                                className="mt-3 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-[#b92516] transition hover:text-[#171717]"
+                              >
+                                Download
+                              </Link>
                             </div>
-                            <Link
-                              href={`/admin/vendor-submittals/${submittal.id}/download`}
-                              className="text-xs font-bold uppercase tracking-[0.14em] text-[#b92516] transition hover:text-[#171717]"
-                            >
-                              Download
-                            </Link>
+                            <form action={updateVendorSubmittalReviewAction} className="rounded-md border border-black/10 bg-white p-3">
+                              <input type="hidden" name="projectId" value={project.id} />
+                              <input type="hidden" name="submittalId" value={submittal.id} />
+                              <div className="grid gap-3 sm:grid-cols-[0.45fr_1fr]">
+                                <label className="block text-xs font-bold uppercase tracking-[0.14em] text-[#655c52]">
+                                  Status
+                                  <select
+                                    name="status"
+                                    defaultValue={submittal.status}
+                                    className="mt-2 w-full rounded-md border border-black/15 bg-[#f9f6f0] px-3 py-2 text-sm font-semibold text-[#171717] outline-none transition focus:border-[#b92516]"
+                                  >
+                                    {vendorSubmittalReviewStatusOptions.map((option) => (
+                                      <option key={option.value} value={option.value}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </label>
+                                <label className="block text-xs font-bold uppercase tracking-[0.14em] text-[#655c52]">
+                                  Manager Comment
+                                  <textarea
+                                    name="reviewComment"
+                                    defaultValue={submittal.reviewComment}
+                                    rows={2}
+                                    className="mt-2 w-full rounded-md border border-black/15 bg-[#f9f6f0] px-3 py-2 text-sm text-[#171717] outline-none transition focus:border-[#b92516]"
+                                    placeholder="Approval notes, revisions needed, or field conditions..."
+                                  />
+                                </label>
+                              </div>
+                              <button
+                                type="submit"
+                                className="mt-3 inline-flex items-center justify-center rounded-md bg-[#151515] px-3 py-2 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#b92516]"
+                              >
+                                Save Review
+                              </button>
+                            </form>
                           </div>
                         ))}
                       </div>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseVendorSubmittalFormData } from "./vendor-submittals";
+import { parseVendorSubmittalFormData, parseVendorSubmittalReviewFormData } from "./vendor-submittals";
 
 describe("vendor submittal helpers", () => {
   it("parses a vendor uploaded submittal into a private project storage path", () => {
@@ -40,6 +40,36 @@ describe("vendor submittal helpers", () => {
     expect(parseVendorSubmittalFormData({ vendorId: "vendor-1", formData })).toEqual({
       ok: false,
       reason: "Upload a PDF, PNG, or JPG file for vendor submittals.",
+    });
+  });
+
+  it("parses manager review status and comments", () => {
+    const formData = new FormData();
+    formData.set("submittalId", "submittal-1");
+    formData.set("projectId", "project-1");
+    formData.set("status", "approved");
+    formData.set("reviewComment", "Approved for fabrication. Keep finish sample on file.");
+
+    expect(parseVendorSubmittalReviewFormData(formData)).toEqual({
+      ok: true,
+      data: {
+        submittalId: "submittal-1",
+        projectId: "project-1",
+        status: "approved",
+        reviewComment: "Approved for fabrication. Keep finish sample on file.",
+      },
+    });
+  });
+
+  it("requires a valid manager review status", () => {
+    const formData = new FormData();
+    formData.set("submittalId", "submittal-1");
+    formData.set("projectId", "project-1");
+    formData.set("status", "waiting");
+
+    expect(parseVendorSubmittalReviewFormData(formData)).toEqual({
+      ok: false,
+      reason: "Choose a valid review status.",
     });
   });
 });

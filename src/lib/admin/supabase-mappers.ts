@@ -12,6 +12,7 @@ import type {
   ProjectComment,
   ProjectDailyLog,
   ProjectFile,
+  ProjectFinanceSnapshot,
   ProjectFinancialTarget,
   ProjectPhoto,
   ProjectPhase,
@@ -177,6 +178,20 @@ interface VendorSubmittalRow {
   size_label: string;
   submitted_at: string;
   reviewed_at: string | null;
+  review_comment?: string | null;
+  reviewed_by?: string | null;
+}
+
+interface ProjectFinanceSnapshotRow {
+  id: string;
+  project_id: string;
+  projects?: { name: string } | { name: string }[] | null;
+  title: string;
+  notes: string | null;
+  inputs: unknown;
+  outputs: unknown;
+  created_by: string | null;
+  created_at: string;
 }
 
 interface ProposalLineItemRow {
@@ -312,6 +327,24 @@ export function mapVendorSubmittalRow(row: VendorSubmittalRow): VendorSubmittal 
     sizeLabel: row.size_label,
     submittedAt: row.submitted_at,
     reviewedAt: row.reviewed_at,
+    reviewComment: row.review_comment ?? "",
+    reviewedBy: row.reviewed_by ?? null,
+  };
+}
+
+export function mapProjectFinanceSnapshotRow(row: ProjectFinanceSnapshotRow): ProjectFinanceSnapshot {
+  const projectReference = Array.isArray(row.projects) ? row.projects[0] : row.projects;
+
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    projectName: projectReference?.name ?? "Project",
+    title: row.title,
+    notes: row.notes ?? "",
+    inputs: row.inputs,
+    outputs: row.outputs,
+    createdBy: row.created_by,
+    createdAt: row.created_at,
   };
 }
 

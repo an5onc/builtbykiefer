@@ -204,6 +204,14 @@ export default async function VendorPortalPage({
                             <p className="mt-1 text-[#655c52]">
                               {submittal.category} · {submittal.sizeLabel} · {formatDateTime(submittal.submittedAt)}
                             </p>
+                            {submittal.reviewComment ? (
+                              <p className="mt-3 rounded-md border border-black/10 bg-white p-3 text-sm leading-6 text-[#655c52]">
+                                <span className="block text-xs font-bold uppercase tracking-[0.14em] text-[#171717]">
+                                  Manager Comment
+                                </span>
+                                {submittal.reviewComment}
+                              </p>
+                            ) : null}
                           </div>
                           <StatusBadge status={submittal.status} />
                         </li>

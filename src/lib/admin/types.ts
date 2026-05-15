@@ -17,7 +17,7 @@ export type VendorCompanyType = "subcontractor" | "vendor";
 export type VendorStatus = "active" | "inactive";
 export type ProjectVendorAssignmentStatus = "invited" | "scheduled" | "active" | "complete";
 export type VendorSubmittalCategory = "insurance" | "w9" | "submittal" | "closeout" | "warranty" | "other";
-export type VendorSubmittalStatus = "submitted" | "reviewed";
+export type VendorSubmittalStatus = "submitted" | "reviewed" | "approved" | "rejected";
 export type PurchaseOrderStatus = "draft" | "sent" | "approved" | "received";
 export type BillStatus = "draft" | "received" | "paid";
 export type WorkerStatus = "active" | "inactive";
@@ -161,6 +161,20 @@ export interface VendorSubmittal {
   sizeLabel: string;
   submittedAt: string;
   reviewedAt: string | null;
+  reviewComment: string;
+  reviewedBy: string | null;
+}
+
+export interface ProjectFinanceSnapshot {
+  id: string;
+  projectId: string;
+  projectName: string;
+  title: string;
+  notes: string;
+  inputs: unknown;
+  outputs: unknown;
+  createdBy: string | null;
+  createdAt: string;
 }
 
 export interface WarrantyItem {

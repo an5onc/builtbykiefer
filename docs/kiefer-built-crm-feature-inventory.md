@@ -204,6 +204,8 @@ Sales proposal angle:
 - Allows authenticated vendors to upload project submittals, insurance documents, W-9s, warranty files, closeout documents, and other assigned-job files from the secured workboard.
 - Vendor submittals store private Supabase Storage paths plus project, assignment, vendor, category, size, status, and submitted timestamp.
 - Admin project pages and the Trade Partners page surface vendor submittals with signed download links for managers.
+- Admin project pages let managers mark vendor submittals as submitted, reviewed, approved, or rejected and save manager comments.
+- Vendor workboards show review status and manager comments so trade partners can see approval decisions or revision notes without chasing emails.
 - Admin RFIs and project detail pages show submitted vendor responses back to managers.
 - Admin Trade Partners page surfaces shared-document and open-RFI counts so managers can tell whether the vendor workboard has active exchange items.
 
@@ -280,6 +282,7 @@ Source reviewed: [BAFN 302 Toolkit](https://bafn302unco.com/)
 - Project presets pull from project financial targets, progress, invoices, bills, purchase orders, change orders, and time entries.
 - Includes Kiefer Built Payment Planner for equipment, truck, or short-term financing checks.
 - Includes Kiefer Built Rate Check for monthly periodic rate and effective annual rate review.
+- Includes saved/exportable finance snapshots that package the selected project's draw, job-cost variance, and cash-flow checks into a dated Kiefer Built text export.
 - Uses construction/accounting examples instead of generic classroom calculator language.
 - Frames outputs as Kiefer Built planning checks while keeping the formulas standard and credible.
 
@@ -293,10 +296,11 @@ Useful finance tools from that toolkit concept that could fit this CRM:
 - Job cost variance calculator for budget, actual, committed, pending exposure, and contingency monitoring. Built first.
 - Cash-flow forecast by project for draw receipts, vendor payments, payroll pressure, overhead, and cash gaps. Built first.
 - Live-project presets for finance tools. Built first.
+- Saved/exportable finance snapshots for draw review, lender review, or manager meeting packets. Built first.
 
 Best fit for Kiefer:
 - Keep `/admin/finance-tools` separate from job records so accountants can run quick calculations without mutating live project data.
-- Next practical calculator improvement should save/export finance snapshots for draw review, lender review, or manager meeting packets.
+- Next practical calculator improvement should add PDF-style snapshot formatting or proposal packet generation from the saved finance snapshots.
 
 ### Client Portal
 
@@ -371,11 +375,12 @@ Recommended demo order for Kiefer Built:
 7. Show warranty and punch-list tracking for closeout control.
 8. Show project photos as the visual job record.
 9. Show the trade partner directory, vendor login, authenticated `/vendor` workboard, RFI replies, and vendor submittal upload.
-10. Open `/admin/reports` to show job cost exposure, margin forecasting, needs-attention items, and vendor commitments.
-11. Open `/admin/finance-tools`, load a live project preset, and show Kiefer Built finance utilities.
-12. Open `/portal` to show the client dashboard.
-13. Open a project portal and show client approvals plus client-visible closeout items.
-14. Close by explaining that Kiefer owns the experience and branding.
+10. Open a project Trade Partners section and show manager submittal approval/rejection status plus comments flowing back to the vendor workboard.
+11. Open `/admin/reports` to show job cost exposure, margin forecasting, needs-attention items, and vendor commitments.
+12. Open `/admin/finance-tools`, load a live project preset, save a finance snapshot, and export the Kiefer Built review packet.
+13. Open `/portal` to show the client dashboard.
+14. Open a project portal and show client approvals plus client-visible closeout items.
+15. Close by explaining that Kiefer owns the experience and branding.
 
 ## Open Proposal Talking Points
 
@@ -389,5 +394,5 @@ Recommended demo order for Kiefer Built:
 ## Next Features To Track
 
 - Deployment to production or a Vercel preview URL for hosted Kiefer review.
-- Saved/exportable finance snapshots for draw review, lender review, or manager meeting packets.
-- Vendor submittal review/approval statuses and manager comments.
+- PDF-style finance snapshot formatting and proposal/deck packet generation.
+- Vendor notification emails when manager review status changes.

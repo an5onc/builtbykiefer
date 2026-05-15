@@ -73,6 +73,7 @@ export interface VendorPortalSubmittalView {
   sizeLabel: string;
   submittedAt: string;
   reviewedAt: string | null;
+  reviewComment: string;
 }
 
 export function buildVendorPortalView({
@@ -163,6 +164,7 @@ export function buildVendorPortalView({
           sizeLabel: submittal.sizeLabel,
           submittedAt: submittal.submittedAt,
           reviewedAt: submittal.reviewedAt,
+          reviewComment: submittal.reviewComment,
         }));
 
       return {
