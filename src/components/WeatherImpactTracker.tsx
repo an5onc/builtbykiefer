@@ -42,13 +42,13 @@ export default function WeatherImpactTracker({ projectName, month, year, weather
 
     switch (condition) {
       case 'clear':
-        return 'bg-green-100 border-green-300 text-green-900'
+        return 'bg-[#f9f6f0] border-black/10 text-[#171717]'
       case 'rain':
-        return 'bg-yellow-100 border-yellow-300 text-yellow-900'
+        return 'bg-[#b92516]/10 border-[#b92516]/25 text-[#b92516]'
       case 'snow':
-        return 'bg-blue-100 border-blue-300 text-blue-900'
+        return 'bg-[#151515]/5 border-black/10 text-[#171717]'
       case 'wind':
-        return 'bg-orange-100 border-orange-300 text-orange-900'
+        return 'bg-[#b92516]/10 border-[#b92516]/25 text-[#b92516]'
       case 'extreme':
         return 'bg-red-100 border-red-300 text-red-900'
       default:
@@ -80,21 +80,21 @@ export default function WeatherImpactTracker({ projectName, month, year, weather
           viewport={{ once: true }}
           className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8"
         >
-          <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-            <div className="text-3xl font-bold text-green-700">{workableDays}</div>
-            <div className="text-sm text-green-600">Workable Days</div>
+          <div className="bg-[#f9f6f0] rounded-lg p-4 border border-black/10">
+            <div className="text-3xl font-bold text-[#171717]">{workableDays}</div>
+            <div className="text-sm text-[#655c52]">Workable Days</div>
           </div>
           <div className="bg-red-50 rounded-lg p-4 border border-red-200">
             <div className="text-3xl font-bold text-red-700">{delayedDays}</div>
             <div className="text-sm text-red-600">Weather Delays</div>
           </div>
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-            <div className="text-3xl font-bold text-blue-700">{completionRate}%</div>
-            <div className="text-sm text-blue-600">Work Completion Rate</div>
+          <div className="bg-[#f9f6f0] rounded-lg p-4 border border-black/10">
+            <div className="text-3xl font-bold text-[#171717]">{completionRate}%</div>
+            <div className="text-sm text-[#655c52]">Work Completion Rate</div>
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-            <div className="text-3xl font-bold text-yellow-700">{weatherData.length}</div>
-            <div className="text-sm text-yellow-600">Total Days Tracked</div>
+          <div className="bg-[#f9f6f0] rounded-lg p-4 border border-black/10">
+            <div className="text-3xl font-bold text-[#171717]">{weatherData.length}</div>
+            <div className="text-sm text-[#655c52]">Total Days Tracked</div>
           </div>
         </motion.div>
 
@@ -159,7 +159,7 @@ export default function WeatherImpactTracker({ projectName, month, year, weather
                   <span className="capitalize text-gray-700">{selectedDay.condition}</span>
                 </div>
                 <div className={`inline-block px-2 py-1 rounded text-sm font-semibold mt-2 ${
-                  selectedDay.workable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                  selectedDay.workable ? 'bg-[#f9f6f0] text-[#171717]' : 'bg-red-100 text-red-700'
                 }`}>
                   {selectedDay.workable ? 'Work Proceeded' : 'Work Delayed'}
                 </div>
@@ -185,11 +185,11 @@ export default function WeatherImpactTracker({ projectName, month, year, weather
           className="mt-8 flex flex-wrap justify-center gap-4 text-sm"
         >
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-green-200 border border-green-300"></div>
+            <div className="w-4 h-4 rounded bg-[#f9f6f0] border border-black/10"></div>
             <span className="text-gray-600">Clear/Workable</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-yellow-200 border border-yellow-300"></div>
+            <div className="w-4 h-4 rounded bg-[#b92516]/10 border border-[#b92516]/25"></div>
             <span className="text-gray-600">Light Rain/Partial Work</span>
           </div>
           <div className="flex items-center gap-2">

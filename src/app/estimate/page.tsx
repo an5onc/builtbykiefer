@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Calculator, Home, Hammer, PaintBucket, Bath, ChefHat, Building, DollarSign, Phone } from 'lucide-react';
+import { Calculator, Home, Hammer, PaintBucket, Bath, ChefHat, Building, Phone } from 'lucide-react';
 import Link from 'next/link';
 
 const projectTypes = [
@@ -48,35 +48,31 @@ export default function EstimatePage() {
   const estimate = calculateEstimate();
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="bg-gray-900 text-white py-20">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/20 text-amber-400 rounded-full text-sm font-medium mb-6">
-              <Calculator className="w-4 h-4" />
-              <span>Free Estimate Tool</span>
+    <main className="min-h-screen bg-[#f4efe7] text-[#171717]">
+      <section className="border-b border-black/10 bg-[#151515] px-6 py-16 text-white">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-3xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-[#ffb4a8]">
+              <Calculator className="size-4" />
+              <span>Kiefer Built Planning Tool</span>
             </div>
 
-            <h1 className="text-5xl font-bold mb-6">Project Cost Estimator</h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Get an instant estimate for your construction or remodeling project.
-              This tool provides a rough cost range to help you plan your budget.
+            <h1 className="text-4xl font-bold tracking-tight md:text-5xl">Kiefer Built Project Cost Planner</h1>
+            <p className="mt-5 text-lg leading-8 text-white/70">
+              A Kiefer Built estimate check for early construction planning. Use it to understand a rough project range before a detailed site review.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Estimator Form */}
-      <section className="py-16">
-        <div className="max-w-4xl mx-auto px-4">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Project Type Selection */}
-            <div>
-              <label className="text-lg font-semibold text-gray-900 mb-4 block">
+      <section className="px-6 py-12">
+        <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1fr_0.42fr]">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <section className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+              <label className="mb-4 block text-lg font-bold text-[#171717]">
                 What type of project are you planning?
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                 {projectTypes.map((type) => {
                   const Icon = type.icon;
                   return (
@@ -84,25 +80,24 @@ export default function EstimatePage() {
                       key={type.id}
                       type="button"
                       onClick={() => setProjectType(type.id)}
-                      className={`p-4 rounded-lg border-2 transition-all ${
+                      className={`rounded-md border p-4 text-left transition ${
                         projectType === type.id
-                          ? 'border-amber-500 bg-amber-50'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-[#b92516] bg-[#b92516]/10 ring-1 ring-[#b92516]/20'
+                          : 'border-black/10 bg-[#f9f6f0] hover:border-[#b92516]/40'
                       }`}
                     >
-                      <Icon className={`w-8 h-8 mx-auto mb-2 ${
-                        projectType === type.id ? 'text-amber-600' : 'text-gray-600'
+                      <Icon className={`mb-3 size-7 ${
+                        projectType === type.id ? 'text-[#b92516]' : 'text-[#655c52]'
                       }`} />
-                      <p className="text-sm font-medium text-gray-900">{type.name}</p>
+                      <p className="text-sm font-semibold text-[#171717]">{type.name}</p>
                     </button>
                   );
                 })}
               </div>
-            </div>
+            </section>
 
-            {/* Square Footage */}
-            <div>
-              <label htmlFor="sqft" className="text-lg font-semibold text-gray-900 mb-4 block">
+            <section className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+              <label htmlFor="sqft" className="mb-4 block text-lg font-bold text-[#171717]">
                 Project size (square feet)
               </label>
               <input
@@ -111,18 +106,17 @@ export default function EstimatePage() {
                 value={squareFootage}
                 onChange={(e) => setSquareFootage(e.target.value)}
                 placeholder="Enter square footage"
-                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-amber-500"
+                className="w-full rounded-md border border-black/10 bg-[#f9f6f0] px-4 py-3 outline-none transition focus:border-[#b92516]"
                 required
                 min="1"
               />
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="mt-2 text-sm text-[#655c52]">
                 Not sure? A typical kitchen is 150-250 sq ft, bathroom is 40-100 sq ft
               </p>
-            </div>
+            </section>
 
-            {/* Quality Level */}
-            <div>
-              <label className="text-lg font-semibold text-gray-900 mb-4 block">
+            <section className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+              <label className="mb-4 block text-lg font-bold text-[#171717]">
                 Select finish quality
               </label>
               <div className="space-y-3">
@@ -131,108 +125,103 @@ export default function EstimatePage() {
                     key={level.id}
                     type="button"
                     onClick={() => setQuality(level.id)}
-                    className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
+                    className={`w-full rounded-md border p-4 text-left transition ${
                       quality === level.id
-                        ? 'border-amber-500 bg-amber-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                        ? 'border-[#b92516] bg-[#b92516]/10 ring-1 ring-[#b92516]/20'
+                        : 'border-black/10 bg-[#f9f6f0] hover:border-[#b92516]/40'
                     }`}
                   >
-                    <div className="flex justify-between items-start">
+                    <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="font-semibold text-gray-900">{level.name}</p>
-                        <p className="text-sm text-gray-600">{level.description}</p>
+                        <p className="font-semibold text-[#171717]">{level.name}</p>
+                        <p className="text-sm text-[#655c52]">{level.description}</p>
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="whitespace-nowrap text-sm font-semibold text-[#655c52]">
                         {level.multiplier === 1 ? 'Base' : `+${Math.round((level.multiplier - 1) * 100)}%`}
                       </div>
                     </div>
                   </button>
                 ))}
               </div>
-            </div>
+            </section>
 
-            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
+              className="w-full rounded-md bg-[#b92516] px-4 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#951e13]"
             >
               Calculate Estimate
             </button>
           </form>
 
-          {/* Estimate Display */}
-          {showEstimate && estimate.low > 0 && (
-            <div className="mt-12 p-8 bg-gray-50 rounded-xl border-2 border-gray-200">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-                Your Estimated Project Cost
+          <aside className="space-y-5">
+            <section className="rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b92516]">
+                Kiefer Built Estimate Check
+              </p>
+              <h2 className="mt-2 text-2xl font-bold">
+                {showEstimate && estimate.low > 0 ? 'Estimated Project Range' : 'Plan With A Contractor Lens'}
               </h2>
 
-              <div className="bg-white rounded-lg p-6 mb-6">
-                <div className="flex items-center justify-center gap-4 text-3xl font-bold">
-                  <span className="text-gray-600">${estimate.low.toLocaleString()}</span>
-                  <span className="text-gray-400">-</span>
-                  <span className="text-amber-600">${estimate.high.toLocaleString()}</span>
-                </div>
-                <p className="text-center text-gray-600 mt-2">
-                  Estimated cost range for your project
+              {showEstimate && estimate.low > 0 ? (
+                <>
+                  <div className="my-6 rounded-md bg-[#151515] p-5 text-white">
+                    <div className="flex flex-wrap items-center gap-3 text-3xl font-bold">
+                      <span>${estimate.low.toLocaleString()}</span>
+                      <span className="text-white/40">-</span>
+                      <span className="text-[#ffb4a8]">${estimate.high.toLocaleString()}</span>
+                    </div>
+                    <p className="mt-2 text-sm text-white/65">Early planning range</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {[
+                      'Based on typical Northern Colorado project ranges.',
+                      'Actual cost depends on scope, selections, site conditions, and permitting.',
+                      'A Kiefer Built site review turns this range into a detailed quote.',
+                    ].map((item) => (
+                      <div key={item} className="flex items-start gap-2">
+                        <span className="mt-1 text-[#b92516]">✓</span>
+                        <p className="text-sm leading-6 text-[#655c52]">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p className="mt-4 text-sm leading-6 text-[#655c52]">
+                  Select a project type, approximate size, and finish level to get a quick Kiefer Built planning range.
                 </p>
-              </div>
+              )}
+            </section>
 
-              <div className="space-y-3 mb-6">
-                <div className="flex items-start gap-2">
-                  <span className="text-amber-500 mt-1">✓</span>
-                  <p className="text-sm text-gray-700">
-                    This is a rough estimate based on typical project costs in Northern Colorado
-                  </p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-amber-500 mt-1">✓</span>
-                  <p className="text-sm text-gray-700">
-                    Actual costs may vary based on specific materials, site conditions, and design complexity
-                  </p>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-amber-500 mt-1">✓</span>
-                  <p className="text-sm text-gray-700">
-                    Contact us for a detailed, personalized quote for your project
-                  </p>
-                </div>
+            <section className="rounded-lg border border-black/10 bg-white p-5 text-center shadow-sm">
+              <h3 className="text-lg font-bold text-[#171717]">Ready for a real quote?</h3>
+              <p className="mt-2 text-sm leading-6 text-[#655c52]">
+                Get a detailed consultation from Kiefer Built Contracting.
+              </p>
+              <div className="mt-5 space-y-3">
+                <Link
+                  href="/#contact"
+                  className="inline-flex w-full items-center justify-center rounded-md bg-[#b92516] px-6 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#951e13]"
+                >
+                  Request Free Quote
+                </Link>
+                <a
+                  href="tel:9705155059"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-black/10 bg-white px-6 py-3 text-sm font-bold text-[#171717] transition hover:border-[#b92516]/30 hover:text-[#b92516]"
+                >
+                  <Phone className="size-4" />
+                  (970) 515-5059
+                </a>
               </div>
+            </section>
 
-              {/* CTA */}
-              <div className="bg-amber-50 rounded-lg p-6 text-center">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  Ready to get started?
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Get a detailed quote and free consultation from our experts
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Link
-                    href="/contact"
-                    className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors"
-                  >
-                    Request Free Quote
-                  </Link>
-                  <a
-                    href="tel:9705155059"
-                    className="px-6 py-3 bg-white border-2 border-amber-500 text-amber-600 font-semibold rounded-lg hover:bg-amber-50 transition-colors flex items-center justify-center gap-2"
-                  >
-                    <Phone className="w-4 h-4" />
-                    (970) 515-5059
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Disclaimer */}
-          <div className="mt-12 p-4 bg-gray-100 rounded-lg">
-            <p className="text-xs text-gray-600 text-center">
-              * This estimator provides rough cost ranges only. Actual project costs will vary based on materials selected,
-              site conditions, permits, and specific project requirements. Contact Kiefer Built Contracting for an accurate quote.
-            </p>
-          </div>
+            <section className="rounded-lg border border-black/10 bg-[#f9f6f0] p-4">
+              <p className="text-center text-xs leading-5 text-[#655c52]">
+                * This estimator provides rough cost ranges only. Actual project costs will vary based on materials selected,
+                site conditions, permits, and specific project requirements. Contact Kiefer Built Contracting for an accurate quote.
+              </p>
+            </section>
+          </aside>
         </div>
       </section>
     </main>

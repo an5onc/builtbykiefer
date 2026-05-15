@@ -1,31 +1,66 @@
 import {
+  bills as demoBills,
   changeOrders as demoChangeOrders,
   clients as demoClients,
+  dailyLogs as demoDailyLogs,
   invoices as demoInvoices,
   leads as demoLeads,
   proposals as demoProposals,
+  projectComments as demoProjectComments,
+  projectFinancialTargets as demoProjectFinancialTargets,
   projectFiles as demoProjectFiles,
+  projectPhotos as demoProjectPhotos,
+  projectRfis as demoProjectRfis,
+  projectSelections as demoProjectSelections,
+  projectTasks as demoProjectTasks,
   projectUpdates as demoProjectUpdates,
+  projectVendorAssignments as demoProjectVendorAssignments,
   projects as demoProjects,
+  purchaseOrders as demoPurchaseOrders,
   timeEntries as demoTimeEntries,
+  vendors as demoVendors,
+  warrantyItems as demoWarrantyItems,
   workers as demoWorkers,
 } from "./demo-data";
 import { changeOrderTotal, invoiceTotal, timeEntryHours } from "./formatters";
-import type { ChangeOrderCreateInput } from "./change-orders";
+import type { ChangeOrderApprovalInput, ChangeOrderCreateInput } from "./change-orders";
+import type { DailyLogCreateInput } from "./daily-logs";
 import type { LeadCreateInput, LeadUpdateInput } from "./leads";
+import type { BillCreateInput, PurchaseOrderCreateInput } from "./purchasing";
+import type { ProjectCommentCreateInput } from "./project-comments";
+import type { ProjectFinancialTargetInput } from "./project-financials";
 import type { ProjectFileCreateInput } from "./project-files";
+import type { ProjectPhotoCreateInput } from "./project-photos";
 import type { ProjectUpdateCreateInput } from "./project-updates";
 import type { ProposalCreateInput } from "./proposals";
+import type { RfiCreateInput } from "./rfis";
+import type { SelectionApprovalInput, SelectionCreateInput } from "./selections";
+import type { ProjectTaskCreateInput } from "./tasks";
+import type { ProjectVendorAssignmentCreateInput, VendorCreateInput } from "./vendors";
+import type { WarrantyItemCreateInput } from "./warranty";
+import { logSupabaseFallback } from "./supabase-fallback";
 import {
+  mapBillRow,
   mapClientRow,
   mapChangeOrderRow,
+  mapDailyLogRow,
   mapInvoiceRow,
   mapLeadRow,
   mapProposalRow,
+  mapProjectCommentRow,
+  mapProjectFinancialTargetRow,
   mapProjectFileRow,
+  mapProjectPhotoRow,
+  mapProjectRfiRow,
+  mapProjectSelectionRow,
   mapProjectRow,
+  mapProjectTaskRow,
   mapProjectUpdateRow,
+  mapProjectVendorAssignmentRow,
+  mapPurchaseOrderRow,
   mapTimeEntryRow,
+  mapVendorRow,
+  mapWarrantyItemRow,
   mapWorkerRow,
 } from "./supabase-mappers";
 import { getPublicEnv } from "@/lib/supabase/env";
@@ -35,8 +70,22 @@ type UpdateResult = { ok: true } | { ok: false; reason: string };
 type CreateLeadResult = { ok: true; leadId: string } | { ok: false; reason: string };
 type CreateProposalResult = { ok: true; proposalId: string } | { ok: false; reason: string };
 type CreateChangeOrderResult = { ok: true; changeOrderId: string } | { ok: false; reason: string };
+type ApproveChangeOrderResult = { ok: true } | { ok: false; reason: string };
 type CreateProjectUpdateResult = { ok: true; updateId: string } | { ok: false; reason: string };
 type CreateProjectFileResult = { ok: true; fileId: string } | { ok: false; reason: string };
+type CreateProjectPhotoResult = { ok: true; photoId: string } | { ok: false; reason: string };
+type CreateProjectTaskResult = { ok: true; taskId: string } | { ok: false; reason: string };
+type CreateProjectCommentResult = { ok: true; commentId: string } | { ok: false; reason: string };
+type CreateProjectSelectionResult = { ok: true; selectionId: string } | { ok: false; reason: string };
+type ApproveProjectSelectionResult = { ok: true } | { ok: false; reason: string };
+type CreateProjectRfiResult = { ok: true; rfiId: string } | { ok: false; reason: string };
+type CreateDailyLogResult = { ok: true; dailyLogId: string } | { ok: false; reason: string };
+type CreatePurchaseOrderResult = { ok: true; purchaseOrderId: string } | { ok: false; reason: string };
+type CreateBillResult = { ok: true; billId: string } | { ok: false; reason: string };
+type CreateWarrantyItemResult = { ok: true; warrantyItemId: string } | { ok: false; reason: string };
+type CreateVendorResult = { ok: true; vendorId: string } | { ok: false; reason: string };
+type CreateProjectVendorAssignmentResult = { ok: true; assignmentId: string } | { ok: false; reason: string };
+type UpsertProjectFinancialTargetResult = { ok: true } | { ok: false; reason: string };
 
 async function getSupabaseClientOrNull() {
   const env = getPublicEnv();
@@ -48,18 +97,15 @@ async function getSupabaseClientOrNull() {
   return createClient();
 }
 
-function logSupabaseFallback(scope: string, error: unknown) {
-  console.error(`[admin:${scope}] Falling back to demo data`, error);
-}
-
 export async function getDashboardMetrics() {
-  const [projects, projectFiles, timeEntries, invoices, leads, changeOrders] = await Promise.all([
+  const [projects, projectFiles, timeEntries, invoices, leads, changeOrders, tasks] = await Promise.all([
     getProjects(),
     getAllProjectFiles(),
     getTimeEntries(),
     getInvoices(),
     getLeads(),
     getChangeOrders(),
+    getTasks(),
   ]);
   const weeklyHours = timeEntries.reduce((sum, entry) => sum + timeEntryHours(entry.clockIn, entry.clockOut), 0);
   const draftInvoiceTotal = invoices
@@ -75,6 +121,7 @@ export async function getDashboardMetrics() {
     weeklyHours,
     draftInvoiceTotal,
     pendingChangeOrderTotal,
+    openTasks: tasks.filter((task) => task.status !== "done").length,
     openLeads: leads.filter((lead) => lead.status !== "won" && lead.status !== "lost").length,
   };
 }
@@ -202,6 +249,11 @@ function makeChangeOrderNumber() {
   return `KBCO-${year}-${Date.now().toString().slice(-6)}`;
 }
 
+function makePurchaseOrderNumber() {
+  const year = new Date().getFullYear();
+  return `KBPO-${year}-${Date.now().toString().slice(-6)}`;
+}
+
 const changeOrderSelect = `
   id,
   change_order_number,
@@ -215,6 +267,7 @@ const changeOrderSelect = `
   internal_notes,
   created_at,
   approved_at,
+  approved_by_name,
   change_order_line_items (
     id,
     description,
@@ -222,6 +275,68 @@ const changeOrderSelect = `
     unit_price,
     sort_order
   )
+`;
+
+const warrantyItemSelect = `
+  id,
+  project_id,
+  item_type,
+  title,
+  description,
+  location,
+  requested_by,
+  status,
+  priority,
+  due_date,
+  visibility,
+  created_at,
+  resolved_at
+`;
+
+const projectPhotoSelect = `
+  id,
+  project_id,
+  title,
+  photo_date,
+  category,
+  visibility,
+  image_url,
+  caption,
+  uploaded_at
+`;
+
+const vendorSelect = `
+  id,
+  name,
+  company_type,
+  trade,
+  email,
+  phone,
+  status,
+  portal_access,
+  notes,
+  created_at
+`;
+
+const projectVendorAssignmentSelect = `
+  id,
+  project_id,
+  vendor_id,
+  scope,
+  start_date,
+  end_date,
+  status,
+  visibility,
+  created_at
+`;
+
+const projectFinancialTargetSelect = `
+  project_id,
+  contract_value,
+  budgeted_cost,
+  target_margin_percent,
+  contingency_percent,
+  updated_at
 `;
 
 const proposalSelect = `
@@ -441,7 +556,7 @@ export async function getProject(projectId: string) {
   return data ? mapProjectRow(data) : null;
 }
 
-async function getAllProjectFiles() {
+export async function getAllProjectFiles() {
   const supabase = await getSupabaseClientOrNull();
 
   if (!supabase) {
@@ -482,9 +597,163 @@ async function getAllProjectUpdates() {
   return (data ?? []).map(mapProjectUpdateRow);
 }
 
+export async function getTasks() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProjectTasks;
+  }
+
+  const { data, error } = await supabase
+    .from("project_tasks")
+    .select("id, project_id, assigned_worker_id, title, notes, status, priority, due_date, created_at, completed_at")
+    .order("due_date", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("project-tasks", error);
+    return demoProjectTasks;
+  }
+
+  return (data ?? []).map(mapProjectTaskRow);
+}
+
+export async function getProjectTasks(projectId: string) {
+  const tasks = await getTasks();
+  return tasks.filter((task) => task.projectId === projectId);
+}
+
+export async function createProjectTask(
+  projectId: string,
+  input: ProjectTaskCreateInput,
+): Promise<CreateProjectTaskResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode task creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_tasks")
+    .insert({
+      project_id: projectId,
+      assigned_worker_id: input.assignedWorkerId,
+      title: input.title,
+      notes: input.notes,
+      priority: input.priority,
+      due_date: input.dueDate,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the task. Please try again." };
+  }
+
+  return { ok: true, taskId: data.id };
+}
+
+export async function updateProjectTaskStatus(
+  taskId: string,
+  status: "open" | "in-progress" | "done",
+): Promise<UpdateResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode task updates are not persisted." };
+  }
+
+  const { error } = await supabase
+    .from("project_tasks")
+    .update({
+      status,
+      completed_at: status === "done" ? new Date().toISOString() : null,
+    })
+    .eq("id", taskId);
+
+  if (error) {
+    return { ok: false, reason: "Could not update the task. Please try again." };
+  }
+
+  return { ok: true };
+}
+
 export async function getProjectFiles(projectId: string) {
   const files = await getAllProjectFiles();
   return files.filter((file) => file.projectId === projectId);
+}
+
+export async function getProjectPhotos() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProjectPhotos;
+  }
+
+  const { data, error } = await supabase
+    .from("project_photos")
+    .select(projectPhotoSelect)
+    .order("photo_date", { ascending: false })
+    .order("uploaded_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("project-photos", error);
+    return demoProjectPhotos;
+  }
+
+  return (data ?? []).map(mapProjectPhotoRow);
+}
+
+export async function getProjectPhotoGallery(projectId: string) {
+  const photos = await getProjectPhotos();
+  return photos.filter((photo) => photo.projectId === projectId);
+}
+
+export async function createProjectPhoto(
+  projectId: string,
+  input: ProjectPhotoCreateInput,
+): Promise<CreateProjectPhotoResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode photo creation is not persisted." };
+  }
+
+  const { error: uploadError } = await supabase.storage
+    .from(input.storageBucket)
+    .upload(input.storagePath, input.file, {
+      contentType: input.file.type || undefined,
+      upsert: false,
+    });
+
+  if (uploadError) {
+    return { ok: false, reason: "Could not upload the photo. Check Supabase Storage bucket settings." };
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from(input.storageBucket)
+    .getPublicUrl(input.storagePath);
+
+  const { data, error } = await supabase
+    .from("project_photos")
+    .insert({
+      project_id: projectId,
+      title: input.title,
+      photo_date: input.photoDate,
+      category: input.category,
+      visibility: input.visibility,
+      image_url: publicUrlData.publicUrl,
+      caption: input.caption,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    await supabase.storage.from(input.storageBucket).remove([input.storagePath]);
+    return { ok: false, reason: "Could not create the photo record. Please try again." };
+  }
+
+  return { ok: true, photoId: data.id };
 }
 
 export async function createProjectFile(
@@ -535,6 +804,499 @@ export async function getProjectUpdates(projectId: string) {
   return updates.filter((update) => update.projectId === projectId);
 }
 
+export async function getComments() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProjectComments;
+  }
+
+  const { data, error } = await supabase
+    .from("project_comments")
+    .select("id, project_id, author_name, body, visibility, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("project-comments", error);
+    return demoProjectComments;
+  }
+
+  return (data ?? []).map(mapProjectCommentRow);
+}
+
+export async function getProjectComments(projectId: string) {
+  const comments = await getComments();
+  return comments.filter((comment) => comment.projectId === projectId);
+}
+
+export async function createProjectComment(
+  projectId: string,
+  input: ProjectCommentCreateInput,
+): Promise<CreateProjectCommentResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode comment creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_comments")
+    .insert({
+      project_id: projectId,
+      author_name: input.authorName,
+      body: input.body,
+      visibility: input.visibility,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the comment. Please try again." };
+  }
+
+  return { ok: true, commentId: data.id };
+}
+
+export async function getSelections() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProjectSelections;
+  }
+
+  const { data, error } = await supabase
+    .from("project_selections")
+    .select(
+      "id, project_id, category, title, allowance_amount, selected_option, vendor, due_date, status, internal_notes, client_notes, created_at, approved_at, approved_by_name",
+    )
+    .order("due_date", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("project-selections", error);
+    return demoProjectSelections;
+  }
+
+  return (data ?? []).map(mapProjectSelectionRow);
+}
+
+export async function getProjectSelections(projectId: string) {
+  const selections = await getSelections();
+  return selections.filter((selection) => selection.projectId === projectId);
+}
+
+export async function createProjectSelection(
+  projectId: string,
+  input: SelectionCreateInput,
+): Promise<CreateProjectSelectionResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode selection creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_selections")
+    .insert({
+      project_id: projectId,
+      category: input.category,
+      title: input.title,
+      allowance_amount: input.allowanceAmount,
+      selected_option: input.selectedOption,
+      vendor: input.vendor,
+      due_date: input.dueDate,
+      status: input.status,
+      internal_notes: input.internalNotes,
+      client_notes: input.clientNotes,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the selection. Please try again." };
+  }
+
+  return { ok: true, selectionId: data.id };
+}
+
+export async function approveProjectSelection(
+  projectId: string,
+  selectionId: string,
+  input: SelectionApprovalInput,
+): Promise<ApproveProjectSelectionResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode selection approval is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_selections")
+    .update({
+      status: "approved",
+      approved_at: new Date().toISOString(),
+      approved_by_name: input.approvedByName,
+    })
+    .eq("id", selectionId)
+    .eq("project_id", projectId)
+    .eq("status", "submitted")
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    return { ok: false, reason: "Could not approve the selection. Please try again." };
+  }
+
+  if (!data?.id) {
+    return { ok: false, reason: "This selection is not available for approval." };
+  }
+
+  return { ok: true };
+}
+
+export async function getRfis() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProjectRfis;
+  }
+
+  const { data, error } = await supabase
+    .from("project_rfis")
+    .select("id, project_id, title, question, answer, requested_by, due_date, status, visibility, created_at, answered_at")
+    .order("due_date", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("project-rfis", error);
+    return demoProjectRfis;
+  }
+
+  return (data ?? []).map(mapProjectRfiRow);
+}
+
+export async function getProjectRfis(projectId: string) {
+  const rfis = await getRfis();
+  return rfis.filter((rfi) => rfi.projectId === projectId);
+}
+
+export async function getWarrantyItems() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoWarrantyItems;
+  }
+
+  const { data, error } = await supabase
+    .from("warranty_items")
+    .select(warrantyItemSelect)
+    .order("due_date", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("warranty-items", error);
+    return demoWarrantyItems;
+  }
+
+  return (data ?? []).map(mapWarrantyItemRow);
+}
+
+export async function getProjectWarrantyItems(projectId: string) {
+  const warrantyItems = await getWarrantyItems();
+  return warrantyItems.filter((item) => item.projectId === projectId);
+}
+
+export async function createWarrantyItem(
+  projectId: string,
+  input: WarrantyItemCreateInput,
+): Promise<CreateWarrantyItemResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode warranty and punch-list creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("warranty_items")
+    .insert({
+      project_id: projectId,
+      item_type: input.itemType,
+      title: input.title,
+      description: input.description,
+      location: input.location,
+      requested_by: input.requestedBy,
+      status: input.status,
+      priority: input.priority,
+      due_date: input.dueDate,
+      visibility: input.visibility,
+      resolved_at: input.status === "resolved" || input.status === "closed" ? new Date().toISOString() : null,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the warranty or punch-list item. Please try again." };
+  }
+
+  return { ok: true, warrantyItemId: data.id };
+}
+
+export async function getVendors() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoVendors;
+  }
+
+  const { data, error } = await supabase
+    .from("vendors")
+    .select(vendorSelect)
+    .order("name", { ascending: true });
+
+  if (error) {
+    logSupabaseFallback("vendors", error);
+    return demoVendors;
+  }
+
+  return (data ?? []).map(mapVendorRow);
+}
+
+export async function createVendor(input: VendorCreateInput): Promise<CreateVendorResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode vendor creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("vendors")
+    .insert({
+      name: input.name,
+      company_type: input.companyType,
+      trade: input.trade,
+      email: input.email,
+      phone: input.phone,
+      status: input.status,
+      portal_access: input.portalAccess,
+      notes: input.notes,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the vendor or subcontractor. Please try again." };
+  }
+
+  return { ok: true, vendorId: data.id };
+}
+
+export async function getProjectVendorAssignments() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProjectVendorAssignments;
+  }
+
+  const { data, error } = await supabase
+    .from("project_vendor_assignments")
+    .select(projectVendorAssignmentSelect)
+    .order("start_date", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("project-vendor-assignments", error);
+    return demoProjectVendorAssignments;
+  }
+
+  return (data ?? []).map(mapProjectVendorAssignmentRow);
+}
+
+export async function getProjectVendorAssignmentsForProject(projectId: string) {
+  const assignments = await getProjectVendorAssignments();
+  return assignments.filter((assignment) => assignment.projectId === projectId);
+}
+
+export async function getProjectFinancialTargets() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoProjectFinancialTargets;
+  }
+
+  const { data, error } = await supabase
+    .from("project_financial_targets")
+    .select(projectFinancialTargetSelect)
+    .order("updated_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("project-financial-targets", error);
+    return demoProjectFinancialTargets;
+  }
+
+  return (data ?? []).map(mapProjectFinancialTargetRow);
+}
+
+export async function getProjectFinancialTarget(projectId: string) {
+  const targets = await getProjectFinancialTargets();
+  return targets.find((target) => target.projectId === projectId) ?? null;
+}
+
+export async function upsertProjectFinancialTarget(
+  projectId: string,
+  input: ProjectFinancialTargetInput,
+): Promise<UpsertProjectFinancialTargetResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode financial targets are not persisted." };
+  }
+
+  const { error } = await supabase
+    .from("project_financial_targets")
+    .upsert({
+      project_id: projectId,
+      contract_value: input.contractValue,
+      budgeted_cost: input.budgetedCost,
+      target_margin_percent: input.targetMarginPercent,
+      contingency_percent: input.contingencyPercent,
+      updated_at: new Date().toISOString(),
+    });
+
+  if (error) {
+    return { ok: false, reason: "Could not save the financial targets. Please try again." };
+  }
+
+  return { ok: true };
+}
+
+export async function createProjectVendorAssignment(
+  projectId: string,
+  input: ProjectVendorAssignmentCreateInput,
+): Promise<CreateProjectVendorAssignmentResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode vendor assignment creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_vendor_assignments")
+    .insert({
+      project_id: projectId,
+      vendor_id: input.vendorId,
+      scope: input.scope,
+      start_date: input.startDate,
+      end_date: input.endDate || null,
+      status: input.status,
+      visibility: input.visibility,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not assign the vendor or subcontractor. Please try again." };
+  }
+
+  return { ok: true, assignmentId: data.id };
+}
+
+export async function createProjectRfi(
+  projectId: string,
+  input: RfiCreateInput,
+): Promise<CreateProjectRfiResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode RFI creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("project_rfis")
+    .insert({
+      project_id: projectId,
+      title: input.title,
+      question: input.question,
+      answer: input.answer,
+      requested_by: input.requestedBy,
+      due_date: input.dueDate,
+      status: input.status,
+      visibility: input.visibility,
+      answered_at: input.answer ? new Date().toISOString() : null,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the RFI. Please try again." };
+  }
+
+  return { ok: true, rfiId: data.id };
+}
+
+export async function getDailyLogs() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoDailyLogs;
+  }
+
+  const { data, error } = await supabase
+    .from("daily_logs")
+    .select(
+      "id, project_id, report_date, superintendent, weather, crew_count, work_performed, deliveries, inspections, delays, safety_notes, next_steps, visibility, created_at",
+    )
+    .order("report_date", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("daily-logs", error);
+    return demoDailyLogs;
+  }
+
+  return (data ?? []).map(mapDailyLogRow);
+}
+
+export async function getProjectDailyLogs(projectId: string) {
+  const dailyLogs = await getDailyLogs();
+  return dailyLogs.filter((dailyLog) => dailyLog.projectId === projectId);
+}
+
+export async function createDailyLog(
+  projectId: string,
+  input: DailyLogCreateInput,
+): Promise<CreateDailyLogResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode daily log creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("daily_logs")
+    .insert({
+      project_id: projectId,
+      report_date: input.reportDate,
+      superintendent: input.superintendent,
+      weather: input.weather,
+      crew_count: input.crewCount,
+      work_performed: input.workPerformed,
+      deliveries: input.deliveries,
+      inspections: input.inspections,
+      delays: input.delays,
+      safety_notes: input.safetyNotes,
+      next_steps: input.nextSteps,
+      visibility: input.visibility,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the daily log. Please try again." };
+  }
+
+  return { ok: true, dailyLogId: data.id };
+}
+
 export async function createProjectUpdate(
   projectId: string,
   input: ProjectUpdateCreateInput,
@@ -572,6 +1334,118 @@ export async function getProjectTimeEntries(projectId: string) {
 export async function getProjectInvoices(projectId: string) {
   const invoices = await getInvoices();
   return invoices.filter((invoice) => invoice.projectId === projectId);
+}
+
+export async function getPurchaseOrders() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoPurchaseOrders;
+  }
+
+  const { data, error } = await supabase
+    .from("purchase_orders")
+    .select("id, project_id, po_number, title, vendor, amount, status, due_date, notes, created_at")
+    .order("due_date", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("purchase-orders", error);
+    return demoPurchaseOrders;
+  }
+
+  return (data ?? []).map(mapPurchaseOrderRow);
+}
+
+export async function getProjectPurchaseOrders(projectId: string) {
+  const purchaseOrders = await getPurchaseOrders();
+  return purchaseOrders.filter((purchaseOrder) => purchaseOrder.projectId === projectId);
+}
+
+export async function createPurchaseOrder(
+  projectId: string,
+  input: PurchaseOrderCreateInput,
+): Promise<CreatePurchaseOrderResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode purchase order creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("purchase_orders")
+    .insert({
+      project_id: projectId,
+      po_number: makePurchaseOrderNumber(),
+      title: input.title,
+      vendor: input.vendor,
+      amount: input.amount,
+      status: input.status,
+      due_date: input.dueDate,
+      notes: input.notes,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the purchase order. Please try again." };
+  }
+
+  return { ok: true, purchaseOrderId: data.id };
+}
+
+export async function getBills() {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return demoBills;
+  }
+
+  const { data, error } = await supabase
+    .from("bills")
+    .select("id, project_id, bill_number, vendor, amount, status, due_date, notes, created_at")
+    .order("due_date", { ascending: true })
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    logSupabaseFallback("bills", error);
+    return demoBills;
+  }
+
+  return (data ?? []).map(mapBillRow);
+}
+
+export async function getProjectBills(projectId: string) {
+  const bills = await getBills();
+  return bills.filter((bill) => bill.projectId === projectId);
+}
+
+export async function createBill(projectId: string, input: BillCreateInput): Promise<CreateBillResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode bill creation is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("bills")
+    .insert({
+      project_id: projectId,
+      bill_number: input.billNumber,
+      vendor: input.vendor,
+      amount: input.amount,
+      status: input.status,
+      due_date: input.dueDate,
+      notes: input.notes,
+    })
+    .select("id")
+    .single();
+
+  if (error || !data?.id) {
+    return { ok: false, reason: "Could not create the bill. Please try again." };
+  }
+
+  return { ok: true, billId: data.id };
 }
 
 export async function getChangeOrders() {
@@ -672,6 +1546,41 @@ export async function createChangeOrderForProject(
   }
 
   return { ok: true, changeOrderId: changeOrder.id };
+}
+
+export async function approveChangeOrder(
+  projectId: string,
+  changeOrderId: string,
+  input: ChangeOrderApprovalInput,
+): Promise<ApproveChangeOrderResult> {
+  const supabase = await getSupabaseClientOrNull();
+
+  if (!supabase) {
+    return { ok: false, reason: "Demo mode change order approval is not persisted." };
+  }
+
+  const { data, error } = await supabase
+    .from("change_orders")
+    .update({
+      status: "approved",
+      approved_at: new Date().toISOString(),
+      approved_by_name: input.approvedByName,
+    })
+    .eq("id", changeOrderId)
+    .eq("project_id", projectId)
+    .eq("status", "sent")
+    .select("id")
+    .maybeSingle();
+
+  if (error) {
+    return { ok: false, reason: "Could not approve the change order. Please try again." };
+  }
+
+  if (!data?.id) {
+    return { ok: false, reason: "This change order is not available for approval." };
+  }
+
+  return { ok: true };
 }
 
 export async function getWorkers() {

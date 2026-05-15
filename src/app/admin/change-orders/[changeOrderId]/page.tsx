@@ -4,7 +4,7 @@ import { ArrowLeft, CalendarDays, ClipboardList } from "lucide-react";
 import AdminShell from "@/components/admin/AdminShell";
 import ChangeOrderDownloadButton from "@/components/admin/ChangeOrderDownloadButton";
 import StatusBadge from "@/components/admin/StatusBadge";
-import { changeOrderTotal, formatCurrency } from "@/lib/admin/formatters";
+import { changeOrderTotal, formatCurrency, formatDate } from "@/lib/admin/formatters";
 import { getChangeOrder, getClient, getProject } from "@/lib/admin/queries";
 
 export default async function ChangeOrderDetailPage({
@@ -76,6 +76,18 @@ export default async function ChangeOrderDetailPage({
               </span>
             </p>
           </div>
+
+          {changeOrder.approvedAt ? (
+            <div className="mt-4 rounded-md border border-green-600/20 bg-green-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-green-700">
+                Client Approved
+              </p>
+              <p className="mt-2 text-sm leading-6 text-green-800">
+                {changeOrder.approvedByName || "Client"} approved this change order on{" "}
+                {formatDate(changeOrder.approvedAt)}.
+              </p>
+            </div>
+          ) : null}
 
           <div className="mt-6 rounded-md bg-[#f9f6f0] p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b92516]">

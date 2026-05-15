@@ -10,7 +10,6 @@ import {
   Mail,
   MessageSquareText,
   Plus,
-  ReceiptText,
   Search,
   UploadCloud,
 } from "lucide-react";
@@ -25,15 +24,16 @@ import {
   formatDateTime,
   formatHours,
   invoiceTotal,
-  timeEntryHours,
 } from "@/lib/admin/formatters";
 import {
   getClients,
   getDashboardMetrics,
   getLeads,
   getProjectChangeOrders,
+  getProjectComments,
   getProjectFiles,
   getProjectInvoices,
+  getProjectTasks,
   getProjects,
   getProjectTimeEntries,
   getProjectUpdates,
@@ -54,15 +54,17 @@ export default async function AdminDashboardPage() {
     ? projects.find((project) => project.id === selectedJob.id) ?? null
     : null;
 
-  const [files, updates, invoices, changeOrders, timeEntries] = selectedProject
+  const [files, updates, comments, invoices, changeOrders, timeEntries, tasks] = selectedProject
     ? await Promise.all([
         getProjectFiles(selectedProject.id),
         getProjectUpdates(selectedProject.id),
+        getProjectComments(selectedProject.id),
         getProjectInvoices(selectedProject.id),
         getProjectChangeOrders(selectedProject.id),
         getProjectTimeEntries(selectedProject.id),
+        getProjectTasks(selectedProject.id),
       ])
-    : [[], [], [], [], []];
+    : [[], [], [], [], [], [], []];
 
   const client = selectedProject
     ? clients.find((candidate) => candidate.id === selectedProject.clientId) ?? null
@@ -70,6 +72,7 @@ export default async function AdminDashboardPage() {
   const clockedInEntries = timeEntries.filter((entry) => !entry.clockOut);
   const leadFollowUps = leads.slice(0, 4);
   const recentUpdates = updates.slice(0, 3);
+  const recentComments = comments.slice(0, 3);
   const recentFiles = files.slice(0, 3);
   const pendingChangeOrderTotal = changeOrders
     .filter((changeOrder) => changeOrder.status === "draft" || changeOrder.status === "sent")
@@ -77,10 +80,7 @@ export default async function AdminDashboardPage() {
   const draftInvoiceTotal = invoices
     .filter((invoice) => invoice.status === "draft")
     .reduce((sum, invoice) => sum + invoiceTotal(invoice.lineItems), 0);
-  const weeklyHours = timeEntries.reduce(
-    (sum, entry) => sum + timeEntryHours(entry.clockIn, entry.clockOut),
-    0,
-  );
+  const openTasks = tasks.filter((task) => task.status !== "done");
   const workersById = new Map(workers.map((worker) => [worker.id, worker]));
 
   return (
@@ -226,10 +226,14 @@ export default async function AdminDashboardPage() {
                 </div>
               </div>
 
-              <div className="mt-6 grid gap-3 md:grid-cols-4">
+              <div className="mt-6 grid gap-3 md:grid-cols-5">
                 <Link href={`/admin/projects/${selectedProject.id}/updates/new`} className="rounded-md border border-black/10 p-3 text-sm font-semibold transition hover:border-[#b92516]/30 hover:text-[#b92516]">
                   <MessageSquareText className="mb-2 size-5 text-[#b92516]" />
                   Post Update
+                </Link>
+                <Link href={`/admin/projects/${selectedProject.id}/comments/new`} className="rounded-md border border-black/10 p-3 text-sm font-semibold transition hover:border-[#b92516]/30 hover:text-[#b92516]">
+                  <MessageSquareText className="mb-2 size-5 text-[#b92516]" />
+                  Comment
                 </Link>
                 <Link href={`/admin/projects/${selectedProject.id}/files/new`} className="rounded-md border border-black/10 p-3 text-sm font-semibold transition hover:border-[#b92516]/30 hover:text-[#b92516]">
                   <UploadCloud className="mb-2 size-5 text-[#b92516]" />
@@ -239,9 +243,9 @@ export default async function AdminDashboardPage() {
                   <ListChecks className="mb-2 size-5 text-[#b92516]" />
                   Change Order
                 </Link>
-                <Link href="/admin/invoices" className="rounded-md border border-black/10 p-3 text-sm font-semibold transition hover:border-[#b92516]/30 hover:text-[#b92516]">
-                  <ReceiptText className="mb-2 size-5 text-[#b92516]" />
-                  Invoice
+                <Link href={`/admin/projects/${selectedProject.id}/tasks/new`} className="rounded-md border border-black/10 p-3 text-sm font-semibold transition hover:border-[#b92516]/30 hover:text-[#b92516]">
+                  <ListChecks className="mb-2 size-5 text-[#b92516]" />
+                  New Task
                 </Link>
               </div>
             </section>
@@ -261,8 +265,8 @@ export default async function AdminDashboardPage() {
               </div>
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.14em]">Action Items</p>
-                <p className="mt-4 text-2xl font-bold">{formatHours(weeklyHours)}</p>
-                <p className="text-sm text-[#655c52]">Logged on selected job</p>
+                <p className="mt-4 text-2xl font-bold">{openTasks.length}</p>
+                <p className="text-sm text-[#655c52]">Open tasks on selected job</p>
               </div>
             </div>
           </section>
@@ -288,6 +292,13 @@ export default async function AdminDashboardPage() {
                   <p className="mt-1 text-sm text-[#655c52]">{update.body}</p>
                 </div>
               ))}
+              {recentComments.map((comment) => (
+                <div key={comment.id} className="border-b border-black/10 pb-4 last:border-0 last:pb-0">
+                  <p className="text-sm text-[#655c52]">{formatDateTime(comment.createdAt)}</p>
+                  <p className="mt-1 font-semibold">{comment.authorName} commented</p>
+                  <p className="mt-1 text-sm text-[#655c52]">{comment.body}</p>
+                </div>
+              ))}
               {recentFiles.map((file) => (
                 <div key={file.id} className="border-b border-black/10 pb-4 last:border-0 last:pb-0">
                   <p className="text-sm text-[#655c52]">{formatDateTime(file.uploadedAt)}</p>
@@ -295,6 +306,13 @@ export default async function AdminDashboardPage() {
                   <p className="mt-1 text-sm text-[#655c52]">
                     {file.type} · {file.visibility} · {file.sizeLabel}
                   </p>
+                </div>
+              ))}
+              {openTasks.slice(0, 3).map((task) => (
+                <div key={task.id} className="border-b border-black/10 pb-4 last:border-0 last:pb-0">
+                  <p className="text-sm text-[#655c52]">Due {formatDate(task.dueDate)}</p>
+                  <p className="mt-1 font-semibold">{task.title}</p>
+                  <p className="mt-1 text-sm text-[#655c52]">{task.notes || "No notes"}</p>
                 </div>
               ))}
               {clockedInEntries.map((entry) => (
@@ -338,7 +356,7 @@ export default async function AdminDashboardPage() {
               <h2 className="text-sm font-bold uppercase tracking-[0.14em]">
                 This Week&apos;s Agenda
               </h2>
-              <Link href="/admin/leads" className="text-sm font-semibold text-[#b92516]">
+              <Link href="/admin/schedule" className="text-sm font-semibold text-[#b92516]">
                 View schedule
               </Link>
             </div>
@@ -388,6 +406,13 @@ export default async function AdminDashboardPage() {
                   Weekly Hours
                 </span>
                 <strong>{formatHours(metrics.weeklyHours)}</strong>
+              </Link>
+              <Link href="/admin/tasks" className="flex items-center justify-between rounded-md bg-[#f9f6f0] p-3">
+                <span className="flex items-center gap-2">
+                  <ListChecks className="size-4 text-[#b92516]" />
+                  Open Tasks
+                </span>
+                <strong>{metrics.openTasks}</strong>
               </Link>
             </div>
           </section>

@@ -199,8 +199,7 @@ const faqSchema = {
   ],
 };
 
-import FloatingCTA from "@/components/FloatingCTA";
-import ProjectUpdateNotification from "@/components/ProjectUpdateNotification";
+import GlobalFloatingAction from "@/components/GlobalFloatingAction";
 
 export default function RootLayout({
   children,
@@ -235,8 +234,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <FloatingCTA />
-        <ProjectUpdateNotification />
+        <GlobalFloatingAction />
       </body>
     </html>
   );

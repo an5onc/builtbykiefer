@@ -16,8 +16,16 @@ export interface ChangeOrderCreateInput {
   lineItems: ChangeOrderLineItemInput[];
 }
 
+export interface ChangeOrderApprovalInput {
+  approvedByName: string;
+}
+
 export type ChangeOrderCreateParseResult =
   | { ok: true; data: ChangeOrderCreateInput }
+  | { ok: false; reason: string };
+
+export type ChangeOrderApprovalParseResult =
+  | { ok: true; data: ChangeOrderApprovalInput }
   | { ok: false; reason: string };
 
 export const changeOrderStatusOptions: { value: ChangeOrderStatus; label: string }[] = [
@@ -106,6 +114,21 @@ export function parseChangeOrderCreateFormData(formData: FormData): ChangeOrderC
       clientMessage,
       internalNotes,
       lineItems: parsedItems.lineItems,
+    },
+  };
+}
+
+export function parseChangeOrderApprovalFormData(formData: FormData): ChangeOrderApprovalParseResult {
+  const approvedByName = getTrimmedValue(formData, "approvedByName");
+
+  if (!approvedByName) {
+    return { ok: false, reason: "Enter your name to approve this change order." };
+  }
+
+  return {
+    ok: true,
+    data: {
+      approvedByName,
     },
   };
 }

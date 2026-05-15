@@ -139,7 +139,7 @@ export default function AdminModuleNav() {
                         <Icon className="size-5 shrink-0" />
                         <span>{item.label}</span>
                         {item.badge ? (
-                          <span className="ml-auto rounded-full bg-[#e5f2ff] px-2 py-0.5 text-xs font-bold text-blue-700">
+                          <span className="ml-auto rounded-full bg-[#b92516]/10 px-2 py-0.5 text-xs font-bold text-[#b92516]">
                             {item.badge}
                           </span>
                         ) : null}
@@ -158,7 +158,7 @@ export default function AdminModuleNav() {
                       <Icon className="size-5 shrink-0" />
                       <span>{item.label}</span>
                       {item.badge ? (
-                        <span className="ml-auto rounded-full bg-[#e5f2ff] px-2 py-0.5 text-xs font-bold text-blue-700">
+                        <span className="ml-auto rounded-full bg-[#b92516]/10 px-2 py-0.5 text-xs font-bold text-[#b92516]">
                           {item.badge}
                         </span>
                       ) : null}

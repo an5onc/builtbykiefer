@@ -132,7 +132,7 @@ export default function MaterialsShowcase() {
               onClick={() => setSelectedCategory(material.category)}
               className={`px-6 py-3 rounded-lg font-medium transition-all ${
                 selectedCategory === material.category
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-[#b92516] text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -161,7 +161,7 @@ export default function MaterialsShowcase() {
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
                     {item.name}
                   </h3>
-                  <p className="text-sm text-blue-600 font-medium mb-4">
+                  <p className="text-sm text-[#b92516] font-medium mb-4">
                     {item.brand}
                   </p>
 
@@ -170,7 +170,7 @@ export default function MaterialsShowcase() {
                     {item.benefits.map((benefit, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <svg
-                          className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0"
+                          className="w-5 h-5 text-[#b92516] mt-0.5 flex-shrink-0"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -193,7 +193,7 @@ export default function MaterialsShowcase() {
         )}
 
         {/* Quality Promise */}
-        <div className="mt-16 bg-blue-50 rounded-lg p-8 text-center">
+        <div className="mt-16 bg-[#f9f6f0] rounded-lg p-8 text-center border border-black/10">
           <h3 className="text-2xl font-semibold text-gray-900 mb-4">
             Our Quality Promise
           </h3>
@@ -216,7 +216,7 @@ export default function MaterialsShowcase() {
           </div>
           <a
             href="/contact"
-            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            className="inline-block bg-[#b92516] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#951e13] transition-colors"
           >
             Discuss Your Material Options
           </a>

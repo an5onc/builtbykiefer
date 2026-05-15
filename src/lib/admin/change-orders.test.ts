@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   changeOrderStatusOptions,
   changeOrderTotal,
+  parseChangeOrderApprovalFormData,
   parseChangeOrderCreateFormData,
 } from "./change-orders";
 
@@ -120,5 +121,21 @@ describe("change order helpers", () => {
       "approved",
       "declined",
     ]);
+  });
+
+  it("parses a client change order approval", () => {
+    expect(parseChangeOrderApprovalFormData(formData({ approvedByName: " Avery Thompson " }))).toEqual({
+      ok: true,
+      data: {
+        approvedByName: "Avery Thompson",
+      },
+    });
+  });
+
+  it("rejects change order approval without a signer name", () => {
+    expect(parseChangeOrderApprovalFormData(formData({ approvedByName: " " }))).toEqual({
+      ok: false,
+      reason: "Enter your name to approve this change order.",
+    });
   });
 });

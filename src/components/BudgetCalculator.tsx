@@ -87,7 +87,7 @@ export default function BudgetCalculator() {
           <select
             value={projectType}
             onChange={(e) => setProjectType(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b92516] focus:border-transparent"
           >
             <option value="custom-home">Custom Home</option>
             <option value="addition">Home Addition</option>
@@ -108,7 +108,7 @@ export default function BudgetCalculator() {
             value={squareFeet}
             onChange={(e) => setSquareFeet(e.target.value)}
             placeholder="Enter square feet"
-            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#b92516] focus:border-transparent"
           />
         </div>
 
@@ -129,7 +129,7 @@ export default function BudgetCalculator() {
                 onClick={() => setFinishLevel(level.value)}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   finishLevel === level.value
-                    ? 'border-blue-500 bg-blue-50'
+                    ? 'border-[#b92516] bg-[#b92516]/10'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -145,7 +145,7 @@ export default function BudgetCalculator() {
       <button
         onClick={calculateBudget}
         disabled={!squareFeet}
-        className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+        className="w-full py-3 bg-[#b92516] text-white font-semibold rounded-lg hover:bg-[#951e13] disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
       >
         Calculate Budget Range
       </button>
@@ -164,9 +164,9 @@ export default function BudgetCalculator() {
                 ${result.lowEnd.toLocaleString()}
               </div>
             </div>
-            <div className="text-center p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
-              <div className="text-sm text-blue-600 mb-1">Most Likely</div>
-              <div className="text-2xl font-bold text-blue-600">
+            <div className="text-center p-4 bg-[#b92516]/10 rounded-lg border-2 border-[#b92516]/25">
+              <div className="text-sm text-[#b92516] mb-1">Most Likely</div>
+              <div className="text-2xl font-bold text-[#b92516]">
                 ${result.midRange.toLocaleString()}
               </div>
             </div>
@@ -185,15 +185,15 @@ export default function BudgetCalculator() {
             <ul className="space-y-1">
               {result.factors.map((factor, i) => (
                 <li key={i} className="flex items-start text-sm text-gray-600">
-                  <span className="text-blue-500 mr-2">•</span>
+                  <span className="text-[#b92516] mr-2">•</span>
                   {factor}
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
+          <div className="mt-6 p-4 bg-[#f9f6f0] border border-[#b92516]/20 rounded-lg">
+            <p className="text-sm text-[#655c52]">
               <strong>Note:</strong> This is an estimate only. Actual costs depend on specific site conditions,
               material selections, and project complexity. Contact us for a detailed quote.
             </p>
@@ -209,13 +209,13 @@ export default function BudgetCalculator() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="/contact"
-            className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 bg-[#b92516] text-white font-medium rounded-lg hover:bg-[#951e13] transition-colors"
           >
             Get Free Quote
           </a>
           <a
             href="tel:9705155059"
-            className="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-600 font-medium rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-colors"
+            className="inline-flex items-center justify-center px-6 py-3 bg-white text-[#b92516] font-medium rounded-lg border-2 border-[#b92516] hover:bg-[#b92516]/10 transition-colors"
           >
             Call (970) 515-5059
           </a>

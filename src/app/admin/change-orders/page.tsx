@@ -42,6 +42,11 @@ export default async function ChangeOrdersPage() {
                     {changeOrder.title}
                   </p>
                   <p className="mt-1 text-sm text-[#655c52]">{changeOrder.changeOrderNumber}</p>
+                  {changeOrder.approvedAt ? (
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-[#8a8176]">
+                      Approved by {changeOrder.approvedByName || "client"}
+                    </p>
+                  ) : null}
                 </Link>
                 <div>
                   <p className="font-medium">{project?.name}</p>

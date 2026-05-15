@@ -16,8 +16,8 @@ export default function CurrentlyBuilding() {
         <div className="flex items-center gap-2 mb-3 pb-3 border-b border-charcoal-800">
           <div className="flex gap-1.5">
             <div className="w-3 h-3 rounded-full bg-red-500"></div>
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+            <div className="w-3 h-3 rounded-full bg-white/70"></div>
+            <div className="w-3 h-3 rounded-full bg-[#b92516]"></div>
           </div>
           <span className="text-charcoal-400 text-xs font-mono ml-2">currently_building.sh</span>
         </div>
@@ -25,7 +25,7 @@ export default function CurrentlyBuilding() {
         {/* Terminal content */}
         <div className="font-mono text-sm">
           <div className="text-charcoal-400 mb-2">
-            <span className="text-green-400">$</span> ./status --current-project
+            <span className="text-[#b92516]">$</span> ./status --current-project
           </div>
 
           <div className="pl-2 space-y-2">
@@ -57,9 +57,9 @@ export default function CurrentlyBuilding() {
                 {/* Pulsing green dot */}
                 <div className="relative ml-2">
                   <div className="absolute inset-0">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+                    <div className="w-2 h-2 bg-[#b92516] rounded-full animate-ping"></div>
                   </div>
-                  <div className="relative w-2 h-2 bg-green-500 rounded-full"></div>
+                  <div className="relative w-2 h-2 bg-[#b92516] rounded-full"></div>
                 </div>
               </div>
             </div>
@@ -67,14 +67,14 @@ export default function CurrentlyBuilding() {
 
           {/* Blinking cursor */}
           <div className="mt-3 text-charcoal-400">
-            <span className="text-green-400">$</span>
+            <span className="text-[#b92516]">$</span>
             <span className="ml-1 inline-block w-2 h-4 bg-sand-100 animate-pulse"></span>
           </div>
         </div>
       </div>
 
       {/* Subtle gradient glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-t from-green-500/5 to-transparent pointer-events-none rounded-lg"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-[#b92516]/5 to-transparent pointer-events-none rounded-lg"></div>
     </motion.div>
   );
 }
