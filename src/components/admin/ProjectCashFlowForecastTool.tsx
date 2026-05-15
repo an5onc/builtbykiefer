@@ -4,23 +4,28 @@ import { Landmark } from "lucide-react";
 import { useMemo, useState } from "react";
 import { calculateProjectCashFlowForecast } from "@/lib/admin/finance-tools";
 import { formatCurrency } from "@/lib/admin/formatters";
+import type { ProjectFinancePreset } from "@/lib/admin/project-finance-presets";
 
 function parseAmount(value: string) {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-export default function ProjectCashFlowForecastTool() {
-  const [contractValue, setContractValue] = useState("500000");
-  const [approvedChangeOrders, setApprovedChangeOrders] = useState("25000");
-  const [percentComplete, setPercentComplete] = useState("60");
-  const [retainagePercent, setRetainagePercent] = useState("10");
-  const [paidToDate, setPaidToDate] = useState("240000");
-  const [pendingDrawsSubmitted, setPendingDrawsSubmitted] = useState("18000");
-  const [vendorPaymentsDue, setVendorPaymentsDue] = useState("42000");
-  const [payrollDue, setPayrollDue] = useState("31000");
-  const [overheadDue, setOverheadDue] = useState("9500");
-  const [cashOnHand, setCashOnHand] = useState("20000");
+export default function ProjectCashFlowForecastTool({
+  initialValues,
+}: {
+  initialValues?: ProjectFinancePreset["cashFlowForecast"];
+}) {
+  const [contractValue, setContractValue] = useState(String(initialValues?.contractValue ?? "500000"));
+  const [approvedChangeOrders, setApprovedChangeOrders] = useState(String(initialValues?.approvedChangeOrders ?? "25000"));
+  const [percentComplete, setPercentComplete] = useState(String(initialValues?.percentComplete ?? "60"));
+  const [retainagePercent, setRetainagePercent] = useState(String(initialValues?.retainagePercent ?? "10"));
+  const [paidToDate, setPaidToDate] = useState(String(initialValues?.paidToDate ?? "240000"));
+  const [pendingDrawsSubmitted, setPendingDrawsSubmitted] = useState(String(initialValues?.pendingDrawsSubmitted ?? "18000"));
+  const [vendorPaymentsDue, setVendorPaymentsDue] = useState(String(initialValues?.vendorPaymentsDue ?? "42000"));
+  const [payrollDue, setPayrollDue] = useState(String(initialValues?.payrollDue ?? "31000"));
+  const [overheadDue, setOverheadDue] = useState(String(initialValues?.overheadDue ?? "9500"));
+  const [cashOnHand, setCashOnHand] = useState(String(initialValues?.cashOnHand ?? "20000"));
 
   const forecast = useMemo(
     () =>

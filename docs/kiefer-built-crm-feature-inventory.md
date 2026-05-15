@@ -276,6 +276,8 @@ Source reviewed: [BAFN 302 Toolkit](https://bafn302unco.com/)
 - Includes Change Order Margin Impact Checker for proposed client price, labor/material/sub/vendor/other costs, target margin, schedule days, recommended billing amount, margin gap, gross margin, markup, and approval readiness.
 - Includes Job Cost Variance Tool for budgeted cost, actual cost, open commitments, pending exposure, contingency allowance, projected final cost, variance dollars/percent, remaining budget, and on-track/watch/over-budget status.
 - Includes Project Cash-Flow Forecast for adjusted contract value, earned revenue, retainage held, pending draw receipts, vendor payments, payroll, overhead, projected ending cash, cash gaps, and healthy/tight/funding-needed signals.
+- Includes live project presets so accounting can choose a job and load CRM values into draw/retainage, job cost variance, and cash-flow forecast tools.
+- Project presets pull from project financial targets, progress, invoices, bills, purchase orders, change orders, and time entries.
 - Includes Kiefer Built Payment Planner for equipment, truck, or short-term financing checks.
 - Includes Kiefer Built Rate Check for monthly periodic rate and effective annual rate review.
 - Uses construction/accounting examples instead of generic classroom calculator language.
@@ -290,10 +292,11 @@ Useful finance tools from that toolkit concept that could fit this CRM:
 - Change order impact checker for margin and schedule decisions before client approval. Built first.
 - Job cost variance calculator for budget, actual, committed, pending exposure, and contingency monitoring. Built first.
 - Cash-flow forecast by project for draw receipts, vendor payments, payroll pressure, overhead, and cash gaps. Built first.
+- Live-project presets for finance tools. Built first.
 
 Best fit for Kiefer:
-- Keep `/admin/finance-tools` separate from job records so accountants can run quick calculations without affecting live project data.
-- Next practical calculator should connect finance tools to live project records so managers can load real project defaults instead of typing every number manually.
+- Keep `/admin/finance-tools` separate from job records so accountants can run quick calculations without mutating live project data.
+- Next practical calculator improvement should save/export finance snapshots for draw review, lender review, or manager meeting packets.
 
 ### Client Portal
 
@@ -369,7 +372,7 @@ Recommended demo order for Kiefer Built:
 8. Show project photos as the visual job record.
 9. Show the trade partner directory, vendor login, authenticated `/vendor` workboard, RFI replies, and vendor submittal upload.
 10. Open `/admin/reports` to show job cost exposure, margin forecasting, needs-attention items, and vendor commitments.
-11. Open `/admin/finance-tools` to show Kiefer Built finance utilities.
+11. Open `/admin/finance-tools`, load a live project preset, and show Kiefer Built finance utilities.
 12. Open `/portal` to show the client dashboard.
 13. Open a project portal and show client approvals plus client-visible closeout items.
 14. Close by explaining that Kiefer owns the experience and branding.
@@ -386,5 +389,5 @@ Recommended demo order for Kiefer Built:
 ## Next Features To Track
 
 - Deployment to production or a Vercel preview URL for hosted Kiefer review.
-- Live-project presets for finance tools.
+- Saved/exportable finance snapshots for draw review, lender review, or manager meeting packets.
 - Vendor submittal review/approval statuses and manager comments.

@@ -4,6 +4,7 @@ import { Calculator } from "lucide-react";
 import { useMemo, useState } from "react";
 import { calculateDrawRetainagePlan } from "@/lib/admin/finance-tools";
 import { formatCurrency } from "@/lib/admin/formatters";
+import type { ProjectFinancePreset } from "@/lib/admin/project-finance-presets";
 
 const defaultInputs = {
   contractValue: "500000",
@@ -17,11 +18,15 @@ function parseAmount(value: string) {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-export default function DrawRetainagePlanner() {
-  const [contractValue, setContractValue] = useState(defaultInputs.contractValue);
-  const [percentComplete, setPercentComplete] = useState(defaultInputs.percentComplete);
-  const [retainagePercent, setRetainagePercent] = useState(defaultInputs.retainagePercent);
-  const [paidToDate, setPaidToDate] = useState(defaultInputs.paidToDate);
+export default function DrawRetainagePlanner({
+  initialValues,
+}: {
+  initialValues?: ProjectFinancePreset["drawRetainage"];
+}) {
+  const [contractValue, setContractValue] = useState(String(initialValues?.contractValue ?? defaultInputs.contractValue));
+  const [percentComplete, setPercentComplete] = useState(String(initialValues?.percentComplete ?? defaultInputs.percentComplete));
+  const [retainagePercent, setRetainagePercent] = useState(String(initialValues?.retainagePercent ?? defaultInputs.retainagePercent));
+  const [paidToDate, setPaidToDate] = useState(String(initialValues?.paidToDate ?? defaultInputs.paidToDate));
 
   const plan = useMemo(
     () =>

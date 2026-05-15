@@ -16,6 +16,16 @@ import {
   calculateLoanPaymentPlan,
   calculateMonthlyRateFromApr,
 } from "@/lib/admin/finance-tools";
+import { buildProjectFinancePreset } from "@/lib/admin/project-finance-presets";
+import {
+  getBills,
+  getChangeOrders,
+  getInvoices,
+  getProjectFinancialTargets,
+  getProjects,
+  getPurchaseOrders,
+  getTimeEntries,
+} from "@/lib/admin/queries";
 
 const paymentPlan = calculateLoanPaymentPlan({
   principal: 85000,
@@ -35,7 +45,35 @@ const effectiveAnnualRate = calculateEffectiveAnnualRate({
   compoundingPeriodsPerYear: 12,
 });
 
-export default function FinanceToolsPage() {
+export default async function FinanceToolsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ projectId?: string }>;
+}) {
+  const { projectId } = await searchParams;
+  const [projects, financialTargets, invoices, bills, purchaseOrders, changeOrders, timeEntries] = await Promise.all([
+    getProjects(),
+    getProjectFinancialTargets(),
+    getInvoices(),
+    getBills(),
+    getPurchaseOrders(),
+    getChangeOrders(),
+    getTimeEntries(),
+  ]);
+  const selectedProject = projects.find((project) => project.id === projectId) ?? projects[0] ?? null;
+  const selectedProjectId = selectedProject?.id ?? "";
+  const selectedPreset = selectedProject
+    ? buildProjectFinancePreset({
+        project: selectedProject,
+        financialTarget: financialTargets.find((target) => target.projectId === selectedProject.id) ?? null,
+        invoices: invoices.filter((invoice) => invoice.projectId === selectedProject.id),
+        bills: bills.filter((bill) => bill.projectId === selectedProject.id),
+        purchaseOrders: purchaseOrders.filter((purchaseOrder) => purchaseOrder.projectId === selectedProject.id),
+        changeOrders: changeOrders.filter((changeOrder) => changeOrder.projectId === selectedProject.id),
+        timeEntries: timeEntries.filter((entry) => entry.projectId === selectedProject.id),
+      })
+    : null;
+
   return (
     <AdminShell title="Kiefer Built Finance Tools" eyebrow="Accounting Utilities">
       <section className="mb-6 rounded-lg border border-black/10 bg-white p-5 shadow-sm">
@@ -59,8 +97,60 @@ export default function FinanceToolsPage() {
         </div>
       </section>
 
+      <section className="mb-6 rounded-lg border border-black/10 bg-white p-5 shadow-sm">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#b92516]">
+              Live CRM Presets
+            </p>
+            <h2 className="mt-1 text-lg font-bold">Load A Project Into The Finance Tools</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#655c52]">
+              Pull contract value, budget, progress, invoices, bills, purchase orders, change orders, and labor hours from the CRM so accounting starts from job data instead of blank calculator fields.
+            </p>
+          </div>
+          <form className="flex w-full flex-wrap items-end gap-3 lg:w-auto">
+            <label className="block min-w-72 flex-1 text-sm font-semibold text-[#171717] lg:min-w-96">
+              Project
+              <select
+                name="projectId"
+                defaultValue={selectedProjectId}
+                className="mt-2 w-full rounded-md border border-black/10 bg-[#f9f6f0] px-3 py-3 text-sm outline-none transition focus:border-[#b92516]"
+              >
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center rounded-md bg-[#b92516] px-4 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#951e13]"
+            >
+              Load Project Data
+            </button>
+          </form>
+        </div>
+
+        {selectedPreset ? (
+          <div className="mt-5 grid gap-3 md:grid-cols-4">
+            <PresetTile label="Selected job" value={selectedPreset.projectName} />
+            <PresetTile label="Contract + approved COs" value={formatCurrency(selectedPreset.drawRetainage.contractValue)} />
+            <PresetTile label="Budgeted cost" value={formatCurrency(selectedPreset.jobCostVariance.budgetedCost)} />
+            <PresetTile label="Paid invoices" value={formatCurrency(selectedPreset.drawRetainage.paidToDate)} />
+          </div>
+        ) : (
+          <p className="mt-4 rounded-md bg-[#f9f6f0] p-4 text-sm text-[#655c52]">
+            No projects are available to load yet. The calculators below will use Kiefer Built example values.
+          </p>
+        )}
+      </section>
+
       <div className="mb-6">
-        <DrawRetainagePlanner />
+        <DrawRetainagePlanner
+          key={`draw-${selectedProjectId}`}
+          initialValues={selectedPreset?.drawRetainage}
+        />
       </div>
 
       <div className="mb-6">
@@ -72,11 +162,17 @@ export default function FinanceToolsPage() {
       </div>
 
       <div className="mb-6">
-        <JobCostVarianceTool />
+        <JobCostVarianceTool
+          key={`variance-${selectedProjectId}`}
+          initialValues={selectedPreset?.jobCostVariance}
+        />
       </div>
 
       <div className="mb-6">
-        <ProjectCashFlowForecastTool />
+        <ProjectCashFlowForecastTool
+          key={`cash-${selectedProjectId}`}
+          initialValues={selectedPreset?.cashFlowForecast}
+        />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_0.82fr]">
@@ -155,10 +251,19 @@ export default function FinanceToolsPage() {
         </p>
         <h2 className="mt-1 text-lg font-bold">Finance Toolkit Expansion</h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-[#655c52]">
-          Next useful finance improvements are live project data presets, draw schedule snapshots, and exporting finance checks into proposal or lender-review packets.
+          Next useful finance improvements are saved draw schedule snapshots and exporting finance checks into proposal or lender-review packets.
         </p>
       </section>
     </AdminShell>
+  );
+}
+
+function PresetTile({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-black/10 p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#655c52]">{label}</p>
+      <p className="mt-2 text-lg font-bold text-[#171717]">{value}</p>
+    </div>
   );
 }
 

@@ -4,6 +4,7 @@ import { ChartNoAxesCombined } from "lucide-react";
 import { useMemo, useState } from "react";
 import { calculateJobCostVariance } from "@/lib/admin/finance-tools";
 import { formatCurrency } from "@/lib/admin/formatters";
+import type { ProjectFinancePreset } from "@/lib/admin/project-finance-presets";
 
 function parseAmount(value: string) {
   const parsed = Number(value);
@@ -14,12 +15,16 @@ function formatPercent(value: number) {
   return `${value.toFixed(2)}%`;
 }
 
-export default function JobCostVarianceTool() {
-  const [budgetedCost, setBudgetedCost] = useState("420000");
-  const [actualCost, setActualCost] = useState("260000");
-  const [committedCost, setCommittedCost] = useState("138000");
-  const [pendingExposure, setPendingExposure] = useState("29000");
-  const [contingencyPercent, setContingencyPercent] = useState("3");
+export default function JobCostVarianceTool({
+  initialValues,
+}: {
+  initialValues?: ProjectFinancePreset["jobCostVariance"];
+}) {
+  const [budgetedCost, setBudgetedCost] = useState(String(initialValues?.budgetedCost ?? "420000"));
+  const [actualCost, setActualCost] = useState(String(initialValues?.actualCost ?? "260000"));
+  const [committedCost, setCommittedCost] = useState(String(initialValues?.committedCost ?? "138000"));
+  const [pendingExposure, setPendingExposure] = useState(String(initialValues?.pendingExposure ?? "29000"));
+  const [contingencyPercent, setContingencyPercent] = useState(String(initialValues?.contingencyPercent ?? "3"));
 
   const variance = useMemo(
     () =>
