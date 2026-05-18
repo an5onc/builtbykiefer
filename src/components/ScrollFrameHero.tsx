@@ -3,12 +3,31 @@
 import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
-const TOTAL_FRAMES = 145;
+const TOTAL_FRAMES = 180;
 
 function getFrameSrc(index: number): string {
   const padded = String(index).padStart(3, "0");
-  return `/images/earth-frames/frame-${padded}.jpg`;
+  return `/images/explode-frames/frame-${padded}.jpg`;
 }
+
+/*
+ * Labels that appear ONE AT A TIME during the hold phase (frames 81-160).
+ * The hold phase maps to ~45%-89% of scroll progress.
+ * Each label gets an equal slice of that range.
+ */
+const LABELS = [
+  "Custom Roofline Angles",
+  "Natural Stone Veneer",
+  "Cedar Wood Siding",
+  "Arched Entry Portico",
+  "Stacked Stone Columns",
+  "Horizontal Accent Panels",
+  "Custom Landscaping & Hardscape",
+];
+
+const HOLD_START_PROGRESS = 80 / 180;  // ~0.444
+const HOLD_END_PROGRESS = 160 / 180;   // ~0.889
+const LABEL_SLICE = (HOLD_END_PROGRESS - HOLD_START_PROGRESS) / LABELS.length;
 
 export default function ScrollFrameHero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -16,9 +35,9 @@ export default function ScrollFrameHero() {
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const [loadProgress, setLoadProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [activeLabel, setActiveLabel] = useState<string | null>(null);
+  const [labelOpacity, setLabelOpacity] = useState(0);
 
-  // Scroll tracking: the section is 3x viewport height (300vh)
-  // so we get a nice slow scrub through all frames
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
@@ -27,9 +46,37 @@ export default function ScrollFrameHero() {
   // Map scroll progress to frame index (1-based)
   const frameIndex = useTransform(scrollYProgress, [0, 1], [1, TOTAL_FRAMES]);
 
-  // Overlay text opacity: fade in during first 20% of scroll, fade out during last 20%
-  const textOpacity = useTransform(scrollYProgress, [0, 0.08, 0.15, 0.85, 0.92, 1], [0, 0, 1, 1, 0, 0]);
-  const textY = useTransform(scrollYProgress, [0, 0.08, 0.15], [40, 40, 0]);
+  // Hero text: visible at start, fades out as house begins to explode
+  const textOpacity = useTransform(scrollYProgress, [0, 0.02, 0.06, 0.12], [0, 1, 1, 0]);
+  const textY = useTransform(scrollYProgress, [0, 0.02], [20, 0]);
+
+  // Track scroll to show labels one at a time
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    if (progress >= HOLD_START_PROGRESS && progress <= HOLD_END_PROGRESS) {
+      const holdProgress = progress - HOLD_START_PROGRESS;
+      const labelIndex = Math.min(
+        Math.floor(holdProgress / LABEL_SLICE),
+        LABELS.length - 1
+      );
+
+      // Calculate fade within this label's slice
+      const sliceProgress = (holdProgress - labelIndex * LABEL_SLICE) / LABEL_SLICE;
+      let opacity: number;
+      if (sliceProgress < 0.15) {
+        opacity = sliceProgress / 0.15; // fade in
+      } else if (sliceProgress > 0.85) {
+        opacity = (1 - sliceProgress) / 0.15; // fade out
+      } else {
+        opacity = 1; // full
+      }
+
+      setActiveLabel(LABELS[labelIndex]);
+      setLabelOpacity(Math.max(0, Math.min(1, opacity)));
+    } else {
+      setActiveLabel(null);
+      setLabelOpacity(0);
+    }
+  });
 
   // Preload all frames
   useEffect(() => {
@@ -71,7 +118,6 @@ export default function ScrollFrameHero() {
       const img = imagesRef.current[clampedIndex];
 
       if (img && img.complete && img.naturalWidth > 0) {
-        // Match canvas resolution to the viewport for crisp rendering
         const dpr = window.devicePixelRatio || 1;
         const vw = window.innerWidth;
         const vh = window.innerHeight;
@@ -84,19 +130,16 @@ export default function ScrollFrameHero() {
 
         ctx.clearRect(0, 0, vw, vh);
 
-        // "object-fit: cover" — scale image to fill viewport, crop overflow
         const imgRatio = img.naturalWidth / img.naturalHeight;
         const vpRatio = vw / vh;
         let drawW: number, drawH: number, drawX: number, drawY: number;
 
         if (imgRatio > vpRatio) {
-          // Image is wider than viewport ratio — fit height, crop sides
           drawH = vh;
           drawW = vh * imgRatio;
           drawX = (vw - drawW) / 2;
           drawY = 0;
         } else {
-          // Image is taller than viewport ratio — fit width, crop top/bottom
           drawW = vw;
           drawH = vw / imgRatio;
           drawX = 0;
@@ -115,7 +158,6 @@ export default function ScrollFrameHero() {
     drawFrame(frameIndex.get());
 
     const onResize = () => {
-      // Reset canvas dimensions so drawFrame recalculates
       const canvas = canvasRef.current;
       if (canvas) {
         canvas.width = 0;
@@ -140,7 +182,7 @@ export default function ScrollFrameHero() {
       className="relative bg-charcoal-900"
       style={{ height: "300vh" }}
     >
-      {/* Sticky container: stays viewport-pinned while user scrolls through 300vh */}
+      {/* Sticky container */}
       <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
         {/* Loading state */}
         {!isLoaded && (
@@ -159,7 +201,7 @@ export default function ScrollFrameHero() {
           </div>
         )}
 
-        {/* Canvas for frame rendering — full viewport coverage */}
+        {/* Canvas — full viewport */}
         <canvas
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
@@ -169,13 +211,13 @@ export default function ScrollFrameHero() {
           }}
         />
 
-        {/* Dark overlay for text readability */}
+        {/* Dark overlay for hero text readability */}
         <motion.div
           className="absolute inset-0 bg-charcoal-900/30 pointer-events-none"
           style={{ opacity: textOpacity }}
         />
 
-        {/* Overlay content */}
+        {/* Hero text overlay */}
         <motion.div
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pointer-events-none z-10"
           style={{ opacity: textOpacity, y: textY }}
@@ -194,7 +236,24 @@ export default function ScrollFrameHero() {
           </p>
         </motion.div>
 
-        {/* Scroll indicator at bottom */}
+        {/* Feature label — one at a time during hold phase */}
+        {activeLabel && (
+          <div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+            style={{ opacity: labelOpacity, transition: "opacity 0.15s ease" }}
+          >
+            <div className="bg-charcoal-900/70 backdrop-blur-sm px-8 py-4 rounded-lg border border-walnut-500/30">
+              <p className="text-walnut-300 text-xs tracking-[0.4em] uppercase mb-1">
+                Craftsmanship Detail
+              </p>
+              <p className="text-white text-2xl md:text-3xl lg:text-4xl font-bold tracking-wide">
+                {activeLabel}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Scroll indicator */}
         <motion.div
           className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
           animate={{ y: [0, 10, 0] }}
