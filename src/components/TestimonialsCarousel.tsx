@@ -82,7 +82,7 @@ export default function TestimonialsCarousel() {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-slate-50 to-amber-50/30">
+    <section className="py-20 bg-[#f4efe7]">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -90,10 +90,10 @@ export default function TestimonialsCarousel() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#171717] mb-4">
             What Our Clients Say
           </h2>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+          <p className="text-xl text-[#655c52] max-w-2xl mx-auto">
             Building lasting relationships through exceptional craftsmanship and service
           </p>
         </motion.div>
@@ -112,42 +112,42 @@ export default function TestimonialsCarousel() {
               >
                 {/* Testimonial Content */}
                 <div className="flex flex-col justify-center">
-                  <Quote className="w-12 h-12 text-amber-500 mb-6" />
+                  <Quote className="w-12 h-12 text-[#b92516] mb-6" />
 
                   {/* Rating Stars */}
                   <div className="flex gap-1 mb-4">
                     {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 fill-amber-500 text-amber-500" />
+                      <Star key={i} className="w-5 h-5 fill-[#b92516] text-[#b92516]" />
                     ))}
                   </div>
 
-                  <p className="text-lg text-slate-700 leading-relaxed mb-6 italic">
+                  <p className="text-lg text-[#3c3833] leading-relaxed mb-6 italic">
                     &ldquo;{testimonials[currentIndex].text}&rdquo;
                   </p>
 
                   <div className="border-t pt-6">
-                    <div className="font-semibold text-slate-900 text-lg">
+                    <div className="font-semibold text-[#171717] text-lg">
                       {testimonials[currentIndex].name}
                     </div>
-                    <div className="text-slate-600">
+                    <div className="text-[#655c52]">
                       {testimonials[currentIndex].location}
                     </div>
-                    <div className="text-amber-600 font-medium mt-1">
+                    <div className="text-[#b92516] font-medium mt-1">
                       {testimonials[currentIndex].project}
                     </div>
                   </div>
                 </div>
 
                 {/* Project Image */}
-                <div className="relative h-64 md:h-auto rounded-xl overflow-hidden bg-gradient-to-br from-slate-200 to-slate-300">
+                <div className="relative h-64 md:h-auto rounded-xl overflow-hidden bg-[#f9f6f0] border border-black/10">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center">
-                      <div className="w-24 h-24 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-12 h-12 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-24 h-24 bg-[#b92516]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-12 h-12 text-[#b92516]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
                       </div>
-                      <p className="text-slate-600 font-medium">{testimonials[currentIndex].project}</p>
+                      <p className="text-[#655c52] font-medium">{testimonials[currentIndex].project}</p>
                     </div>
                   </div>
                 </div>
@@ -158,18 +158,18 @@ export default function TestimonialsCarousel() {
           {/* Navigation Buttons */}
           <button
             onClick={goToPrevious}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#b92516]"
             aria-label="Previous testimonial"
           >
-            <ChevronLeft className="w-6 h-6 text-slate-700" />
+            <ChevronLeft className="w-6 h-6 text-[#171717]" />
           </button>
 
           <button
             onClick={goToNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-12 bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-[#b92516]"
             aria-label="Next testimonial"
           >
-            <ChevronRight className="w-6 h-6 text-slate-700" />
+            <ChevronRight className="w-6 h-6 text-[#171717]" />
           </button>
         </div>
 
@@ -181,8 +181,8 @@ export default function TestimonialsCarousel() {
               onClick={() => goToSlide(index)}
               className={`transition-all duration-300 focus:outline-none ${
                 index === currentIndex
-                  ? 'w-12 h-3 bg-amber-500 rounded-full'
-                  : 'w-3 h-3 bg-slate-300 rounded-full hover:bg-slate-400'
+                  ? 'w-12 h-3 bg-[#b92516] rounded-full'
+                  : 'w-3 h-3 bg-black/20 rounded-full hover:bg-black/35'
               }`}
               aria-label={`Go to testimonial ${index + 1}`}
             />
@@ -198,20 +198,20 @@ export default function TestimonialsCarousel() {
           className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
         >
           <div>
-            <div className="text-3xl font-bold text-amber-600">150+</div>
-            <div className="text-slate-600 mt-1">Projects Completed</div>
+            <div className="text-3xl font-bold text-[#b92516]">150+</div>
+            <div className="text-[#655c52] mt-1">Projects Completed</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-amber-600">20+</div>
-            <div className="text-slate-600 mt-1">Years Experience</div>
+            <div className="text-3xl font-bold text-[#b92516]">20+</div>
+            <div className="text-[#655c52] mt-1">Years Experience</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-amber-600">100%</div>
-            <div className="text-slate-600 mt-1">Satisfaction Rate</div>
+            <div className="text-3xl font-bold text-[#b92516]">100%</div>
+            <div className="text-[#655c52] mt-1">Satisfaction Rate</div>
           </div>
           <div>
-            <div className="text-3xl font-bold text-amber-600">5.0</div>
-            <div className="text-slate-600 mt-1">Average Rating</div>
+            <div className="text-3xl font-bold text-[#b92516]">5.0</div>
+            <div className="text-[#655c52] mt-1">Average Rating</div>
           </div>
         </motion.div>
       </div>

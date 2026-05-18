@@ -144,3 +144,28 @@ html {
   background-color: var(--color-walnut-300);
   color: white;
 }
+
+.kiefer-marquee {
+  animation: kiefer-marquee 48s linear infinite;
+}
+
+.kiefer-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes kiefer-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kiefer-marquee {
+    animation: none;
+    overflow-x: auto;
+  }
+}

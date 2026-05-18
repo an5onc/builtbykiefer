@@ -27,6 +27,14 @@ export function invoiceTotal(lineItems: { quantity: number; unitPrice: number }[
   return lineItems.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
 }
 
+export function proposalTotal(lineItems: { quantity: number; unitPrice: number }[]): number {
+  return lineItems.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
+}
+
+export function changeOrderTotal(lineItems: { quantity: number; unitPrice: number }[]): number {
+  return lineItems.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
+}
+
 export function timeEntryHours(clockIn: string, clockOut: string | null): number {
   const end = clockOut ? new Date(clockOut) : new Date();
   const start = new Date(clockIn);

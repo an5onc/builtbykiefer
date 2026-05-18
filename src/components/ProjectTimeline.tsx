@@ -137,9 +137,9 @@ export default function ProjectTimeline() {
   const getStatusIcon = (status: ProjectPhase['status']) => {
     switch (status) {
       case 'completed':
-        return <CheckCircle2 className="w-5 h-5 text-green-500" />;
+        return <CheckCircle2 className="w-5 h-5 text-[#b92516]" />;
       case 'in-progress':
-        return <Clock className="w-5 h-5 text-blue-500 animate-pulse" />;
+        return <Clock className="w-5 h-5 text-[#b92516] animate-pulse" />;
       default:
         return <Circle className="w-5 h-5 text-gray-400" />;
     }
@@ -148,9 +148,9 @@ export default function ProjectTimeline() {
   const getStatusColor = (status: ProjectPhase['status']) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-50 border-green-200';
+        return 'bg-[#b92516]/5 border-[#b92516]/20';
       case 'in-progress':
-        return 'bg-blue-50 border-blue-200 ring-2 ring-blue-400 ring-opacity-50';
+        return 'bg-[#b92516]/10 border-[#b92516]/30 ring-2 ring-[#b92516]/30';
       default:
         return 'bg-gray-50 border-gray-200';
     }
@@ -176,14 +176,14 @@ export default function ProjectTimeline() {
               onClick={() => setSelectedProject(project)}
               className={`px-6 py-3 rounded-lg border-2 transition-all ${
                 selectedProject.id === project.id
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'
+                  ? 'bg-[#b92516] text-white border-[#b92516]'
+                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#b92516]/50'
               }`}
             >
               <div className="text-left">
                 <div className="font-semibold">{project.name}</div>
                 <div className={`text-sm ${
-                  selectedProject.id === project.id ? 'text-blue-100' : 'text-gray-500'
+                  selectedProject.id === project.id ? 'text-white/80' : 'text-gray-500'
                 }`}>
                   {project.location} • {project.type}
                 </div>
@@ -228,11 +228,11 @@ export default function ProjectTimeline() {
             <div className="flex flex-col justify-center">
               <div className="mb-2 flex justify-between text-sm">
                 <span className="text-gray-600">Overall Progress</span>
-                <span className="font-bold text-blue-600">{selectedProject.progress}%</span>
+                <span className="font-bold text-[#b92516]">{selectedProject.progress}%</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
                 <div
-                  className="bg-gradient-to-r from-blue-500 to-blue-600 h-full rounded-full transition-all duration-500"
+                  className="bg-[#b92516] h-full rounded-full transition-all duration-500"
                   style={{ width: `${selectedProject.progress}%` }}
                 />
               </div>
@@ -249,7 +249,7 @@ export default function ProjectTimeline() {
                   {index < selectedProject.phases.length - 1 && (
                     <div
                       className={`absolute left-[18px] top-12 w-0.5 h-full ${
-                        phase.status === 'completed' ? 'bg-green-300' : 'bg-gray-300'
+                        phase.status === 'completed' ? 'bg-[#b92516]/40' : 'bg-gray-300'
                       }`}
                     />
                   )}
@@ -269,8 +269,8 @@ export default function ProjectTimeline() {
                         <h5 className="font-semibold text-gray-900">{phase.title}</h5>
                       </div>
                       <span className={`text-xs px-2 py-1 rounded-full ${
-                        phase.status === 'completed' ? 'bg-green-100 text-green-700' :
-                        phase.status === 'in-progress' ? 'bg-blue-100 text-blue-700' :
+                        phase.status === 'completed' ? 'bg-[#b92516]/10 text-[#b92516]' :
+                        phase.status === 'in-progress' ? 'bg-[#b92516]/10 text-[#b92516]' :
                         'bg-gray-100 text-gray-600'
                       }`}>
                         {phase.status === 'in-progress' ? 'In Progress' :
@@ -284,7 +284,7 @@ export default function ProjectTimeline() {
                       </p>
                     )}
                     {phase.status === 'in-progress' && phase.startDate && (
-                      <p className="text-xs text-blue-600">
+                      <p className="text-xs text-[#b92516]">
                         Started: {new Date(phase.startDate).toLocaleDateString()}
                       </p>
                     )}
@@ -296,7 +296,7 @@ export default function ProjectTimeline() {
         </div>
 
         {/* CTA */}
-        <div className="text-center bg-blue-50 rounded-xl p-8">
+        <div className="text-center bg-[#f9f6f0] rounded-xl p-8 border border-black/10">
           <h3 className="text-xl font-semibold text-gray-900 mb-2">
             Want Updates on Your Project?
           </h3>
@@ -305,7 +305,7 @@ export default function ProjectTimeline() {
           </p>
           <a
             href="/contact"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-[#b92516] text-white rounded-lg hover:bg-[#951e13] transition-colors"
           >
             Start Your Project
           </a>

@@ -135,8 +135,8 @@ export default function BeforeAfterShowcase() {
             {/* After Image (Bottom Layer) */}
             <div className="absolute inset-0 bg-gray-200">
               <div className="relative w-full h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-blue-500/20" />
-                <span className="absolute top-4 right-4 z-10 px-3 py-1 bg-green-500 text-white font-bold rounded-full text-sm">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#151515]/10 to-[#b92516]/15" />
+                <span className="absolute top-4 right-4 z-10 px-3 py-1 bg-[#151515] text-white font-bold rounded-full text-sm">
                   AFTER
                 </span>
               </div>
@@ -148,8 +148,8 @@ export default function BeforeAfterShowcase() {
               style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
             >
               <div className="relative w-full h-full">
-                <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-orange-500/20" />
-                <span className="absolute top-4 left-4 z-10 px-3 py-1 bg-red-500 text-white font-bold rounded-full text-sm">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#b92516]/20 to-[#151515]/10" />
+                <span className="absolute top-4 left-4 z-10 px-3 py-1 bg-[#b92516] text-white font-bold rounded-full text-sm">
                   BEFORE
                 </span>
               </div>
@@ -197,7 +197,7 @@ export default function BeforeAfterShowcase() {
               }}
               className={`w-2 h-2 rounded-full transition-all ${
                 index === currentProject
-                  ? 'w-8 bg-blue-600'
+                  ? 'w-8 bg-[#b92516]'
                   : 'bg-gray-300 hover:bg-gray-400'
               }`}
               aria-label={`Go to project ${index + 1}`}
@@ -213,13 +213,13 @@ export default function BeforeAfterShowcase() {
           <div className="flex gap-4 justify-center">
             <a
               href="/estimate"
-              className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-8 py-3 bg-[#b92516] text-white font-semibold rounded-lg hover:bg-[#951e13] transition-colors"
             >
               Get Free Estimate
             </a>
             <a
               href="/projects"
-              className="px-8 py-3 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-colors"
+              className="px-8 py-3 bg-white text-[#b92516] font-semibold rounded-lg border-2 border-[#b92516] hover:bg-[#b92516]/10 transition-colors"
             >
               View All Projects
             </a>

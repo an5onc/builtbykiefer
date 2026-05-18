@@ -92,13 +92,13 @@ export default function ProjectUpdateNotification() {
   const getUpdateIcon = (type: Update['type']) => {
     switch (type) {
       case 'milestone':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
+        return <CheckCircle className="w-5 h-5 text-[#b92516]" />;
       case 'photo':
-        return <Camera className="w-5 h-5 text-blue-500" />;
+        return <Camera className="w-5 h-5 text-[#b92516]" />;
       case 'weather':
         return <Cloud className="w-5 h-5 text-gray-500" />;
       default:
-        return <Bell className="w-5 h-5 text-orange-500" />;
+        return <Bell className="w-5 h-5 text-[#b92516]" />;
     }
   };
 
@@ -128,7 +128,7 @@ export default function ProjectUpdateNotification() {
           setIsOpen(true);
           setHasNewUpdates(false);
         }}
-        className="fixed bottom-6 right-6 z-40 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-all hover:scale-110"
+        className="fixed bottom-6 right-6 z-40 bg-[#b92516] text-white p-4 rounded-full shadow-lg hover:bg-[#951e13] transition-all hover:scale-110"
         aria-label="View project updates"
       >
         <Bell className="w-6 h-6" />
@@ -150,11 +150,11 @@ export default function ProjectUpdateNotification() {
           <div className="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-xl transform transition-transform">
             <div className="flex flex-col h-full">
               {/* Header */}
-              <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+              <div className="px-6 py-4 border-b border-gray-200 bg-[#151515] text-white">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-xl font-semibold">Project Updates</h2>
-                    <p className="text-blue-100 text-sm">Real-time progress on your projects</p>
+                    <p className="text-white/70 text-sm">Real-time progress on your projects</p>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
@@ -198,7 +198,7 @@ export default function ProjectUpdateNotification() {
                             </p>
                             {update.imageUrl && (
                               <div className="mt-2">
-                                <span className="inline-flex items-center text-xs text-blue-600">
+                                <span className="inline-flex items-center text-xs text-[#b92516]">
                                   <Camera className="w-3 h-3 mr-1" />
                                   Photo available
                                 </span>
@@ -222,7 +222,7 @@ export default function ProjectUpdateNotification() {
 
               {/* Footer */}
               <div className="p-4 border-t border-gray-200 bg-gray-50">
-                <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <button className="w-full px-4 py-2 bg-[#b92516] text-white rounded-lg hover:bg-[#951e13] transition-colors">
                   Subscribe to Email Updates
                 </button>
               </div>

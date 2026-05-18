@@ -1,184 +1,319 @@
 "use client";
 
+import { type FormEvent, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { AlertTriangle, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { buildQuoteRequestMailto, type QuoteRequest } from "@/lib/contact/quote-email";
+
+type SubmitState = "idle" | "submitting" | "success" | "error";
+
+const projectTypes = [
+  "Custom home",
+  "Kitchen remodel",
+  "Bathroom remodel",
+  "Addition",
+  "Basement finish",
+  "Exterior work",
+  "Commercial project",
+  "Not sure yet",
+];
+
+const budgetRanges = [
+  "Under $100k",
+  "$100k-$250k",
+  "$250k-$500k",
+  "$500k-$900k",
+  "$900k-$1.5M",
+  "$1.5M+",
+  "Still planning",
+];
+
+const timelines = [
+  "As soon as possible",
+  "1-3 months",
+  "3-6 months",
+  "6-12 months",
+  "More than a year",
+  "Still planning",
+];
+
+function getField(formData: FormData, key: string) {
+  return String(formData.get(key) ?? "").trim();
+}
 
 export default function Contact() {
   const ref = useRef(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [showThankYou, setShowThankYou] = useState(false);
-  const [, setLoadCount] = useState(0);
+  const [submitState, setSubmitState] = useState<SubmitState>("idle");
+  const [message, setMessage] = useState("");
+  const [mailtoHref, setMailtoHref] = useState("");
 
-  useEffect(() => {
-    // Load Buildertrend script
-    const script = document.createElement('script');
-    script.src = 'https://buildertrend.net/leads/contactforms/js/btClientContactForm.js';
-    script.type = 'text/javascript';
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup script on unmount
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const quoteRequest: QuoteRequest & { company: string } = {
+      name: getField(formData, "name"),
+      email: getField(formData, "email"),
+      phone: getField(formData, "phone"),
+      projectType: getField(formData, "projectType"),
+      location: getField(formData, "location"),
+      budget: getField(formData, "budget"),
+      timeline: getField(formData, "timeline"),
+      message: getField(formData, "message"),
+      company: getField(formData, "company"),
     };
-  }, []);
 
-  const handleIframeLoad = () => {
-    // The iframe loads twice: once initially, once after submission
-    // Show thank you after the second load (submission)
-    setLoadCount(prev => {
-      const newCount = prev + 1;
-      if (newCount > 1) {
-        setShowThankYou(true);
+    setSubmitState("submitting");
+    setMessage("");
+    setMailtoHref(buildQuoteRequestMailto(quoteRequest));
+
+    try {
+      const response = await fetch("/api/quote-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(quoteRequest),
+      });
+      const result = (await response.json().catch(() => null)) as { error?: string; code?: string } | null;
+
+      if (!response.ok) {
+        setSubmitState("error");
+        setMessage(
+          result?.code === "email_not_configured"
+            ? "The form is ready, but email delivery still needs to be configured for production. Use the email fallback below for now."
+            : result?.error ?? "Could not send the quote request. Please try again or contact Kiefer Built directly.",
+        );
+        return;
       }
-      return newCount;
-    });
-  };
 
-  const resetForm = () => {
-    setShowThankYou(false);
-    setLoadCount(0);
-    // Reload the iframe to show fresh form
-    if (iframeRef.current) {
-      iframeRef.current.src = iframeRef.current.src;
+      setSubmitState("success");
+      setMessage("Thanks. Your request was saved for the Kiefer Built team and they will follow up soon.");
+      form.reset();
+    } catch {
+      setSubmitState("error");
+      setMessage("Could not reach the quote request service. Please try again or use the email fallback below.");
     }
-  };
+  }
+
+  const isSubmitting = submitState === "submitting";
 
   return (
     <section
       id="contact"
-      className="py-24 md:py-32 bg-charcoal-800 relative overflow-hidden"
+      className="relative scroll-mt-24 overflow-hidden bg-[#151515] px-6 py-24 md:py-32"
       ref={ref}
       aria-labelledby="contact-heading"
     >
-      {/* Background accent image */}
       <div
-        className="absolute inset-0 opacity-5 bg-cover bg-center"
-        style={{
-          backgroundImage: "url(/images/project-1/exterior-2.jpg)",
-        }}
+        className="absolute inset-0 bg-cover bg-center opacity-[0.12]"
+        style={{ backgroundImage: "url(/images/project-1/exterior-2.jpg)" }}
       />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#151515] via-[#151515]/95 to-black/78" />
 
-      <div className="max-w-7xl mx-auto px-6 relative">
-        <div className="grid md:grid-cols-2 gap-16">
-          {/* Left: Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <p className="text-walnut-400 text-sm tracking-[0.3em] uppercase mb-3">
-              Get in Touch
-            </p>
-            <h2 id="contact-heading" className="text-3xl md:text-4xl font-bold text-sand-100 mb-6">
-              Ready to Build
-              <br />
-              Your Dream Home?
-            </h2>
-            <p className="text-charcoal-200 leading-relaxed mb-8">
-              Tell us about your project. Whether it&apos;s a custom new build,
-              renovation, or commercial space in Northern Colorado, we&apos;d love to hear your
-              vision.
-            </p>
+      <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.78fr_1fr] lg:items-start">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <p className="mb-3 text-sm font-bold uppercase tracking-[0.24em] text-[#ffb4a8]">
+            Get a Free Quote
+          </p>
+          <h2 id="contact-heading" className="text-4xl font-bold leading-tight text-white md:text-5xl">
+            Tell Kiefer Built what you want to build.
+          </h2>
+          <p className="mt-6 max-w-xl text-base leading-8 text-white/68">
+            Share the project type, location, rough budget, and timing. The form sends a structured
+            quote request to Kiefer Built so the first follow-up starts with the right details.
+          </p>
 
-            <address className="space-y-4 text-charcoal-200 not-italic">
-              <div>
-                <p className="text-xs tracking-wider uppercase text-walnut-400 mb-1">
-                  Phone
-                </p>
-                <a
-                  href="tel:+19705155059"
-                  className="hover:text-walnut-300 transition-colors"
-                  aria-label="Call Kiefer Built Contracting at (970) 515-5059"
-                >
-                  (970) 515-5059
-                </a>
-              </div>
-              <div>
-                <p className="text-xs tracking-wider uppercase text-walnut-400 mb-1">
-                  Email
-                </p>
-                <a
-                  href="mailto:info@kbuiltco.com"
-                  className="hover:text-walnut-300 transition-colors"
-                  aria-label="Email Kiefer Built Contracting at info@kbuiltco.com"
-                >
-                  info@kbuiltco.com
-                </a>
-              </div>
-              <div>
-                <p className="text-xs tracking-wider uppercase text-walnut-400 mb-1">
-                  Location
-                </p>
-                <p>Windsor, Colorado</p>
-              </div>
-            </address>
-          </motion.div>
-
-          {/* Right: Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative"
-          >
-            {/* Buildertrend Contact Form */}
-            <div className="bg-white p-6 rounded-lg shadow-xl relative">
-              {!showThankYou ? (
-                <iframe
-                  ref={iframeRef}
-                  src="https://buildertrend.net/leads/contactforms/ContactFormFrame.aspx?builderID=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJidWlsZGVySWQiOjczMDYwfQ.kg1wLW3_McP07nQZcG8Rft8Z2CMWbaNbyNRgAd8a5FY"
-                  scrolling="no"
-                  id="btIframe"
-                  onLoad={handleIframeLoad}
-                  style={{
-                    background: 'white',
-                    border: '0px',
-                    margin: '0 auto',
-                    width: '100%',
-                    minHeight: '600px'
-                  }}
-                  title="Contact Form"
-                />
-              ) : (
-                <div className="flex items-center justify-center min-h-[600px]">
-                  <div className="text-center p-8">
-                    <div className="mb-6">
-                      <svg
-                        className="mx-auto h-16 w-16 text-walnut-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <h3 className="text-3xl font-bold text-walnut-500 mb-4">
-                      Thank You!
-                    </h3>
-                    <p className="text-gray-600 mb-6 max-w-md">
-                      We&apos;ve received your message and will get back to you within 24 hours.
-                    </p>
-                    <button
-                      onClick={resetForm}
-                      className="px-6 py-3 bg-walnut-500 text-white rounded-lg hover:bg-walnut-600 transition-colors text-sm tracking-wider uppercase"
-                    >
-                      Submit Another Request
-                    </button>
-                  </div>
-                </div>
-              )}
+          <address className="mt-10 space-y-5 not-italic text-white/72">
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-[#ffb4a8]">
+                Phone
+              </p>
+              <a
+                href="tel:+19705155059"
+                className="text-lg font-semibold text-white transition-colors hover:text-[#ffb4a8]"
+                aria-label="Call Kiefer Built Contracting at (970) 515-5059"
+              >
+                (970) 515-5059
+              </a>
             </div>
-          </motion.div>
-        </div>
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-[#ffb4a8]">
+                Email
+              </p>
+              <a
+                href="mailto:info@kbuiltco.com"
+                className="text-lg font-semibold text-white transition-colors hover:text-[#ffb4a8]"
+                aria-label="Email Kiefer Built Contracting at info@kbuiltco.com"
+              >
+                info@kbuiltco.com
+              </a>
+            </div>
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-[#ffb4a8]">
+                Location
+              </p>
+              <p>Windsor, Colorado</p>
+            </div>
+          </address>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="rounded-md border border-white/10 bg-white p-5 shadow-2xl md:p-6"
+        >
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="company">Company</label>
+              <input id="company" name="company" tabIndex={-1} autoComplete="off" />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Name" name="name" autoComplete="name" required />
+              <Field label="Email" name="email" type="email" autoComplete="email" required />
+              <Field label="Phone" name="phone" type="tel" autoComplete="tel" required />
+              <Field label="Project location" name="location" placeholder="City, neighborhood, or address" required />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-3">
+              <SelectField label="Project type" name="projectType" options={projectTypes} required />
+              <SelectField label="Budget range" name="budget" options={budgetRanges} required />
+              <SelectField label="Timeline" name="timeline" options={timelines} required />
+            </div>
+
+            <div>
+              <label htmlFor="message" className="mb-2 block text-sm font-bold text-[#171717]">
+                Project details
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows={6}
+                required
+                minLength={10}
+                placeholder="Tell us what you are building, what matters most, and any site or schedule details we should know."
+                className="w-full rounded-md border border-black/10 bg-[#f9f6f0] px-4 py-3 text-sm text-[#171717] outline-none transition focus:border-[#c9281c] focus:bg-white"
+              />
+            </div>
+
+            {message ? (
+              <div
+                className={`flex items-start gap-3 rounded-md border p-4 text-sm leading-6 ${
+                  submitState === "success"
+                    ? "border-green-200 bg-green-50 text-green-800"
+                    : "border-[#c9281c]/30 bg-[#c9281c]/10 text-[#7e1a13]"
+                }`}
+              >
+                {submitState === "success" ? (
+                  <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
+                ) : (
+                  <AlertTriangle className="mt-0.5 size-5 shrink-0" />
+                )}
+                <div>
+                  <p>{message}</p>
+                  {submitState === "error" && mailtoHref ? (
+                    <a className="mt-2 inline-flex font-bold underline" href={mailtoHref}>
+                      Open this request in an email
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#c9281c] px-6 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white transition hover:bg-[#a91f16] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  Sending Request
+                </>
+              ) : (
+                <>
+                  Send Quote Request
+                  <ArrowRight className="size-4" />
+                </>
+              )}
+            </button>
+          </form>
+        </motion.div>
       </div>
     </section>
+  );
+}
+
+function Field({
+  label,
+  name,
+  type = "text",
+  placeholder,
+  autoComplete,
+  required,
+}: {
+  label: string;
+  name: string;
+  type?: string;
+  placeholder?: string;
+  autoComplete?: string;
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <label htmlFor={name} className="mb-2 block text-sm font-bold text-[#171717]">
+        {label}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        required={required}
+        className="w-full rounded-md border border-black/10 bg-[#f9f6f0] px-4 py-3 text-sm text-[#171717] outline-none transition focus:border-[#c9281c] focus:bg-white"
+      />
+    </div>
+  );
+}
+
+function SelectField({
+  label,
+  name,
+  options,
+  required,
+}: {
+  label: string;
+  name: string;
+  options: string[];
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <label htmlFor={name} className="mb-2 block text-sm font-bold text-[#171717]">
+        {label}
+      </label>
+      <select
+        id={name}
+        name={name}
+        required={required}
+        defaultValue=""
+        className="w-full rounded-md border border-black/10 bg-[#f9f6f0] px-4 py-3 text-sm text-[#171717] outline-none transition focus:border-[#c9281c] focus:bg-white"
+      >
+        <option value="" disabled>
+          Select one
+        </option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }
