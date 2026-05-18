@@ -38,17 +38,26 @@ function ActionLink({
   );
 }
 
-function Card({ card }: { card: PublicCard }) {
+function Card({
+  card,
+  imageAspect = "aspect-[4/3]",
+  imageSizes = "(max-width: 768px) 100vw, 33vw",
+}: {
+  card: PublicCard;
+  imageAspect?: string;
+  imageSizes?: string;
+}) {
   const body = (
     <article className="group h-full overflow-hidden rounded-md border border-black/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
       {card.image ? (
-        <div className="relative aspect-[4/3] overflow-hidden bg-[#151515]">
+        <div className={`relative ${imageAspect} overflow-hidden bg-[#151515]`}>
           <Image
             src={card.image}
             alt={`${card.title} by Kiefer Built Contracting`}
             fill
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes={imageSizes}
             className="object-cover transition duration-700 group-hover:scale-105"
+            style={card.imagePosition ? { objectPosition: card.imagePosition } : undefined}
           />
         </div>
       ) : null}
@@ -145,6 +154,12 @@ function Testimonials({ testimonials }: { testimonials: TestimonialSummary[] }) 
 }
 
 export default function PublicPage({ content }: { content: PublicPageContent }) {
+  const usesFourColumnCards = content.cardsLayout === "fourColumn";
+  const cardGridClass =
+    usesFourColumnCards ? "grid gap-5 md:grid-cols-2 xl:grid-cols-4" : "grid gap-5 md:grid-cols-2 lg:grid-cols-3";
+  const cardImageAspect = usesFourColumnCards ? "aspect-[4/5]" : undefined;
+  const cardImageSizes = usesFourColumnCards ? "(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw" : undefined;
+
   return (
     <div className="bg-white text-[#171717]">
       <Header />
@@ -198,9 +213,9 @@ export default function PublicPage({ content }: { content: PublicPageContent }) 
         {content.cards ? (
           <section className="bg-[#f9f6f0] px-6 py-20 md:py-24">
             <div className="mx-auto max-w-7xl">
-              <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              <div className={cardGridClass}>
                 {content.cards.map((card) => (
-                  <Card key={card.title} card={card} />
+                  <Card key={card.title} card={card} imageAspect={cardImageAspect} imageSizes={cardImageSizes} />
                 ))}
               </div>
             </div>

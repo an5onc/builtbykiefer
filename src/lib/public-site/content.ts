@@ -3,6 +3,7 @@ export type PublicCard = {
   description: string;
   href?: string;
   image?: string;
+  imagePosition?: string;
   meta?: string;
 };
 
@@ -25,6 +26,7 @@ export type PublicPageContent = {
   description: string;
   heroImage: string;
   heroAlt: string;
+  cardsLayout?: "default" | "fourColumn";
   primaryCta?: {
     label: string;
     href: string;
@@ -91,31 +93,43 @@ export const publicPages: Record<string, PublicPageContent> = {
   team: {
     title: "The Kiefer Built Team",
     description:
-      "Meet the family leadership behind Kiefer Built Contracting: Mark Kiefer, Mindy Kiefer, and Miles Kiefer.",
+      "Meet the family leadership behind Kiefer Built Contracting: Mark Kiefer, Mindy Kiefer, Miles Kiefer, and Marlys Kiefer.",
     heroImage: "/images/project-3/interior-open-plan.jpg",
     heroAlt: "Open custom home interior by Kiefer Built Contracting",
     primaryCta: cta,
+    cardsLayout: "fourColumn",
     cards: [
       {
         title: "Mark Kiefer",
         meta: "Owner",
         description:
           "Mark leads the build side with hands-on construction experience, practical problem solving, and a standard of work that puts quality ahead of shortcuts.",
-        image: "/images/project-3/exterior-entry-portico.jpg",
+        image: "/images/team/mark-kiefer.jpg",
+        imagePosition: "center 28%",
       },
       {
         title: "Mindy Kiefer",
         meta: "CFO",
         description:
           "Mindy supports the financial and operational discipline that keeps projects organized, accountable, and grounded in real numbers.",
-        image: "/images/project-3/interior-primary-bath-vanity.jpg",
+        image: "/images/team/mindy-kiefer.jpg",
+        imagePosition: "center 30%",
       },
       {
         title: "Miles Kiefer",
         meta: "Estimator & Project Manager",
         description:
           "Miles helps translate early project ideas into scope, pricing, schedules, and day-to-day coordination that clients can follow.",
-        image: "/images/project-2/exterior-front-facade.jpg",
+        image: "/images/team/miles-kiefer-tight.jpg",
+        imagePosition: "center 24%",
+      },
+      {
+        title: "Marlys Kiefer",
+        meta: "COO",
+        description:
+          "Marlys supports the operational systems, team coordination, and follow-through that keep Kiefer Built projects moving with clarity.",
+        image: "/images/team/marlys-kiefer.jpg",
+        imagePosition: "center 34%",
       },
     ],
     sections: [
