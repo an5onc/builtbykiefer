@@ -8,7 +8,7 @@ export default function Contact() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [showThankYou, setShowThankYou] = useState(false);
-  const [loadCount, setLoadCount] = useState(0);
+  const [, setLoadCount] = useState(0);
 
   useEffect(() => {
     // Load Buildertrend script
