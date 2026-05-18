@@ -98,6 +98,7 @@ describe("Supabase admin row mappers", () => {
       name: "Avery",
       email: "a@example.com",
       phone: "555",
+      authUserId: null,
     });
 
     expect(

@@ -62,6 +62,13 @@ Sales proposal angle:
 - Tracks lead status, follow-up dates, project type, budget range, and notes.
 - Lead detail pages support updating follow-up and status.
 
+**Website quote request lead capture**
+- Route: public contact form at `/#contact`, API route `/api/quote-request`
+- Saves completed website quote requests into `/admin/leads` as new CRM leads.
+- Stores project location, timeline, and project details in lead notes with a `Website Quote Request` source marker.
+- Keeps email notification optional, so leads are still captured even when Resend/email delivery is not configured.
+- Includes a honeypot field so obvious bot submissions can be ignored without creating CRM noise.
+
 **Proposal workflow**
 - Route: `/admin/proposals`
 - Create proposals from leads.
@@ -70,6 +77,7 @@ Sales proposal angle:
 
 Sales proposal angle:
 - Keeps new business, follow-ups, and estimates in the same operating system as active jobs.
+- Turns the public website into a direct CRM intake channel instead of relying on email inbox forwarding.
 
 ### Project Management
 
@@ -310,18 +318,20 @@ Best fit for Kiefer:
 - Shows active project cards, progress, current phase, latest client-visible field report, open selections, open RFIs, open change orders, invoice balance, and shared file count.
 - Links each project into its full project portal.
 - Uses client-safe projection logic so internal-only files, RFIs, field reports, and notes do not leak into the owner experience.
+- Requires a Supabase client login, filters the dashboard to the signed-in client, and includes a needs-attention summary for owner decisions and open balance.
 
 Sales proposal angle:
-- Gives Kiefer a polished client-facing home base, not just one-off project pages. This supports the pitch that Kiefer owns the entire customer experience from sales through closeout.
+- Gives Kiefer a secure, polished client-facing home base, not just one-off project pages. This supports the pitch that Kiefer owns the entire customer experience from sales through closeout.
 
 **Project client portal**
 - Route: `/portal/projects/[projectId]`
 - Branded Kiefer Built client view.
 - Shows current phase, progress, client-visible updates, comments, field reports, approved selections, shared RFIs, timeline, shared files, invoices, and change orders.
 - Hides internal notes, internal files, internal RFIs, and internal field reports.
+- Verifies the signed-in client owns the project before rendering project details or accepting client approvals.
 
 Sales proposal angle:
-- Clients get a polished Kiefer-owned experience instead of a third-party portal. This is a major differentiation point.
+- Clients get a secure, polished Kiefer-owned experience instead of a third-party portal. This is a major differentiation point.
 
 ### Floating Action Cleanup
 
@@ -354,12 +364,16 @@ Migrations added for:
 - Finance tools.
 - Vendor auth email, authenticated vendor workboard access, and vendor RFI response RLS.
 - Vendor submittals table, private Storage upload policies, and anonymous grant tightening.
+- Client auth user linking, authenticated client portal RLS, and anonymous client approval grant tightening.
+- Public website quote request lead capture with narrow anonymous insert access to `leads`.
 
 Data model principles:
 
 - Admin-managed tables use row level security.
 - Authenticated admin grants are explicit.
+- Public lead intake allows insert-only access for quote requests, without public read/update/delete access.
 - Client portal views filter visibility before rendering client-facing data.
+- Client portal routes require an authenticated client session and project ownership check.
 - Demo data exists for sales/demo walkthroughs.
 
 ## Demo Script Notes

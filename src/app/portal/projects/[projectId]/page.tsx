@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import {
   CalendarDays,
   Camera,
@@ -14,6 +14,7 @@ import {
   Wrench,
 } from "lucide-react";
 import StatusBadge from "@/components/admin/StatusBadge";
+import { getCurrentClient, portalLoginUrl } from "@/lib/admin/client-auth";
 import { buildClientPortalView } from "@/lib/admin/client-portal";
 import { formatCurrency, formatDate, formatDateTime } from "@/lib/admin/formatters";
 import {
@@ -43,9 +44,15 @@ export default async function ClientProjectPortalPage({
 }) {
   const { projectId } = await params;
   const { notice, error } = await searchParams;
+  const clientSession = await getCurrentClient();
+
+  if (!clientSession) {
+    redirect(portalLoginUrl({ next: `/portal/projects/${projectId}` }));
+  }
+
   const project = await getProject(projectId);
 
-  if (!project) {
+  if (!project || project.clientId !== clientSession.client.id) {
     notFound();
   }
 

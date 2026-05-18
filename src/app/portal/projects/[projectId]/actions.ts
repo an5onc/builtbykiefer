@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { approveChangeOrder, approveProjectSelection } from "@/lib/admin/queries";
+import { getCurrentClient, portalLoginUrl } from "@/lib/admin/client-auth";
+import { approveChangeOrder, approveProjectSelection, getProject } from "@/lib/admin/queries";
 import { parseChangeOrderApprovalFormData } from "@/lib/admin/change-orders";
 import { parseSelectionApprovalFormData } from "@/lib/admin/selections";
 
@@ -16,7 +17,23 @@ function portalProjectUrl(projectId: string, params: Record<string, string>) {
   return `${url.pathname}${url.search}`;
 }
 
+async function assertClientProjectAccess(projectId: string) {
+  const clientSession = await getCurrentClient();
+
+  if (!clientSession) {
+    redirect(portalLoginUrl({ next: `/portal/projects/${projectId}` }));
+  }
+
+  const project = await getProject(projectId);
+
+  if (!project || project.clientId !== clientSession.client.id) {
+    redirect(portalProjectUrl(projectId, { error: "You do not have access to that project." }));
+  }
+}
+
 export async function approveSelectionAction(projectId: string, selectionId: string, formData: FormData) {
+  await assertClientProjectAccess(projectId);
+
   const parsed = parseSelectionApprovalFormData(formData);
 
   if (!parsed.ok) {
@@ -37,6 +54,8 @@ export async function approveSelectionAction(projectId: string, selectionId: str
 }
 
 export async function approveChangeOrderAction(projectId: string, changeOrderId: string, formData: FormData) {
+  await assertClientProjectAccess(projectId);
+
   const parsed = parseChangeOrderApprovalFormData(formData);
 
   if (!parsed.ok) {

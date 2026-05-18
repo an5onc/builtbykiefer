@@ -153,6 +153,66 @@ export interface ClientPortalDashboardView {
   };
 }
 
+export interface ClientPortalSource {
+  projects: Project[];
+  clients: Client[];
+  files: ProjectFile[];
+  selections: ProjectSelection[];
+  rfis: ProjectRfi[];
+  dailyLogs: ProjectDailyLog[];
+  invoices: Invoice[];
+  changeOrders: ChangeOrder[];
+  warrantyItems: WarrantyItem[];
+  projectPhotos: ProjectPhoto[];
+  vendors: Vendor[];
+  vendorAssignments: ProjectVendorAssignment[];
+  updates: ProjectUpdate[];
+  comments: ProjectComment[];
+}
+
+export function filterClientPortalSourceForClient(source: ClientPortalSource, clientId: string): ClientPortalSource {
+  const projects = source.projects.filter((project) => project.clientId === clientId);
+  const projectIds = new Set(projects.map((project) => project.id));
+  const projectMatches = (projectId: string) => projectIds.has(projectId);
+
+  return {
+    projects,
+    clients: source.clients.filter((client) => client.id === clientId),
+    files: source.files.filter((file) => projectMatches(file.projectId)),
+    selections: source.selections.filter((selection) => projectMatches(selection.projectId)),
+    rfis: source.rfis.filter((rfi) => projectMatches(rfi.projectId)),
+    dailyLogs: source.dailyLogs.filter((dailyLog) => projectMatches(dailyLog.projectId)),
+    invoices: source.invoices.filter((invoice) => projectMatches(invoice.projectId)),
+    changeOrders: source.changeOrders.filter((changeOrder) => projectMatches(changeOrder.projectId)),
+    warrantyItems: source.warrantyItems.filter((item) => projectMatches(item.projectId)),
+    projectPhotos: source.projectPhotos.filter((photo) => projectMatches(photo.projectId)),
+    vendors: source.vendors,
+    vendorAssignments: source.vendorAssignments.filter((assignment) => projectMatches(assignment.projectId)),
+    updates: source.updates.filter((update) => projectMatches(update.projectId)),
+    comments: source.comments.filter((comment) => projectMatches(comment.projectId)),
+  };
+}
+
+export function getDashboardNeedsAttention(dashboard: ClientPortalDashboardView) {
+  return {
+    selections: dashboard.projects.reduce((sum, project) => sum + project.openSelectionCount, 0),
+    rfis: dashboard.projects.reduce((sum, project) => sum + project.openRfiCount, 0),
+    changeOrders: dashboard.projects.reduce((sum, project) => sum + project.openChangeOrderCount, 0),
+    warranty: dashboard.projects.reduce((sum, project) => sum + project.openWarrantyCount, 0),
+    invoiceBalance: dashboard.totals.invoiceBalance,
+    total:
+      dashboard.projects.reduce((sum, project) => {
+        return (
+          sum +
+          project.openSelectionCount +
+          project.openRfiCount +
+          project.openChangeOrderCount +
+          project.openWarrantyCount
+        );
+      }, 0) + (dashboard.totals.invoiceBalance > 0 ? 1 : 0),
+  };
+}
+
 export function buildClientPortalDashboardView({
   projects,
   clients,

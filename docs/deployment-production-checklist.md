@@ -19,6 +19,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<production anon key>
 NEXT_PUBLIC_DEMO_MODE=false
 ADMIN_EMAIL=<approved admin email>
 NEXT_PUBLIC_APP_URL=https://www.builtbykiefer.com
+RESEND_API_KEY=<production email API key>
+CONTACT_EMAIL_FROM=Kiefer Built <quotes@builtbykiefer.com>
+CONTACT_EMAIL_TO=info@kbuiltco.com
 ```
 
 Do not expose Supabase service-role keys in `NEXT_PUBLIC_` variables.
@@ -69,6 +72,7 @@ Recommended path for production:
 ## Post-Deploy Smoke Test
 
 - Public site loads.
+- Public quote form submits and sends a formatted email to `info@kbuiltco.com`.
 - `/login` renders the admin login.
 - Approved admin can sign in.
 - `/admin` command center renders without Supabase fallback errors.

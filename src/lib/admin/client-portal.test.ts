@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildClientPortalDashboardView, buildClientPortalView } from "./client-portal";
+import {
+  buildClientPortalDashboardView,
+  buildClientPortalView,
+  filterClientPortalSourceForClient,
+  getDashboardNeedsAttention,
+} from "./client-portal";
 import type {
   ChangeOrder,
   Client,
@@ -577,5 +582,149 @@ describe("client portal view", () => {
       invoiceBalance: 200,
     });
     expect(JSON.stringify(dashboard)).not.toContain("Internal");
+  });
+
+  it("filters portal source records to the signed-in client before building the dashboard", () => {
+    const filtered = filterClientPortalSourceForClient(
+      {
+        projects: [project, secondProject],
+        clients: [client, secondClient],
+        files: [
+          ...files,
+          {
+            ...files[0],
+            id: "file-3",
+            projectId: "project-2",
+            name: "Other client file",
+          },
+        ],
+        selections: [
+          ...selections,
+          {
+            ...selections[0],
+            id: "selection-3",
+            projectId: "project-2",
+          },
+        ],
+        rfis: [
+          ...rfis,
+          {
+            ...rfis[0],
+            id: "rfi-3",
+            projectId: "project-2",
+          },
+        ],
+        dailyLogs: [
+          ...dailyLogs,
+          {
+            ...dailyLogs[0],
+            id: "log-3",
+            projectId: "project-2",
+          },
+        ],
+        invoices: [
+          ...invoices,
+          {
+            ...invoices[0],
+            id: "invoice-2",
+            projectId: "project-2",
+            clientId: "client-2",
+          },
+        ],
+        changeOrders: [
+          ...changeOrders,
+          {
+            ...changeOrders[0],
+            id: "change-order-2",
+            projectId: "project-2",
+            clientId: "client-2",
+          },
+        ],
+        warrantyItems: [
+          ...warrantyItems,
+          {
+            ...warrantyItems[0],
+            id: "warranty-3",
+            projectId: "project-2",
+          },
+        ],
+        projectPhotos: [
+          ...projectPhotos,
+          {
+            ...projectPhotos[0],
+            id: "photo-3",
+            projectId: "project-2",
+          },
+        ],
+        vendors,
+        vendorAssignments: [
+          ...vendorAssignments,
+          {
+            ...vendorAssignments[0],
+            id: "vendor-assignment-2",
+            projectId: "project-2",
+          },
+        ],
+        updates: [
+          ...updates,
+          {
+            ...updates[0],
+            id: "update-3",
+            projectId: "project-2",
+          },
+        ],
+        comments: [
+          ...comments,
+          {
+            ...comments[0],
+            id: "comment-3",
+            projectId: "project-2",
+          },
+        ],
+      },
+      "client-1",
+    );
+
+    expect(filtered.projects.map((filteredProject) => filteredProject.id)).toEqual(["project-1"]);
+    expect(filtered.clients.map((filteredClient) => filteredClient.id)).toEqual(["client-1"]);
+    expect(filtered.files.every((file) => file.projectId === "project-1")).toBe(true);
+    expect(filtered.selections.every((selection) => selection.projectId === "project-1")).toBe(true);
+    expect(filtered.rfis.every((rfi) => rfi.projectId === "project-1")).toBe(true);
+    expect(filtered.dailyLogs.every((dailyLog) => dailyLog.projectId === "project-1")).toBe(true);
+    expect(filtered.invoices.every((invoice) => invoice.projectId === "project-1")).toBe(true);
+    expect(filtered.changeOrders.every((changeOrder) => changeOrder.projectId === "project-1")).toBe(true);
+    expect(filtered.warrantyItems.every((item) => item.projectId === "project-1")).toBe(true);
+    expect(filtered.projectPhotos.every((photo) => photo.projectId === "project-1")).toBe(true);
+    expect(filtered.vendorAssignments.every((assignment) => assignment.projectId === "project-1")).toBe(true);
+    expect(filtered.updates.every((update) => update.projectId === "project-1")).toBe(true);
+    expect(filtered.comments.every((comment) => comment.projectId === "project-1")).toBe(true);
+  });
+
+  it("summarizes client dashboard records that need owner attention", () => {
+    const dashboard = buildClientPortalDashboardView({
+      projects: [project, secondProject],
+      clients: [client, secondClient],
+      files,
+      updates,
+      comments,
+      selections,
+      rfis,
+      dailyLogs,
+      invoices,
+      changeOrders,
+      warrantyItems,
+      projectPhotos,
+      vendors,
+      vendorAssignments,
+    });
+
+    expect(getDashboardNeedsAttention(dashboard)).toEqual({
+      selections: 1,
+      rfis: 0,
+      changeOrders: 1,
+      warranty: 1,
+      invoiceBalance: 200,
+      total: 4,
+    });
   });
 });

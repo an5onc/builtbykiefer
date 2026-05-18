@@ -224,12 +224,14 @@ export function mapClientRow(row: {
   name: string;
   email: string;
   phone: string;
+  auth_user_id?: string | null;
 }): Client {
   return {
     id: row.id,
     name: row.name,
     email: row.email,
     phone: row.phone,
+    authUserId: row.auth_user_id ?? null,
   };
 }
 

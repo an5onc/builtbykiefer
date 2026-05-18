@@ -146,7 +146,7 @@ export async function getClients() {
 
   const { data, error } = await supabase
     .from("clients")
-    .select("id, name, email, phone")
+    .select("id, name, email, phone, auth_user_id")
     .order("created_at", { ascending: false });
 
   if (error) {
