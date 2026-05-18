@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
@@ -41,7 +42,7 @@ export default function Header() {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a href="/" className="flex flex-col">
+          <Link href="/" className="flex flex-col">
             <span
               className={`text-xl font-bold tracking-wider transition-colors ${
                 scrolled ? "text-sand-100" : "text-white"
@@ -56,7 +57,7 @@ export default function Header() {
             >
               Custom Homes &middot; Northern Colorado
             </span>
-          </a>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
             {navLinks.map((link) => (

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Calculator, Home, Hammer, PaintBucket, Bath, ChefHat, Building, DollarSign, Phone } from 'lucide-react';
+import { Calculator, Home, Hammer, PaintBucket, Bath, ChefHat, Building, Phone } from 'lucide-react';
 import Link from 'next/link';
 
 const projectTypes = [
