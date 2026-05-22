@@ -22,7 +22,7 @@ Server-side functionality is required for:
 - Secure file/document workflows
 - Supabase access
 - Branded invoice PDF generation
-- Railway deployment
+- Vercel deployment with server routes
 
 ## Getting Started
 
@@ -87,13 +87,12 @@ where email = 'owner@example.com';
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 NEXT_PUBLIC_DEMO_MODE=false
 ADMIN_EMAIL=owner@example.com
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-The migration creates private `project-documents`, `project-photos`, and `invoice-pdfs` buckets. Admin users can manage these objects through RLS; customer and employee policies should be added only when those portals exist.
+The migrations create the CRM schema, RLS policies, and storage buckets used by admin, client portal, and vendor portal workflows. Apply all migrations in order before relying on hosted Supabase behavior.
 
 ## Quote Request Email Setup
 

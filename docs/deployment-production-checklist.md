@@ -5,9 +5,9 @@ Use this checklist when moving the local CRM from `localhost:3000` to a hosted K
 ## Current Hosting Facts
 
 - `builtbykiefer.com` and `www.builtbykiefer.com` are served by Vercel.
-- The public production site currently returns `404` for `/admin` and `/vendor/login`, so the CRM routes have not been deployed to production yet.
-- `admin.builtbykiefer.com` does not currently resolve in DNS.
-- The repo README says Vercel auto-deploys from `main`, but the active CRM work is on `codex/protected-backend-foundation` with local uncommitted changes.
+- The repo README says Vercel auto-deploys from `main`; verify current Vercel project settings before relying on this.
+- Re-check live production routes and DNS before deployment planning; older route/DNS observations may be stale.
+- Current repo work is on `main` as of the 2026-05-22 handoff cleanup.
 
 ## Required Vercel Environment Variables
 
@@ -40,9 +40,9 @@ If using a separate admin subdomain later, also add:
 
 ## Database State
 
-The linked Supabase project has the latest CRM migrations applied through:
+The local repo currently includes CRM migrations through:
 
-- `20260515054716_tighten_vendor_submittal_anon_grants`
+- `20260517225648_allow_public_quote_lead_capture.sql`
 
 Before deployment, confirm with:
 
@@ -55,7 +55,7 @@ npm run build
 
 Recommended path for review:
 
-1. Commit the current CRM work on `codex/protected-backend-foundation`.
+1. Commit the current reviewed work on the intended branch.
 2. Push the branch to GitHub.
 3. Let Vercel create a preview deployment for review.
 4. Add the preview callback URL in Supabase Auth.
