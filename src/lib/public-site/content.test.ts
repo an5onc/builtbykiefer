@@ -2,21 +2,21 @@ import { describe, expect, it } from "vitest";
 import { publicPages } from "./content";
 
 describe("public site content", () => {
-  it("markets custom elevators with the new project-4 imagery", () => {
+  it("routes custom elevator marketing to the dedicated service page", () => {
     const servicesCards = publicPages.services.cards ?? [];
-    const renovationCards = publicPages.renovations.cards ?? [];
+    const projectCards = publicPages.projects.cards ?? [];
     const renovationSections = publicPages.renovations.sections ?? [];
 
     const serviceCard = servicesCards.find((card) => card.title === "Custom Elevators");
-    const renovationCard = renovationCards.find((card) => card.title === "Custom Elevators");
-    const elevatorSection = renovationSections.find((section) => section.title.includes("Custom elevators"));
+    const projectCard = projectCards.find((card) => card.title === "Custom Elevator Renovation");
+    const elevatorSection = renovationSections.find((section) => section.id === "custom-elevators");
 
     expect(serviceCard).toBeDefined();
-    expect(renovationCard).toBeDefined();
-    expect(elevatorSection).toBeDefined();
+    expect(projectCard).toBeDefined();
     expect(serviceCard?.image).toContain("/images/project-4/");
-    expect(renovationCard?.image).toContain("/images/project-4/");
-    expect(elevatorSection?.body).toContain("designers");
-    expect((elevatorSection as { id?: string } | undefined)?.id).toBe("custom-elevators");
+    expect(projectCard?.image).toContain("/images/project-4/");
+    expect(serviceCard?.href).toBe("/services/custom-elevators");
+    expect(projectCard?.href).toBe("/services/custom-elevators");
+    expect(elevatorSection).toBeUndefined();
   });
 });

@@ -1,64 +1,69 @@
 # Tasks
 
 ## Objective
-Add the new `public/images/project-4` build photos to the public website as an additional project/service proof point, and market Kiefer Built's new custom elevator capability to designers and customers.
+Transform `/projects/renovations-additions` from a static card grid into an Apple-inspired interactive showcase where each renovation category is clickable and expands into a premium, image-led section with horizontal project galleries.
 
 ## Assumptions
-- The `project-4` images are approved for public website use.
-- The circular glass elevator/lift shown in `DSC05496.jpg`, `DSC05499.jpg`, `DSC05502.jpg`, and `DSC05505.jpg` is the custom elevator work to market.
-- The same build also includes bathroom and kitchen finish photos, so the project can be represented as a renovation/custom improvement rather than only an elevator installation.
-- The three `.mov` files will not be added in this pass unless needed, because the existing public project/gallery patterns use images.
-- No new standalone route is required unless the user wants a dedicated custom-elevators page later.
+- The page should stay at `/projects/renovations-additions`; no separate pages are needed for Kitchens, Bathrooms, Living Spaces, Exteriors, or Custom Elevators.
+- The current five category cards should become interactive navigation controls.
+- Each category should have its own section on the same page with a horizontal, touch-friendly gallery using existing project photography.
+- Custom Elevators should link visually into the dedicated `/services/custom-elevators` page as the deeper service destination, but still have a short showcase section on this renovations page.
+- The implementation should feel premium and modern, inspired by Apple-style product pages: large photography, strong spacing, sticky/active category navigation, smooth scroll, and restrained motion.
+- Use existing local images only; no generated or stock imagery.
 
 ## Risk Check
-- Functional risk: Low; this should be content/component updates in existing public pages.
-- Regression risk: Low to moderate; homepage and shared public content render many marketing pages, so edits must preserve existing layouts.
-- Security risk: Low; no auth, data, or API behavior should change.
-- Performance risk: Moderate; the new images are high-resolution, so they should be used through `next/image` and limited to necessary placements.
-- UX risk: Moderate; the new elevator section must feel like a real service offering, not a tacked-on card.
-- Maintainability risk: Low if changes stay in existing content/data structures and a small reusable section if needed.
+- Functional risk: Moderate; replacing the generic `PublicPage` route with a custom interactive page changes page structure.
+- Regression risk: Moderate; public content links and SEO copy should remain coherent.
+- Security risk: Low; no auth, API, database, or form behavior changes.
+- Performance risk: Moderate; horizontal galleries must use `next/image`, stable sizes, and avoid excessive above-the-fold loading.
+- UX risk: Moderate; interactions must be obvious and work on desktop, mobile, keyboard, and touch.
+- Maintainability risk: Moderate; category data should live in the page or a small local data structure rather than scattered markup.
 
 ## Plan
-- [x] Identify the smallest set of website files that need updates.
-- [x] Add `project-4` imagery into the project/gallery and renovation/service content.
-- [x] Add a homepage custom elevator marketing section using the new elevator photos and existing visual language.
-- [x] Update copy so custom elevators are clearly positioned for homeowners, designers, and accessibility-focused remodels.
-- [x] Check responsive layout and avoid changing unrelated admin/portal behavior.
+- [x] Add a focused content/data test for the renovations showcase categories and gallery image coverage.
+- [x] Replace `/projects/renovations-additions` with a custom client-capable page instead of the generic `PublicPage` wrapper.
+- [x] Build an interactive category rail from the five cards with smooth-scroll links and active-section state.
+- [x] Add five category sections, each with concise service copy, proof details, and a horizontal scroll-snap gallery.
+- [x] Add polished controls: previous/next buttons, keyboard-friendly anchors, active category indication, and reduced-motion-safe behavior.
+- [x] Preserve public shell, contact CTA, and visual direction: real photography, charcoal, warm cream, restrained red accents.
+- [x] Verify desktop and mobile rendering, no horizontal page overflow, working category jumps, and no broken image paths.
 
 ## Verification Plan
+- [x] Run the targeted renovations showcase test.
 - [x] Run `npm run lint`.
 - [x] Run `npm run typecheck`.
 - [x] Run `npm run build`.
-- [x] Start the dev server and visually inspect the homepage plus affected project/service pages on desktop and mobile.
+- [x] Browser-check `/projects/renovations-additions` on desktop and mobile, including category clicks and gallery controls.
 
 ## Review
 ### Summary of Changes
-- Added custom elevator marketing to the homepage using the new `project-4` photos.
-- Added custom elevator cards to the services, project gallery, and renovations/additions public content.
-- Added an anchored custom elevator section on the renovations/additions page.
-- Added a content regression test for the new elevator marketing content and hash target.
+- Rebuilt `/projects/renovations-additions` as an Apple-inspired interactive showcase instead of a static generic card page.
+- Added five clickable categories: Kitchens, Bathrooms, Living Spaces, Exteriors, and Custom Elevators.
+- Added a sticky active category rail, smooth same-page category jumps, and horizontal scroll-snap galleries with previous/next controls.
+- Added a tested renovations showcase data module with real local project images and category proof points.
+- Preserved the public header/footer, project CTA, Kiefer visual language, and mobile swipe behavior.
 
 ### Files Changed
-- `src/app/page.tsx` - Added the homepage custom elevator section and included elevator work in the moving project gallery.
-- `src/components/public-site/PublicPage.tsx` - Added optional section IDs and scroll offset support for anchored public sections.
-- `src/lib/public-site/content.ts` - Added project/service copy and `project-4` imagery for custom elevators.
-- `src/lib/public-site/content.test.ts` - Added regression coverage for the custom elevator content.
-- `tasks.todo.md` - Tracked implementation and verification.
+- `src/app/projects/renovations-additions/page.tsx` - Swapped the route to the custom renovations showcase page and added metadata.
+- `src/components/public-site/RenovationsShowcasePage.tsx` - New interactive page component with hero, category cards, sticky rail, gallery sections, and CTA.
+- `src/lib/public-site/renovations-showcase.ts` - New typed showcase data for categories, proof points, CTAs, and galleries.
+- `src/lib/public-site/renovations-showcase.test.ts` - New regression test for category coverage and image existence.
+- `tasks.todo.md` - Updated plan, verification, and review.
 
 ### Verification Completed
-- `npm test -- src/lib/public-site/content.test.ts` - passed.
-- `npm run lint` - passed.
+- `npm test -- src/lib/public-site/renovations-showcase.test.ts src/lib/public-site/content.test.ts` - passed.
+- `npm run lint` - passed with one unrelated existing warning in `scripts/compress-images.mjs`.
 - `npm run typecheck` - passed.
 - `npm run build` - passed.
-- Browser check at `http://localhost:3000/` - custom elevator homepage section renders with `project-4` images and no horizontal overflow.
-- Browser mobile check at 390px width - custom elevator section renders with no horizontal overflow.
-- Browser check at `/services`, `/projects`, and `/projects/renovations-additions#custom-elevators` - new cards/content render and the hash target lands near the custom elevator section.
+- Playwright desktop check verified five category anchors, five sections, no horizontal page overflow, active category jump to Bathrooms, and gallery next control moving from `scrollLeft: 0` to `510`.
+- Playwright mobile check at 390px verified no horizontal page overflow and category rail/cards present.
+- Visual screenshots reviewed at `/tmp/renovations-showcase-desktop-hero.png`, `/tmp/renovations-showcase-desktop-section.png`, `/tmp/renovations-showcase-section-final.png`, and `/tmp/renovations-showcase-mobile.png`.
 
 ### Risks Remaining
-- The `.mov` files in `public/images/project-4` were not used; this pass kept to the existing image-based gallery patterns.
-- The new project is represented through existing gallery/service pages rather than a dedicated standalone project route.
-- Image selection is based on visual review of the provided files, not client-supplied captions.
+- Gallery image grouping is curated from existing file names, not client-provided project captions.
+- The `.mov` files in `public/images/project-4` are still unused.
+- The unrelated lint warning in `scripts/compress-images.mjs` remains.
 
 ### Follow-up Recommendations
-- Consider a dedicated custom elevator service page if Kiefer Built wants SEO content around elevator types, code constraints, design coordination, and accessibility planning.
-- Consider optimizing or resizing the large `project-4` originals if production image processing costs become a concern.
+- Add before/after pairs if older pre-renovation photos are available.
+- Add video or motion reels later for a higher-end case-study feel if the client wants more editorial polish.

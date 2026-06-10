@@ -245,7 +245,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         title: "Custom Elevators",
         description:
           "Residential elevator builds and installations coordinated with framing, finishes, access, and designer-selected details.",
-        href: "/projects/renovations-additions#custom-elevators",
+        href: "/services/custom-elevators",
         image: "/images/project-4/DSC05496.jpg",
       },
     ],
@@ -382,7 +382,7 @@ export const publicPages: Record<string, PublicPageContent> = {
       {
         title: "Custom Elevator Renovation",
         description: "A specialty home improvement combining custom elevator access, bathroom upgrades, and refined finish work.",
-        href: "/projects/renovations-additions#custom-elevators",
+        href: "/services/custom-elevators",
         image: "/images/project-4/DSC05502.jpg",
       },
     ],
@@ -464,17 +464,6 @@ export const publicPages: Record<string, PublicPageContent> = {
         title: "Custom Elevators",
         description: "Residential elevator planning, finish coordination, and installation for homes that need better long-term access.",
         image: "/images/project-4/DSC05499.jpg",
-      },
-    ],
-    sections: [
-      {
-        id: "custom-elevators",
-        title: "Custom elevators built into the home, not added as an afterthought.",
-        body:
-          "Kiefer Built now builds and installs custom residential elevators for homeowners, designers, and remodel teams who need access, finish quality, and field coordination handled by one builder. The work can include structural coordination, finish transitions, adjacent cabinetry, flooring, and the detail work needed for the elevator to feel intentional in the finished home.",
-        image: "/images/project-4/DSC05496.jpg",
-        points: ["Designer coordination", "Residential elevator installs", "Finish integration"],
-        dark: true,
       },
     ],
   },

@@ -219,10 +219,10 @@ export default function Home() {
                   <ArrowRight className="size-4" />
                 </a>
                 <a
-                  href="/projects/renovations-additions#custom-elevators"
+                  href="/services/custom-elevators"
                   className="inline-flex items-center gap-2 rounded-md border border-white/30 px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:border-white hover:bg-white/10"
                 >
-                  View The Project
+                  View The Service
                 </a>
               </div>
             </div>
@@ -248,8 +248,8 @@ export default function Home() {
                 </div>
                 <div className="relative min-h-[250px] overflow-hidden rounded-md bg-[#151515]">
                   <Image
-                    src="/images/project-4/DSC05547.jpg"
-                    alt="Bathroom finish work completed alongside a custom elevator renovation by Kiefer Built Contracting"
+                    src="/images/project-4/DSC05499.jpg"
+                    alt="Custom elevator installed beside a finished utility space by Kiefer Built Contracting"
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 34vw"
                     className="object-cover"

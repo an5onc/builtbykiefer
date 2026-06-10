@@ -35,6 +35,7 @@ const navLinks: NavLink[] = [
       { label: "Our Products", href: "/products" },
       { label: "Our Process", href: "/process" },
       { label: "Home Builds", href: "/services/home-building" },
+      { label: "Custom Elevators", href: "/services/custom-elevators" },
       { label: "EPS Homes", href: "https://epsbuildings.com/" },
     ],
   },
