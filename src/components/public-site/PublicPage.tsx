@@ -92,7 +92,10 @@ function Card({
 
 function SplitSection({ section }: { section: PublicSection }) {
   return (
-    <section className={`px-6 py-20 md:py-24 ${section.dark ? "bg-[#232323] text-white" : "bg-white text-[#171717]"}`}>
+    <section
+      id={section.id}
+      className={`scroll-mt-24 px-6 py-20 md:py-24 ${section.dark ? "bg-[#232323] text-white" : "bg-white text-[#171717]"}`}
+    >
       <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
         {section.image ? (
           <div className="relative min-h-[360px] overflow-hidden rounded-md bg-[#151515]">

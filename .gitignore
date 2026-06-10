@@ -43,3 +43,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Large local-only videos (not used by site, exceed GitHub size limit)
+public/images/**/*.mov
+*.mov

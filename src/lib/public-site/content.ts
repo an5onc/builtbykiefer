@@ -8,6 +8,7 @@ export type PublicCard = {
 };
 
 export type PublicSection = {
+  id?: string;
   title: string;
   body: string;
   image?: string;
@@ -213,10 +214,11 @@ export const publicPages: Record<string, PublicPageContent> = {
   services: {
     title: "Your One Stop Shop",
     description:
-      "Kiefer Built supports new homes, renovations, additions, and commercial construction with one accountable team.",
+      "Kiefer Built supports new homes, renovations, additions, custom elevators, and commercial construction with one accountable team.",
     heroImage: "/images/project-3/kitchen-island-living-view.jpg",
     heroAlt: "Custom kitchen and great room by Kiefer Built",
     primaryCta: cta,
+    cardsLayout: "fourColumn",
     cards: [
       {
         title: "New Builds",
@@ -238,6 +240,13 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Commercial remodels, tenant improvements, and business spaces built around operations, durability, and schedule.",
         href: "/projects/commercial",
         image: "/images/kiefer-commercial-agfinity.jpg",
+      },
+      {
+        title: "Custom Elevators",
+        description:
+          "Residential elevator builds and installations coordinated with framing, finishes, access, and designer-selected details.",
+        href: "/projects/renovations-additions#custom-elevators",
+        image: "/images/project-4/DSC05496.jpg",
       },
     ],
   },
@@ -346,10 +355,11 @@ export const publicPages: Record<string, PublicPageContent> = {
   projects: {
     title: "Project Gallery",
     description:
-      "Explore Kiefer Built work across new builds, commercial spaces, renovations, additions, kitchens, baths, and exterior improvements.",
+      "Explore Kiefer Built work across new builds, commercial spaces, renovations, custom elevators, additions, kitchens, baths, and exterior improvements.",
     heroImage: "/images/project-3/aerial-front-twilight.jpg",
     heroAlt: "Aerial view of a Kiefer Built custom home",
     primaryCta: cta,
+    cardsLayout: "fourColumn",
     cards: [
       {
         title: "New Builds",
@@ -368,6 +378,12 @@ export const publicPages: Record<string, PublicPageContent> = {
         description: "Kitchens, bathrooms, living spaces, exteriors, additions, and custom improvements.",
         href: "/projects/renovations-additions",
         image: "/images/project-1/kitchen-8.jpg",
+      },
+      {
+        title: "Custom Elevator Renovation",
+        description: "A specialty home improvement combining custom elevator access, bathroom upgrades, and refined finish work.",
+        href: "/projects/renovations-additions#custom-elevators",
+        image: "/images/project-4/DSC05502.jpg",
       },
     ],
   },
@@ -446,8 +462,19 @@ export const publicPages: Record<string, PublicPageContent> = {
       },
       {
         title: "Custom Elevators",
-        description: "Specialty improvements coordinated with structure, access, and long-term use.",
-        image: "/images/project-3/interior-living-to-entry.jpg",
+        description: "Residential elevator planning, finish coordination, and installation for homes that need better long-term access.",
+        image: "/images/project-4/DSC05499.jpg",
+      },
+    ],
+    sections: [
+      {
+        id: "custom-elevators",
+        title: "Custom elevators built into the home, not added as an afterthought.",
+        body:
+          "Kiefer Built now builds and installs custom residential elevators for homeowners, designers, and remodel teams who need access, finish quality, and field coordination handled by one builder. The work can include structural coordination, finish transitions, adjacent cabinetry, flooring, and the detail work needed for the elevator to feel intentional in the finished home.",
+        image: "/images/project-4/DSC05496.jpg",
+        points: ["Designer coordination", "Residential elevator installs", "Finish integration"],
+        dark: true,
       },
     ],
   },
