@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   Building2,
@@ -257,6 +258,27 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="bg-[#f9f6f0] px-6 py-20 md:py-24">
+          <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c9281c]">The difference</p>
+              <h2 className="mt-3 text-3xl font-bold leading-tight text-[#171717] md:text-5xl">
+                Built better, from the envelope in.
+              </h2>
+              <p className="mt-4 text-lg leading-8 text-[#655c52]">
+                SIPs construction, measurable energy efficiency, and family craftsmanship. See exactly why a Kiefer
+                Built home outperforms a conventional build.
+              </p>
+            </div>
+            <Link
+              href="/why-kiefer-built"
+              className="inline-flex items-center justify-center rounded-md bg-[#c9281c] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#a91f16]"
+            >
+              Why Kiefer Built
+            </Link>
           </div>
         </section>
 

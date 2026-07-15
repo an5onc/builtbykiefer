@@ -248,6 +248,14 @@ export const publicPages: Record<string, PublicPageContent> = {
         href: "/services/custom-elevators",
         image: "/images/project-4/DSC05496.jpg",
       },
+      {
+        title: "Why Build With Kiefer Built",
+        meta: "The difference",
+        description:
+          "SIPs construction, real energy efficiency, and family craftsmanship — see exactly why a Kiefer Built home is built better.",
+        href: "/why-kiefer-built",
+        image: "/images/project-2/exterior-wide-property.jpg",
+      },
     ],
   },
   products: {

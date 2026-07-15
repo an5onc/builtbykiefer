@@ -34,4 +34,10 @@ describe("why-kiefer-built education content", () => {
     const bodyText = (publicPages.sips.sections ?? []).map((s) => s.body).join(" ");
     expect(`${proofValues} ${bodyText}`).toMatch(/SIPA/);
   });
+
+  it("teases the education hub from the services page", () => {
+    const cards = publicPages.services.cards ?? [];
+    const teaser = cards.find((card) => card.href === "/why-kiefer-built");
+    expect(teaser, "services page should link to the education hub").toBeDefined();
+  });
 });
