@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createLead } from "@/lib/admin/queries";
-import { buildQuoteRequestEmail, buildQuoteRequestLeadInput, parseQuoteRequestPayload } from "@/lib/contact/quote-request";
+import { parseQuoteRequestPayload } from "@/lib/contact/quote-request";
+import { processQuoteRequest } from "@/lib/contact/process-quote-request";
 
 const resendEndpoint = "https://api.resend.com/emails";
 const defaultRecipient = "info@kbuiltco.com";
@@ -30,67 +31,30 @@ export async function POST(request: Request) {
     );
   }
 
+  // Honeypot: silently accept bot submissions.
   if (parsed.data.company) {
     return NextResponse.json({ ok: true });
-  }
-
-  const leadResult = await createLead(buildQuoteRequestLeadInput(parsed.data));
-
-  if (!leadResult.ok) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error: "Could not save the quote request in the CRM. Please call or email Kiefer Built directly.",
-        code: "lead_capture_failed",
-      },
-      { status: 502 },
-    );
   }
 
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_EMAIL_FROM;
   const to = process.env.CONTACT_EMAIL_TO ?? defaultRecipient;
 
-  if (!apiKey || !from) {
-    return NextResponse.json(
-      {
-        ok: true,
-        leadId: leadResult.leadId,
-        emailSent: false,
-        warning: "Lead saved in the CRM. Email delivery is not configured yet.",
-        code: "email_not_configured",
-      },
-    );
-  }
-
-  const email = buildQuoteRequestEmail(parsed.data);
-  const response = await fetch(resendEndpoint, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
+  const result = await processQuoteRequest(parsed.data, {
+    createLead,
+    emailConfigured: Boolean(apiKey && from),
+    sendEmail: async ({ subject, html, text, replyTo }) => {
+      const response = await fetch(resendEndpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ from, to, reply_to: replyTo, subject, html, text }),
+      });
+      return { ok: response.ok };
     },
-    body: JSON.stringify({
-      from,
-      to,
-      reply_to: parsed.data.email,
-      subject: email.subject,
-      html: email.html,
-      text: email.text,
-    }),
   });
 
-  if (!response.ok) {
-    return NextResponse.json(
-      {
-        ok: true,
-        leadId: leadResult.leadId,
-        emailSent: false,
-        warning: "Lead saved in the CRM, but email notification could not be sent.",
-        code: "email_send_failed",
-      },
-    );
-  }
-
-  return NextResponse.json({ ok: true, leadId: leadResult.leadId, emailSent: true });
+  return NextResponse.json(result.body, { status: result.status });
 }
