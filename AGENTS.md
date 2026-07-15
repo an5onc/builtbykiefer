@@ -583,79 +583,76 @@ At the end of any meaningful session:
 <claude-mem-context>
 # Memory Context
 
-# [builtbykiefer] recent context, 2026-07-07 12:11pm MDT
+# [builtbykiefer] recent context, 2026-07-15 4:07pm MDT
 
 Legend: 🎯session 🔴bugfix 🟣feature 🔄refactor ✅change 🔵discovery ⚖️decision 🚨security_alert 🔐security_note
 Format: ID TIME TYPE TITLE
 Fetch details: get_observations([IDs]) | Search: mem-search skill
 
-Stats: 50 obs (24,266t read) | 1,329,520t work | 98% savings
+Stats: 50 obs (20,599t read) | 366,867t work | 94% savings
 
-### May 21, 2026
-S186 Research county property data sources and design a detailed implementation plan for Land Lead Finder — an admin-only feature (/admin/land-leads) that imports Larimer and Weld County parcel data, scores vacant-land leads, and exports mailing CSVs for custom-home marketing. (May 21 at 11:03 AM)
-S37 Locate and understand the admin CRM directory structure within the Built by Kiefer project (May 21 at 11:03 AM)
 ### Jul 7, 2026
-S187 Complete and verify the Land Lead Finder Phase 1 MVP implementation for the Kiefer Built admin portal — an admin-only tool to import, filter, score, and export custom-home marketing leads from Larimer and Weld County property data. (Jul 7 at 8:58 AM)
-2178 11:04a 🔵 Demo-data structure for leads examined to inform land-leads demo-data scaffolding
-2179 " ✅ Phase 1 implementation initiated with task for papaparse + config bump
-2180 " ✅ Phase 1 implementation decomposed into 6 sequential tasks spanning schema, lib modules, data layer, UI, and verification
-2181 " ✅ papaparse dependency added to project; npm audit shows pre-existing vulnerabilities
-2182 11:08a ✅ Next.js Server Action body size limit increased for CSV uploads
-2183 " 🟣 Land Lead Finder database schema created with Supabase migration
-2184 11:09a 🟣 Land Lead Finder TypeScript types module defines pipeline contracts
-2185 " 🟣 Land Lead Finder constants file defines scoring weights and market targeting
-2186 11:10a 🟣 Field normalization and mapping layer for Larimer and Weld county data
-2187 " 🟣 Vacant land detection using multi-signal heuristic
-2188 11:11a 🟣 Entity owner detection filters out non-household owners
-2189 " 🟣 Signal derivation layer computes four boolean indicators for lead quality
-2190 " 🟣 Lead scoring engine produces 0–100 score with human-readable reasons
-2191 " 🟣 Source row hash enables change detection across refresh cycles
-2192 11:12a 🟣 CSV parsing and export module for county data import and mailing vendor export
-2193 " 🟣 Filter parsing and URL parameter serialization for lead list views
-2194 " 🟣 Refresh pipeline orchestrates deduplication, scoring, and change detection
-2195 " 🟣 Unit tests for field normalization and county-specific mapping
-2196 11:13a 🟣 Unit tests for vacant land detection logic
-2197 " 🟣 Unit tests for entity owner detection
-2198 " 🟣 Unit tests for lead scoring with deterministic dates and weight verification
-2199 11:14a 🟣 Unit tests for source row hash change detection
-2200 " 🟣 Unit tests for CSV parsing and mailing-vendor export serialization
-2201 " 🟣 Unit tests for filter parsing and application logic
-2202 " 🟣 Unit tests for refresh pipeline deduplication and change detection
-2203 11:15a 🟣 Land-leads unit test suite passes all 36 tests across 8 modules
-2204 " 🟣 Supabase row mapper converts snake_case database schema to camelCase domain objects
-2205 " 🟣 Demo dataset with 6 realistic Land Lead records for development and stakeholder preview
-2206 11:16a 🟣 Supabase query layer with demo-mode fallback and chunked upsert operations
-2207 " 🟣 Admin Server Actions orchestrate CSV import and lead status workflows
-2208 11:17a 🟣 Admin UI components for land-lead status management and CSV upload
-2209 11:18a 🟣 Land Lead Finder admin list page with import, filters, and inline status editing
-2210 " 🟣 CSV export route and detail-page notes editor for land leads
-2211 " 🟣 Land lead detail page with comprehensive read-only view and inline edit form
-2212 11:19a ✅ StatusBadge component extended to support land-lead status values
 S188 Generate a comprehensive audit prompt for critical code review of Phase 1 "Land Finder" feature before shipping (Jul 7 at 11:22 AM)
-2222 11:51a 🔵 parseSaleDate() treats numeric strings as epoch milliseconds, misinterpreting legitimate year values
-2223 " 🔵 mailingDiffersFromSitus signal produces false positives when situs ZIP is blank
-2224 " 🔵 Larimer assessor CSV column aliases are UNVERIFIED; mismatch silently degrades import quality
-2225 " 🔵 Server Action body size limited to 25MB; Larimer CSV files may exceed 100MB
-2226 " 🔵 Supabase upsert omits admin-editable columns to preserve user changes across refresh; RLS enforcement not verified against real DB
-2227 " 🔵 Lead score clamped to 0–100 for storage; raw score lost, degrading sorting/filtering by score strength
-2228 " 🔵 React hydration mismatch on mobile: `caret-color` style applied to inputs, server ≠ client default
-2229 " ✅ Phase 1 Land Lead Finder feature fully implemented with CSV import, scoring, admin UI, and Supabase backend
-2230 11:54a ⚖️ Direct main-branch development workflow approved; feature branches disabled to reduce merge overhead
-2231 12:02p ✅ Land Leads Phase 1 audit issues fixed with regression tests and verification
-2232 12:05p 🔵 Land Lead Finder Phase 1 Implementation Complete
-2233 " 🔵 Supabase Query Layer Implements Error Isolation and Demo-Mode Fallback
-2234 " 🔵 Land Leads List Page Implements Query-Based Error Messaging and Upload Guardrails
-2235 12:06p 🔵 Regression Tests Cover Four Critical Bug Fixes
-2236 " ✅ Next.js Server Action Body Size Limit Increased to 25MB
-S189 Critical post-fix audit of Land Lead Finder Phase 1 (admin-only tool for importing county property CSVs, detecting vacant land, scoring leads, and exporting mailing lists) — adversarial review with specific findings ranked by severity and a go/no-go shipping decision (Jul 7 at 12:09 PM)
-**Investigated**: Examined all 14 core library modules (types, constants, normalize, vacancy, entities, signals, score, hash, csv, filters, refresh, queries, supabase-mappers, demo-data), 5 UI/action files (list page, detail page, two action modules, export route), migration, tests (5 new test files), and configuration (next.config.ts). Traced one complete Weld and one Larimer parcel through the pipeline (normalize → vacancy → entity → signals → score → hash → dedupe → upsert). Verified the five pre-fix bugs were addressed: absentee-owner false positives on missing situs ZIP, 1970-epoch date parsing, conservative 4xxx agricultural vacancy rules, CSV header validation, and Supabase error isolation from demo-data leakage.
+S189 Critical post-fix audit of Land Lead Finder Phase 1 (admin-only tool for importing county property CSVs, detecting vacant land, scoring leads, and exporting mailing lists) — adversarial review with specific findings ranked by severity and a go/no-go shipping decision (Jul 7 at 11:31 AM)
+S190 Create a plan for "Land Lead Finder" admin feature to generate custom-home marketing leads from Larimer County and Weld County property data (Jul 7 at 12:09 PM)
+S191 Design-sync bundle completion for Built by Kiefer public-site component library; initiated with design preview cleanup, configuration updates, Tailwind palette fix, bundle build, validation, cloud deployment, and final inventory of committable source files. (Jul 7 at 2:02 PM)
+S192 Bring the design system bundle up on local dev for review and skimming (Jul 7 at 3:46 PM)
+S193 Update design-sync documentation and verify bundle rebuild with corrected preview provider explanation and floor-card component count (Jul 7 at 3:54 PM)
+S255 Pivot project from full-stack CRM to website-only marketing site; plan educational content structure to teach prospects about build quality, efficiency, and SIPs (Jul 7 at 4:16 PM)
+### Jul 15, 2026
+3232 12:26p 🔵 Extensive project documentation shows prior CRM focus with iterative feature development
+3233 12:27p 🔵 Substantial marketing content with interactive educational components already built and indexed
+S256 Pivot project from full-stack CRM to website-only marketing site; create architectural design for education content series and backend cleanup (Jul 15 at 12:29 PM)
+3234 12:31p 🔵 Navigation header contains "Client Portal" link requiring removal for website-only pivot
+3235 " 🔵 Quote-request API currently saves leads to CRM; must be simplified to email-only for website pivot
+3236 " ⚖️ Marketing site pivot design spec created and approved; Approach A hub-and-child-pages adopted
+3237 12:32p ✅ Design spec refined: createLead refactored to best-effort rather than removed
+S257 Build marketing website plan and implementation: pivot Built by Kiefer from CRM-backend project to pure marketing/education site (Jul 15 at 12:32 PM)
+3238 12:46p ⚖️ Initiated marketing-site-pivot feature branch with SDD progress tracking
+3239 12:47p ⚖️ Decomposed marketing-site-pivot work into three structured tasks
+3240 " ⚖️ Extended marketing-site-pivot scope with Tasks 4-5 and generated Task 1 brief
+3241 " 🟣 Created education content test suite with three validation cases
+3242 12:48p 🟣 Added five education page content objects to public site content module
+3243 " 🔵 Education content test suite passes all three validation cases
+3244 12:49p ✅ Committed education content implementation to feat/marketing-site-pivot branch
+3245 1:03p 🟣 Task 5: Education-hub teasers integrated into marketing-site funnel with public surface audit
+3246 " ✅ Review package generated for Task 5 commit
+3247 " 🟣 Task 5 independent review completed — spec compliance and code quality approved
+3248 1:04p ✅ Task 5 marked complete; whole-branch review package generated
+3249 " 🔵 Whole-branch review package documents complete feat/marketing-site-pivot delivery
+3250 1:05p 🔵 PublicPage component implements data-driven rendering for education hub pages
+3251 " 🔵 Public page content defined via centralized TypeScript data structure and type system
+3252 " 🔵 Backend routes remain intact in codebase; public surface completely isolated from backend links
+3253 " 🔵 Full test suite passes: 51 files, 188 tests, zero failures
+3254 " 🔵 Production build succeeds; education routes statically prerendered; backend routes dynamic
+3255 " 🔵 Vendor interest page (/vendors) clean of backend links; public CTA references only
+3256 1:06p 🔵 Vendor interest form uses email callback, not backend integration
+3257 " 🔵 Comprehensive grep audit: zero backend hrefs in public source files
+3258 " 🔵 Backend href audit confirms isolation: only admin utilities and one public /vendors CTA found
+3260 1:07p 🔵 Navigation module import correctly scoped to Header; all education content images verified present
+3262 " ✅ Final review recorded; SDD session artifacts properly gitignored
+3264 1:19p ⚖️ Project Pivot: CRM Backend Replaced with Marketing Website
+3265 " 🟣 Marketing Website Feature Branch Merged to Main
+3266 " ✅ Marketing Site Pivot Feature Branch Cleaned Up; WIP Land-Leads Feature Staged
+3267 " ⚖️ Marketing Site Pivot Architecture Documented: Dormant Backend, Email-Only Contact
+3268 1:20p ✅ Memory Index Updated: Marketing Site Pivot Prioritized, Land-Lead-Finder Superseded
+3269 2:13p 🔵 Next.js dev server started on port 3001 (port 3000 in use)
+3270 2:14p 🔵 Dev server smoke test: all routes returning 200 OK
+3271 " 🔵 Why Kiefer Built hub page renders with complete content structure
+S258 Open the dev server for the builtbykiefer Next.js application and verify it runs correctly (Jul 15 at 2:14 PM)
+3272 2:32p 🔵 Claude Design import MCP tools available
+3273 2:33p 🔵 Successfully retrieved Claude Design project metadata
+3274 " 🔵 Enumerated Claude Design project file structure and available assets
+3275 " 🔵 Retrieved comprehensive research documentation and content strategy for Kiefer Built Homeowner Guide
+3276 " 🔵 Retrieved complete 19-page Kiefer Built Homeowner Guide interactive design document
+3277 2:34p 🔵 Extracted complete prose content from Kiefer Built Homeowner Guide (19 pages, all sections)
+3278 2:35p 🔵 Mapped current education page content model and render capabilities for Kiefer Built website
+3279 2:36p 🔵 Completed education page content exploration – Five education pages with current unsourced claims and architectural gap confirmed
+3280 2:46p ⚖️ Project Scope Pivot: CRM Platform to Marketing Website
+3281 " ⚖️ Education Pages: Citation System & Guide Integration Architecture
+3282 2:50p ⚖️ Planned citation-driven architecture for education pages + 2 new topic pages
+3283 2:58p 🔵 Network sandbox constraints require escalated permissions for remote documentation access
+3284 " 🔵 Codex CLI version 0.144.4 installed with self-update capability
 
-**Learned**: The pipeline's pure-function core (normalize through score) is cleanly separated and well-tested. The upsert strategy is correct for PostgREST: omitting status/notes/first_seen_at preserves admin edits across refreshes. The dedupe_key is a stored-generated column referenced in the onConflict clause — valid by inspection but unproven on real Supabase. RLS policy structure is sound (is_admin() checks + authenticated-only grants prevent non-admin access), but real import behavior under permission failures and generated-column constraints cannot be proven from unit tests alone. Error handling is philosophically inconsistent: reads fail loudly (though empty-list silent failures still hide DB problems), mutations fail mute (no logging of the actual error), and the existing-lead hash fetch fails silently with a partial/empty map. The 25 MB upload guardrail is only partially real — the Server Action body-size limit matches the app-level check, so file-size rejections hit the framework layer first, surfacing a generic error instead of the promised clear message.
-
-**Completed**: Full verification suite passed: typecheck clean, lint 0 errors (1 pre-existing unrelated warning), 175 tests across 48 files all passing. Demo-mode smoke tests confirmed all four routes render correctly with proper demo data, filters work, vacancy signals display, and CSV export produces correct MIME type and filename. Comprehensive audit report delivered with 11 findings: 2 MAJORs (25 MB rejection unreachable; hash-fetch error isolation inconsistent with read-error fix), 6 MINORs (dead code in vacancy logic, silent query failures indistinguishable from empty results, mutation errors unlogged, case-sensitive CSV header validation, single error-path test pinning implementation, epoch-seconds handling for future Weld REST phase), 3 NITs (dead-code aliases, epoch boundary semantics, demo-data inconsistency). Go/no-go: conditional GO for demo/development use; do not run live campaign until scratch-Supabase migration test confirms upsert preservation and RLS behavior.
-
-**Next Steps**: The audit session concluded with a detailed report and conditional shipping recommendation. The next phase would be: (1) Apply top-3 fixes (bodySizeLimit bump to 30mb, getExistingLeadHashes error abort, client-side file-size validation), (2) Run the critical integration gate: apply migration to a scratch Supabase project and execute one authenticated live import → re-import → status-edit → re-import cycle to prove counts and admin-edit preservation work, (3) Verify Larimer column aliases against a real assessor export before trusting Larimer scores in production, (4) Unify error-handling philosophy across queries, mutations, and hash-fetch to avoid similar silent-failure patterns in Phase 2.
-
-
-Access 1330k tokens of past work via get_observations([IDs]) or mem-search skill.
+Access 367k tokens of past work via get_observations([IDs]) or mem-search skill.
 </claude-mem-context>

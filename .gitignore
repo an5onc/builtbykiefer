@@ -54,3 +54,9 @@ ds-bundle/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules
+
+# Local project archives
+public.zip
+src.zip
+supabase.zip
+*.zip

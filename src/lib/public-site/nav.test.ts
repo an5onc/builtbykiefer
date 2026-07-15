@@ -11,6 +11,8 @@ describe("public navigation", () => {
     expect(hrefs).toContain("/why-kiefer-built");
     expect(hrefs).toContain("/why-kiefer-built/sips");
     expect(hrefs).toContain("/why-kiefer-built/energy-efficiency");
+    expect(hrefs).toContain("/why-kiefer-built/indoor-air-quality");
+    expect(hrefs).toContain("/why-kiefer-built/built-for-colorado");
     expect(hrefs).toContain("/why-kiefer-built/quality");
     expect(hrefs).toContain("/why-kiefer-built/cost-of-ownership");
   });

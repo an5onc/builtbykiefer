@@ -33,6 +33,16 @@ describe("admin navigation", () => {
     expect(liveHrefs).not.toContain("/estimate");
   });
 
+  it("does not advertise the unshipped Land Lead Finder route", () => {
+    const liveHrefs = getLiveAdminNavigationHrefs();
+    const labels = adminModuleMenus.flatMap((menu) =>
+      menu.items.map((item) => item.label),
+    );
+
+    expect(liveHrefs).not.toContain("/admin/land-leads");
+    expect(labels).not.toContain("Land Lead Finder");
+  });
+
   it("marks planned Buildertrend-style items as disabled instead of linking nowhere", () => {
     const disabledLabels = adminModuleMenus.flatMap((menu) =>
       menu.items.filter((item) => item.disabled).map((item) => item.label),

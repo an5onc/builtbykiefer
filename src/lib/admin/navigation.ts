@@ -16,7 +16,6 @@ export const adminModuleMenus: AdminModuleMenu[] = [
     items: [
       { label: "Lead Opportunities", href: "/admin/leads" },
       { label: "Lead Activities", href: "/admin/leads" },
-      { label: "Land Lead Finder", href: "/admin/land-leads", badge: "New" },
       { label: "Lead Proposals", href: "/admin/proposals" },
       { label: "Lead Activity Calendar", href: "/admin/leads" },
       { label: "Lead Map", disabled: true },

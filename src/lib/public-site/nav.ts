@@ -25,6 +25,8 @@ export const navLinks: NavLink[] = [
       { label: "Overview", href: "/why-kiefer-built" },
       { label: "SIPs 101", href: "/why-kiefer-built/sips" },
       { label: "Energy Efficiency", href: "/why-kiefer-built/energy-efficiency" },
+      { label: "Indoor Air Quality", href: "/why-kiefer-built/indoor-air-quality" },
+      { label: "Built for Colorado", href: "/why-kiefer-built/built-for-colorado" },
       { label: "Quality & Craftsmanship", href: "/why-kiefer-built/quality" },
       { label: "Cost Of Ownership", href: "/why-kiefer-built/cost-of-ownership" },
     ],

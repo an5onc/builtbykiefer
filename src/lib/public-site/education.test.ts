@@ -5,6 +5,8 @@ const EDUCATION_KEYS = [
   "whyKieferBuilt",
   "sips",
   "energyEfficiency",
+  "indoorAirQuality",
+  "builtForColorado",
   "quality",
   "costOfOwnership",
 ] as const;
@@ -21,18 +23,31 @@ describe("why-kiefer-built education content", () => {
     }
   });
 
-  it("hub links to each of the four child pages", () => {
+  it("hub links to all six child pages in navigation order", () => {
     const hrefs = (publicPages.whyKieferBuilt.cards ?? []).map((card) => card.href);
-    expect(hrefs).toContain("/why-kiefer-built/sips");
-    expect(hrefs).toContain("/why-kiefer-built/energy-efficiency");
-    expect(hrefs).toContain("/why-kiefer-built/quality");
-    expect(hrefs).toContain("/why-kiefer-built/cost-of-ownership");
+    expect(hrefs).toEqual([
+      "/why-kiefer-built/sips",
+      "/why-kiefer-built/energy-efficiency",
+      "/why-kiefer-built/indoor-air-quality",
+      "/why-kiefer-built/built-for-colorado",
+      "/why-kiefer-built/quality",
+      "/why-kiefer-built/cost-of-ownership",
+    ]);
   });
 
-  it("cites the 2025 SIPA award on the SIPs page", () => {
-    const proofValues = (publicPages.sips.proof ?? []).map((p) => p.label + p.value).join(" ");
-    const bodyText = (publicPages.sips.sections ?? []).map((s) => s.body).join(" ");
-    expect(`${proofValues} ${bodyText}`).toMatch(/SIPA/);
+  it("adds sourced comparison content to the SIPs page", () => {
+    const comparison = publicPages.sips.sections?.find((section) => section.comparison)?.comparison;
+    expect(comparison?.rows).toHaveLength(3);
+    expect(comparison?.rows.map((row) => row.sourceId)).toEqual([9, 3, 4]);
+  });
+
+  it("configures the guide download without assuming the PDF asset exists", () => {
+    expect(publicPages.whyKieferBuilt.guideDownload?.href).toBe(
+      "/guides/kiefer-built-homeowner-guide.pdf",
+    );
+    expect(publicPages.costOfOwnership.guideDownload?.href).toBe(
+      "/guides/kiefer-built-homeowner-guide.pdf",
+    );
   });
 
   it("teases the education hub from the services page", () => {
