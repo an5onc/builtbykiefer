@@ -6,62 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-
-type NavLink = {
-  label: string;
-  href: string;
-  items?: Array<{
-    label: string;
-    href: string;
-  }>;
-};
-
-const navLinks: NavLink[] = [
-  {
-    label: "About",
-    href: "/about",
-    items: [
-      { label: "Our Story", href: "/about" },
-      { label: "Our Team", href: "/about/team" },
-      { label: "Accolades", href: "/about/accolades" },
-      { label: "Blog", href: "/blog" },
-    ],
-  },
-  {
-    label: "Service",
-    href: "/services",
-    items: [
-      { label: "Our Services", href: "/services" },
-      { label: "Our Products", href: "/products" },
-      { label: "Our Process", href: "/process" },
-      { label: "Home Builds", href: "/services/home-building" },
-      { label: "Custom Elevators", href: "/services/custom-elevators" },
-      { label: "EPS Homes", href: "https://epsbuildings.com/" },
-    ],
-  },
-  {
-    label: "Our Work",
-    href: "/projects",
-    items: [
-      { label: "Gallery", href: "/projects" },
-      { label: "Flipbook", href: "/flipbook" },
-      { label: "New Builds", href: "/projects/new-builds" },
-      { label: "Commercial", href: "/projects/commercial" },
-      { label: "Renovations & Additions", href: "/projects/renovations-additions" },
-      { label: "Testimonials", href: "/testimonials" },
-    ],
-  },
-  { label: "Careers", href: "/careers" },
-  {
-    label: "Contact Us",
-    href: "/contact",
-    items: [
-      { label: "Contact", href: "/contact" },
-      { label: "Vendors", href: "/vendors" },
-    ],
-  },
-  { label: "Client Portal", href: "/portal" },
-];
+import { navLinks } from "@/lib/public-site/nav";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -138,10 +83,10 @@ export default function Header() {
               <div
                 key={link.label}
                 className="relative"
-                onMouseEnter={() => link.items && setOpenMenu(link.label)}
-                onMouseLeave={() => link.items && setOpenMenu(null)}
+                onMouseEnter={() => link.children && setOpenMenu(link.label)}
+                onMouseLeave={() => link.children && setOpenMenu(null)}
               >
-                {link.items ? (
+                {link.children ? (
                   <button
                     type="button"
                     onClick={() => setOpenMenu((current) => (current === link.label ? null : link.label))}
@@ -165,9 +110,9 @@ export default function Header() {
                     {link.label}
                   </a>
                 )}
-                {link.items && openMenu === link.label ? (
+                {link.children && openMenu === link.label ? (
                   <div className="absolute left-1/2 top-full min-w-56 -translate-x-1/2 border border-black/10 bg-white py-2 opacity-100 shadow-xl transition">
-                    {link.items.map((item) => (
+                    {link.children.map((item) => (
                       <a
                         key={item.label}
                         href={resolveHref(item.href)}
@@ -232,9 +177,9 @@ export default function Header() {
                   >
                     {link.label}
                   </a>
-                  {link.items ? (
+                  {link.children ? (
                     <div className="mt-3 flex flex-col gap-2">
-                      {link.items.map((item) => (
+                      {link.children.map((item) => (
                         <a
                           key={item.label}
                           href={resolveHref(item.href)}
