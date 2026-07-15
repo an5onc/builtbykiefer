@@ -47,3 +47,10 @@ next-env.d.ts
 # Large local-only videos (not used by site, exceed GitHub size limit)
 public/images/**/*.mov
 *.mov
+
+# design-sync (machine state; .design-sync durable files ARE committed)
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules

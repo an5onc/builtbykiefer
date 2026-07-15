@@ -73,8 +73,10 @@ dependency incompatible with a no-backend site.
 **Change:** Decouple email from the CRM. The route sends the inquiry email via Resend
 to `info@kbuiltco.com` (env: `RESEND_API_KEY`, `CONTACT_EMAIL_FROM`, `CONTACT_EMAIL_TO`)
 and does **not** require a successful CRM write to return success. The `createLead`
-call is either removed from the public path or made best-effort (failure logged, never
-surfaced to the visitor, never blocks the email). Both the contact form and the
+call is made best-effort: it is wrapped so any failure is logged server-side, never
+surfaced to the visitor, and never blocks the email. (Best-effort rather than removed,
+so the dormant CRM still captures leads if its env is ever configured again.) Both the
+contact form and the
 estimate form submit through this email-only path. Honeypot (`company` field) behavior
 is preserved.
 

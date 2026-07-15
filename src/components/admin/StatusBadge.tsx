@@ -37,6 +37,9 @@ const styles: Record<string, string> = {
   normal: "bg-neutral-100 text-neutral-700 ring-neutral-200",
   high: "bg-[#b92516]/10 text-[#b92516] ring-[#b92516]/20",
   urgent: "bg-[#b92516]/10 text-[#b92516] ring-[#b92516]/20",
+  reviewed: "bg-neutral-100 text-neutral-700 ring-neutral-200",
+  not_a_fit: "bg-neutral-100 text-neutral-500 ring-neutral-200",
+  do_not_contact: "bg-[#151515] text-white ring-[#151515]",
 };
 
 export default function StatusBadge({ status }: { status: string }) {
@@ -46,7 +49,7 @@ export default function StatusBadge({ status }: { status: string }) {
         styles[status] ?? styles.completed
       }`}
     >
-      {status.replace("-", " ")}
+      {status.replace(/[-_]/g, " ")}
     </span>
   );
 }

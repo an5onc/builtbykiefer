@@ -1,69 +1,74 @@
 # Tasks
 
 ## Objective
-Transform `/projects/renovations-additions` from a static card grid into an Apple-inspired interactive showcase where each renovation category is clickable and expands into a premium, image-led section with horizontal project galleries.
+Address the post-fix Land Lead Finder audit follow-ups, prioritizing the two MAJOR failure-reporting defects and low-risk adjacent cleanup.
 
 ## Assumptions
-- The page should stay at `/projects/renovations-additions`; no separate pages are needed for Kitchens, Bathrooms, Living Spaces, Exteriors, or Custom Elevators.
-- The current five category cards should become interactive navigation controls.
-- Each category should have its own section on the same page with a horizontal, touch-friendly gallery using existing project photography.
-- Custom Elevators should link visually into the dedicated `/services/custom-elevators` page as the deeper service destination, but still have a short showcase section on this renovations page.
-- The implementation should feel premium and modern, inspired by Apple-style product pages: large photography, strong spacing, sticky/active category navigation, smooth scroll, and restrained motion.
-- Use existing local images only; no generated or stock imagery.
+- Continue working directly on `main`; do not create a branch.
+- No commit, push, deploy, or scratch Supabase run unless explicitly requested.
+- The highest-value fixes are local error handling and guardrail correctness; live Supabase integration remains future verification.
 
 ## Risk Check
-- Functional risk: Moderate; replacing the generic `PublicPage` route with a custom interactive page changes page structure.
-- Regression risk: Moderate; public content links and SEO copy should remain coherent.
-- Security risk: Low; no auth, API, database, or form behavior changes.
-- Performance risk: Moderate; horizontal galleries must use `next/image`, stable sizes, and avoid excessive above-the-fold loading.
-- UX risk: Moderate; interactions must be obvious and work on desktop, mobile, keyboard, and touch.
-- Maintainability risk: Moderate; category data should live in the page or a small local data structure rather than scattered markup.
+- Functional risk: Import flow should abort on pre-import read failures instead of proceeding with bad counts.
+- Regression risk: Existing demo-mode behavior must continue to render demo leads and reject persistence.
+- Security risk: Real-mode failures should not leak demo data or hide RLS/grant problems.
+- Performance risk: Raising the Server Action body limit to 30 MB increases request ceiling modestly but keeps app-level file cap at 25 MB.
+- UX risk: Oversize-file feedback should become more reliable and ideally immediate client-side.
+- Maintainability risk: Keep query error behavior explicit without broad architectural refactors.
 
 ## Plan
-- [x] Add a focused content/data test for the renovations showcase categories and gallery image coverage.
-- [x] Replace `/projects/renovations-additions` with a custom client-capable page instead of the generic `PublicPage` wrapper.
-- [x] Build an interactive category rail from the five cards with smooth-scroll links and active-section state.
-- [x] Add five category sections, each with concise service copy, proof details, and a horizontal scroll-snap gallery.
-- [x] Add polished controls: previous/next buttons, keyboard-friendly anchors, active category indication, and reduced-motion-safe behavior.
-- [x] Preserve public shell, contact CTA, and visual direction: real photography, charcoal, warm cream, restrained red accents.
-- [x] Verify desktop and mobile rendering, no horizontal page overflow, working category jumps, and no broken image paths.
+- [x] Add failing tests for `getExistingLeadHashes` read failure and import abort behavior.
+- [x] Add failing tests/coverage for mutation error logging and detail read failure behavior.
+- [x] Raise the Server Action body limit above the app-level 25 MB file limit.
+- [x] Make `getExistingLeadHashes` return failure explicitly and abort CSV import with a banner error.
+- [x] Log mutation errors before returning generic user-facing messages.
+- [x] Clean up dead/noisy code identified by the audit where directly adjacent.
+- [x] Update review/handoff notes.
 
 ## Verification Plan
-- [x] Run the targeted renovations showcase test.
-- [x] Run `npm run lint`.
+- [x] Run targeted red tests before production code changes.
+- [x] Run targeted green tests after fixes.
 - [x] Run `npm run typecheck`.
-- [x] Run `npm run build`.
-- [x] Browser-check `/projects/renovations-additions` on desktop and mobile, including category clicks and gallery controls.
+- [x] Run `npm run lint`.
+- [x] Run `npm test`.
+- [x] Run demo-mode Playwright smoke for list/filter/detail/export.
 
 ## Review
 ### Summary of Changes
-- Rebuilt `/projects/renovations-additions` as an Apple-inspired interactive showcase instead of a static generic card page.
-- Added five clickable categories: Kitchens, Bathrooms, Living Spaces, Exteriors, and Custom Elevators.
-- Added a sticky active category rail, smooth same-page category jumps, and horizontal scroll-snap galleries with previous/next controls.
-- Added a tested renovations showcase data module with real local project images and category proof points.
-- Preserved the public header/footer, project CTA, Kiefer visual language, and mobile swipe behavior.
+- Raised the Next Server Action multipart body limit to 30 MB while keeping the application CSV file limit at 25 MB.
+- Added shared upload-limit constants and client-side file-size validation on the import button.
+- Changed existing-lead hash lookup failures to return `null` so imports abort before diff/upsert counts can lie.
+- Added upload action handling for hash lookup failure with a clear `?error=` banner.
+- Logged live mutation/upsert/touch errors before returning generic user-facing failure text.
+- Removed the dead agricultural-class vacancy clause and the pass-through address helper.
 
 ### Files Changed
-- `src/app/projects/renovations-additions/page.tsx` - Swapped the route to the custom renovations showcase page and added metadata.
-- `src/components/public-site/RenovationsShowcasePage.tsx` - New interactive page component with hero, category cards, sticky rail, gallery sections, and CTA.
-- `src/lib/public-site/renovations-showcase.ts` - New typed showcase data for categories, proof points, CTAs, and galleries.
-- `src/lib/public-site/renovations-showcase.test.ts` - New regression test for category coverage and image existence.
-- `tasks.todo.md` - Updated plan, verification, and review.
+- `next.config.ts`
+- `src/lib/land-leads/constants.ts`
+- `src/components/admin/LandLeadUploadButton.tsx`
+- `src/app/admin/land-leads/actions.ts`
+- `src/app/admin/land-leads/page.tsx`
+- `src/lib/land-leads/queries.ts`
+- `src/lib/land-leads/queries.test.ts`
+- `src/lib/land-leads/vacancy.ts`
+- `src/lib/land-leads/signals.ts`
+- `tasks.todo.md`
 
 ### Verification Completed
-- `npm test -- src/lib/public-site/renovations-showcase.test.ts src/lib/public-site/content.test.ts` - passed.
-- `npm run lint` - passed with one unrelated existing warning in `scripts/compress-images.mjs`.
-- `npm run typecheck` - passed.
-- `npm run build` - passed.
-- Playwright desktop check verified five category anchors, five sections, no horizontal page overflow, active category jump to Bathrooms, and gallery next control moving from `scrollLeft: 0` to `510`.
-- Playwright mobile check at 390px verified no horizontal page overflow and category rail/cards present.
-- Visual screenshots reviewed at `/tmp/renovations-showcase-desktop-hero.png`, `/tmp/renovations-showcase-desktop-section.png`, `/tmp/renovations-showcase-section-final.png`, and `/tmp/renovations-showcase-mobile.png`.
+- Targeted red run failed on the expected hash-failure and mutation-logging assertions.
+- Targeted green run passed: `src/lib/land-leads/queries.test.ts`, 3 tests.
+- Land-lead suite passed: 10 files, 44 tests.
+- `npm run typecheck` passed.
+- `npm run lint` passed with one existing unrelated warning in `scripts/compress-images.mjs`.
+- `npm test` passed: 48 files, 177 tests.
+- Demo Playwright smoke passed for list, filtered query, detail page, and export route with no console messages.
 
 ### Risks Remaining
-- Gallery image grouping is curated from existing file names, not client-provided project captions.
-- The `.mov` files in `public/images/project-4` are still unused.
-- The unrelated lint warning in `scripts/compress-images.mjs` remains.
+- Real Supabase migration/import/upsert/RLS behavior still has not been proven against a scratch project.
+- Larimer aliases still need confirmation against a real assessor export.
+- Live read failures still render empty list/export responses rather than explicit 500/error sentinel; this was a reviewed MINOR, not addressed in this pass.
 
 ### Follow-up Recommendations
-- Add before/after pairs if older pre-renovation photos are available.
-- Add video or motion reels later for a higher-end case-study feel if the client wants more editorial polish.
+- Run one scratch-Supabase authenticated import/edit/re-import cycle before real campaign use.
+- Confirm Larimer export headers and add fixture tests.
+- Consider a broader query-result error sentinel so live list/export failures are distinguishable from truly empty results.
