@@ -560,6 +560,203 @@ export const publicPages: Record<string, PublicPageContent> = {
       },
     ],
   },
+  whyKieferBuilt: {
+    title: "Why Build With Kiefer Built",
+    description:
+      "A family builder using SIPs construction to deliver homes that are tighter, quieter, more efficient, and built to last — here is exactly why that matters.",
+    heroImage: "/images/project-2/exterior-wide-property.jpg",
+    heroAlt: "Energy-efficient mountain modern home built by Kiefer Built Contracting",
+    primaryCta: cta,
+    secondaryCta: { label: "See The Work", href: "/projects" },
+    proof: [
+      { value: "SIPs", label: "Structural insulated panels" },
+      { value: "2025", label: "SIPA Building Excellence Award" },
+      { value: "Family", label: "Owner-led accountability" },
+    ],
+    intro: {
+      title: "Better building science, not just better finishes.",
+      body:
+        "Most builders compete on finishes. Kiefer Built competes on the parts of the home you never see — the envelope, the air-tightness, and the details that decide how comfortable and affordable a home is to live in for decades. Explore the four reasons the difference is real.",
+    },
+    cards: [
+      {
+        title: "SIPs 101",
+        meta: "How we build",
+        description:
+          "What structural insulated panels are, and why they outperform conventional stick framing on strength, speed, and insulation.",
+        href: "/why-kiefer-built/sips",
+        image: "/images/project-2/exterior-solar-shed.jpg",
+      },
+      {
+        title: "Energy Efficiency",
+        meta: "Comfort & savings",
+        description:
+          "How a tighter, better-insulated envelope holds temperature, cuts utility bills, and stays comfortable through Colorado winters.",
+        href: "/why-kiefer-built/energy-efficiency",
+        image: "/images/project-2/exterior-winter-wide.jpg",
+      },
+      {
+        title: "Quality & Craftsmanship",
+        meta: "The details",
+        description:
+          "Owner-led builds, careful material selection, and a family standard that puts durable work ahead of shortcuts.",
+        href: "/why-kiefer-built/quality",
+        image: "/images/project-3/interior-great-room-wide.jpg",
+      },
+      {
+        title: "Cost Of Ownership",
+        meta: "Value over time",
+        description:
+          "Why the right build costs less to own — lower energy bills, less maintenance, and lasting resale value.",
+        href: "/why-kiefer-built/cost-of-ownership",
+        image: "/images/project-2/exterior-panoramic.jpg",
+      },
+    ],
+  },
+  sips: {
+    title: "SIPs 101: A Stronger, Tighter Shell",
+    description:
+      "Structural insulated panels replace the studs-and-batts of conventional framing with a single engineered panel — stronger, faster to erect, and dramatically better insulated.",
+    heroImage: "/images/project-2/exterior-solar-shed.jpg",
+    heroAlt: "Kiefer Built home under construction using structural insulated panels",
+    primaryCta: cta,
+    secondaryCta: { label: "See Energy Efficiency", href: "/why-kiefer-built/energy-efficiency" },
+    proof: [
+      { value: "1 panel", label: "Foam core bonded between two skins" },
+      { value: "Fewer gaps", label: "Continuous insulation, minimal thermal bridging" },
+      { value: "2025", label: "SIPA Building Excellence Award winner" },
+    ],
+    intro: {
+      title: "One engineered panel does the work of many parts.",
+      body:
+        "A structural insulated panel is a thick foam core bonded between two structural skins. That single component carries load and insulates at the same time — so the wall is stronger and far more airtight than a stick-framed wall full of studs, gaps, and seams.",
+    },
+    sections: [
+      {
+        title: "SIPs vs. stick framing.",
+        body:
+          "Conventional framing insulates only the cavities between studs, and every stud is a thermal bridge that leaks heat. SIPs insulate the whole plane continuously, with far fewer seams for air to move through. The result is a quieter, tighter, more consistent shell.",
+        image: "/images/project-2/exterior-front-facade.jpg",
+        points: ["Continuous insulation", "Fewer thermal bridges", "Faster to dry-in"],
+      },
+      {
+        title: "Recognized building excellence.",
+        body:
+          "Kiefer Built's SIPs work earned the 2025 SIPA (Structural Insulated Panel Association) Building Excellence Award for single family homes under 3,000 square feet — independent recognition of how well these homes are engineered and executed.",
+        image: "/images/project-2/exterior-winter-detail.jpg",
+        points: ["SIPA award winner", "Engineered envelope", "Proven execution"],
+        dark: true,
+      },
+    ],
+  },
+  energyEfficiency: {
+    title: "Energy Efficiency That You Feel And Bank",
+    description:
+      "A tighter envelope does two things at once: it keeps the home comfortable in every season and it lowers what you pay to heat and cool it.",
+    heroImage: "/images/project-2/exterior-winter-wide.jpg",
+    heroAlt: "Kiefer Built home holding temperature through a Colorado winter",
+    primaryCta: cta,
+    secondaryCta: { label: "Understand Cost Of Ownership", href: "/why-kiefer-built/cost-of-ownership" },
+    proof: [
+      { value: "Lower bills", label: "Less energy lost through the envelope" },
+      { value: "Even temps", label: "Fewer drafts and cold spots" },
+      { value: "Quieter", label: "The tight shell blocks outside noise" },
+    ],
+    intro: {
+      title: "Comfort is a building-science outcome.",
+      body:
+        "When the envelope is airtight and continuously insulated, the mechanical system does less work and the interior temperature stays even. That is why a well-built SIPs home feels calm and quiet — and why the utility bills are smaller month after month.",
+    },
+    sections: [
+      {
+        title: "Built for the Colorado climate.",
+        body:
+          "Northern Colorado swings from hard winters to hot, dry summers. A leaky home fights that swing all year. A tight, well-insulated Kiefer Built home holds its conditioned air, so the furnace and AC run less and the house stays comfortable from the coldest morning to the hottest afternoon.",
+        image: "/images/project-2/exterior-winter-snow.jpg",
+        points: ["Holds heat in winter", "Stays cool in summer", "Less mechanical run-time"],
+      },
+      {
+        title: "Savings that compound.",
+        body:
+          "Energy efficiency is not a one-time rebate — it is a lower bill every single month for as long as you own the home. Over the life of a mortgage, the difference between a leaky build and a tight one adds up to real money.",
+        image: "/images/project-2/exterior-solar-shed.jpg",
+        points: ["Monthly savings", "Predictable costs", "Lower carbon footprint"],
+        dark: true,
+      },
+    ],
+  },
+  quality: {
+    title: "Quality And Craftsmanship In Every Detail",
+    description:
+      "Kiefer Built is a family company. The people who own it are on the job, choosing the materials and standing behind the details.",
+    heroImage: "/images/project-3/interior-great-room-wide.jpg",
+    heroAlt: "Finished great room showing Kiefer Built craftsmanship and detail",
+    primaryCta: cta,
+    secondaryCta: { label: "Meet The Team", href: "/about/team" },
+    proof: [
+      { value: "Owner-led", label: "Family on the job, not just on the sign" },
+      { value: "Material-first", label: "Durable selections over shortcuts" },
+      { value: "Accountable", label: "Direct line to the decision makers" },
+    ],
+    intro: {
+      title: "The details decide how a home ages.",
+      body:
+        "Finishes photograph well on day one. Craftsmanship shows up in year ten — in the trim that still lines up, the doors that still close true, and the systems that still perform. Kiefer Built builds for the long version of the story.",
+    },
+    sections: [
+      {
+        title: "A family standard.",
+        body:
+          "Mark and Mindy Kiefer built the company around direct communication and durable work, with Miles involved in estimating and project management. Decisions stay close to the people who own the outcome, so quality is not delegated away.",
+        image: "/images/project-3/interior-open-plan.jpg",
+        points: ["Owner involvement", "Clear communication", "Long-term durability"],
+      },
+      {
+        title: "Materials chosen to last.",
+        body:
+          "The envelope, the mechanicals, and the finishes are selected to hold up to Colorado conditions and daily life. The goal is a home that keeps performing and looking right long after the build is done.",
+        image: "/images/project-1/kitchen-8.jpg",
+        points: ["Durable materials", "Careful coordination", "Built to perform"],
+        dark: true,
+      },
+    ],
+  },
+  costOfOwnership: {
+    title: "The Real Cost Is What You Pay To Own It",
+    description:
+      "A home's price tag is only the down payment on decades of energy, maintenance, and resale. A better build wins on all three.",
+    heroImage: "/images/project-2/exterior-panoramic.jpg",
+    heroAlt: "Kiefer Built custom home on a Northern Colorado property",
+    primaryCta: cta,
+    secondaryCta: { label: "Start With SIPs 101", href: "/why-kiefer-built/sips" },
+    proof: [
+      { value: "Lower energy", label: "A tight envelope pays back monthly" },
+      { value: "Less upkeep", label: "Durable systems mean fewer repairs" },
+      { value: "Strong resale", label: "Efficient, well-built homes hold value" },
+    ],
+    intro: {
+      title: "Cheaper to build is not cheaper to own.",
+      body:
+        "The lowest bid usually hides its cost in the years after move-in — higher utility bills, earlier repairs, and weaker resale. A Kiefer Built home front-loads quality so the ownership years cost less.",
+    },
+    sections: [
+      {
+        title: "Add up the ownership years.",
+        body:
+          "Energy, maintenance, and repairs run every month for as long as you own the home. A tighter, better-built house shrinks all three, so the total you spend over the years you actually live there comes out lower.",
+        image: "/images/project-2/exterior-winter-wide.jpg",
+        points: ["Lower utilities", "Fewer repairs", "Predictable costs"],
+      },
+      {
+        title: "Value that holds.",
+        body:
+          "Efficiency and build quality are increasingly what buyers look for. A documented, award-winning SIPs home is an easier home to resell — and one that holds its value against cheaper, leakier competition.",
+        image: "/images/project-3/aerial-front-twilight.jpg",
+        points: ["Buyer demand", "Documented quality", "Lasting value"],
+        dark: true,
+      },
+    ],
+  },
 };
 
 export const flipbookPages = [
