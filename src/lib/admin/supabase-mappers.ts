@@ -294,7 +294,9 @@ export function mapProjectFileRow(row: {
   id: string;
   project_id: string;
   name: string;
-  file_type: ProjectFile["type"];
+  // `project_files.file_type` is a plain text column, so the typed client yields `string`.
+  // The three known values are enforced by app writes, not the DB, so narrow here explicitly.
+  file_type: string;
   visibility: ProjectFile["visibility"];
   storage_bucket: string;
   storage_path: string;
@@ -305,7 +307,7 @@ export function mapProjectFileRow(row: {
     id: row.id,
     projectId: row.project_id,
     name: row.name,
-    type: row.file_type,
+    type: row.file_type as ProjectFile["type"],
     visibility: row.visibility,
     storageBucket: row.storage_bucket,
     storagePath: row.storage_path,

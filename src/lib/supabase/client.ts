@@ -1,5 +1,6 @@
 import { createBrowserClient } from "@supabase/ssr";
 import { getPublicEnv } from "./env";
+import type { Database } from "./database.types";
 
 export function createClient() {
   const env = getPublicEnv();
@@ -8,5 +9,5 @@ export function createClient() {
     throw new Error("Supabase public environment variables are not configured.");
   }
 
-  return createBrowserClient(env.supabaseUrl, env.supabaseAnonKey);
+  return createBrowserClient<Database>(env.supabaseUrl, env.supabaseAnonKey);
 }

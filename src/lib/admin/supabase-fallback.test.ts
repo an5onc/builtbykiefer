@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { formatSupabaseFallbackMessage, logSupabaseFallback } from "./supabase-fallback";
 
-describe("Supabase fallback logging", () => {
+describe("Supabase fallback (fail-loud, remediation H2)", () => {
   it("formats Supabase error details without relying on enumerable properties", () => {
     expect(
       formatSupabaseFallbackMessage("project-comments", {
@@ -10,22 +10,21 @@ describe("Supabase fallback logging", () => {
         details: "Schema cache not refreshed.",
       }),
     ).toBe(
-      "[admin:project-comments] Falling back to demo data: PGRST205 Could not find the table Schema cache not refreshed.",
+      "[admin:project-comments] Supabase query failed: PGRST205 Could not find the table Schema cache not refreshed.",
     );
   });
 
-  it("logs fallback as a warning so Next dev does not show an error overlay", () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+  it("throws on a live Supabase error instead of silently returning demo data", () => {
     const error = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    logSupabaseFallback("project-comments", { message: "Temporary Supabase error" });
+    expect(() =>
+      logSupabaseFallback("project-comments", { message: "Temporary Supabase error" }),
+    ).toThrow("[admin:project-comments] Supabase query failed: Temporary Supabase error");
 
-    expect(warn).toHaveBeenCalledWith(
-      "[admin:project-comments] Falling back to demo data: Temporary Supabase error",
+    expect(error).toHaveBeenCalledWith(
+      "[admin:project-comments] Supabase query failed: Temporary Supabase error",
     );
-    expect(error).not.toHaveBeenCalled();
 
-    warn.mockRestore();
     error.mockRestore();
   });
 });

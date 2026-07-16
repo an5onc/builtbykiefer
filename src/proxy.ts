@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { canUseAdminSession, getAllowedAdminEmail } from "@/lib/admin/auth";
 import { getPublicEnv } from "@/lib/supabase/env";
+import type { Database } from "@/lib/supabase/database.types";
 
 function redirectToLogin(request: NextRequest) {
   const loginUrl = new URL("/login", request.url);
@@ -24,7 +25,7 @@ export async function proxy(request: NextRequest) {
     request,
   });
 
-  const supabase = createServerClient(env.supabaseUrl, env.supabaseAnonKey, {
+  const supabase = createServerClient<Database>(env.supabaseUrl, env.supabaseAnonKey, {
     cookies: {
       getAll() {
         return request.cookies.getAll();

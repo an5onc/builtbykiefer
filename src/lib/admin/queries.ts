@@ -44,6 +44,7 @@ import type { VendorSubmittalCreateInput, VendorSubmittalReviewInput } from "./v
 import type { ProjectVendorAssignmentCreateInput, VendorCreateInput } from "./vendors";
 import type { WarrantyItemCreateInput } from "./warranty";
 import { logSupabaseFallback } from "./supabase-fallback";
+import type { Json } from "@/lib/supabase/database.types";
 import {
   mapBillRow,
   mapClientRow,
@@ -1204,8 +1205,9 @@ export async function createProjectFinanceSnapshot(
       project_id: snapshot.projectId,
       title: snapshot.title,
       notes: snapshot.notes,
-      inputs: snapshot.inputs,
-      outputs: snapshot.outputs,
+      // jsonb columns: these domain objects are JSON-serializable but lack a Json index signature.
+      inputs: snapshot.inputs as unknown as Json,
+      outputs: snapshot.outputs as unknown as Json,
     })
     .select("id")
     .single();
