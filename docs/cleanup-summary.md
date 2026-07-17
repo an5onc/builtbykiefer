@@ -3,7 +3,7 @@
 **Completed:** 2026-07-17  
 **Objective:** Deliver a production-ready public marketing website.  
 **Production:** [www.builtbykiefer.com](https://www.builtbykiefer.com)  
-**Vercel deployment:** `dpl_6TLg5qzDM14yv7x2HebaCn47UcMv` (`READY`)
+**Release:** `v1.0-marketing-site` on synchronized Git `main`
 
 ## Outcome
 
@@ -135,7 +135,9 @@ Vitest's lockfile metadata mentions optional browser peers, but Playwright is no
 - Platform/project: Vercel `interlockgoevans-projects/builtbykiefer`
 - Framework/runtime: Next.js 16.2.10 on Node.js 24.x
 - Final preview: `dpl_JDca8UqWbZXJHjQHBWgRgcecs3ZF`
-- Final production: `dpl_6TLg5qzDM14yv7x2HebaCn47UcMv`
+- Initial promoted production: `dpl_6TLg5qzDM14yv7x2HebaCn47UcMv`
+- Verified Git-backed production: `dpl_4YSYfV2V1cVR6gQK7iQTB8Wmqoft` from cleanup commit `4f80427`
+- Release tag: `v1.0-marketing-site`
 - Production build: 131 deployment files; build completed in 29 seconds
 - Production state: `READY`, no alias error
 - Aliases: `www.builtbykiefer.com`, `builtbykiefer.com`, and project Vercel domains
@@ -144,4 +146,3 @@ Vitest's lockfile metadata mentions optional browser peers, but Playwright is no
 ## Remaining Operational Risks
 
 1. **Email delivery credentials are not configured.** The site safely falls back to a prepared email, but automatic quote delivery requires `RESEND_API_KEY` plus a verified `CONTACT_EMAIL_FROM`. `CONTACT_EMAIL_TO` defaults to `info@kbuiltco.com`.
-2. **The verified deployment has not been committed or pushed.** Vercel records `gitDirty=1` against base commit `a4305b4`. A future Git-triggered production deployment from the current remote `main` can replace this cleaned site with the older repository state. Committing and pushing this exact reviewed worktree requires explicit owner authorization.

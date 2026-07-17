@@ -4,7 +4,7 @@ Newest sessions first. Add a new entry at the top whenever a handoff file is cre
 
 | Date | Session | Summary |
 | --- | --- | --- |
-| 2026-07-17 | [Production Marketing Website Completion](./2026-07-17-production-marketing-completion.md) | Finished the marketing-only cleanup, removed residual CRM/auth/portal/demo infrastructure, hardened SEO/accessibility/performance, deployed Vercel production, and passed complete local/preview/live QA. |
+| 2026-07-17 | [Production Marketing Website Completion](./2026-07-17-production-marketing-completion.md) | Finished the marketing-only cleanup, passed complete local/preview/live QA, synchronized Git-backed production, and finalized `v1.0-marketing-site`. |
 | 2026-07-16 | [Production Cleanup Analysis](./2026-07-16-production-cleanup-analysis.md) | Mapped all 840 tracked files and 286 source files, isolated the quote-to-CRM dependency, classified features, and proposed an approval-gated marketing-only cleanup plan without deleting application code. |
 | 2026-07-15 | [Runtime Production Site Audit](./2026-07-15-runtime-site-audit.md) | Browser-crawled 120 production routes, captured 345 screenshots, mapped public/demo operations architecture, validated interactions/SEO, and documented four broken runtime destinations. |
 | 2026-07-15 | [Homeowner Guide Integration](./2026-07-15-homeowner-guide-integration.md) | Added citation-driven education content, Indoor Air Quality and Built for Colorado routes, comparison tables, source integrity tests, and guarded PDF download support. |

@@ -43,13 +43,20 @@ Deliver a production-ready public marketing website.
 - [x] Verify SEO metadata, sitemap, robots rules, structured data, analytics, accessibility, and performance.
 - [x] Verify the production deployment without submitting fake external forms.
 
+## Release Finalization
+- [x] Complete one fresh review of the canonical live production site.
+- [x] Confirm the entire non-ignored worktree is the approved marketing-site release scope.
+- [x] Rerun release checks and commit the verified state on `main`.
+- [x] Push `main`, create `v1.0-marketing-site`, and push the tag.
+- [x] Confirm local Git, remote `main`, the release tag, and production all identify the same source state.
+
 ## Review
 
 ### Summary of Changes
 - Removed the CRM, admin, client/vendor portals, authentication, Supabase/database code, operations features, demo routes, legacy tooling, dead assets, and every supporting dependency/configuration item from the deployable application.
 - Retained and hardened 29 public marketing pages, one email-only quote-request endpoint, the source-backed education series, project media, sitemap/robots metadata, and the Homeowner Guide.
 - Corrected accessibility, SEO, content links, PDF contact information, dependency security, and production asset weight before deployment.
-- Deployed the verified site to `https://www.builtbykiefer.com` through Vercel deployment `dpl_6TLg5qzDM14yv7x2HebaCn47UcMv`.
+- Deployed the verified site to `https://www.builtbykiefer.com`, synchronized production with Git `main`, and finalized release tag `v1.0-marketing-site`.
 
 ### Files Changed
 - `src/app`, `src/components`, `src/lib` - marketing-only route/component/data surface and quote-email flow.
@@ -65,11 +72,10 @@ Deliver a production-ready public marketing website.
 - Local, Vercel preview, and canonical production browser QA covered all routes at desktop/mobile widths, 8 interactions, 30 internal destinations, media/API/SEO endpoints, and 9 retired routes with zero final issues.
 - Lighthouse samples scored 97-98 performance and 100 accessibility, best practices, and SEO.
 - Vercel production is `READY`; aliases, apex redirect, guide/video responses, and runtime-error telemetry passed.
+- A fresh Git-backed production review again passed 29 desktop routes, 29 mobile routes, 8 interactions, 30 internal destinations, and 9 retired-route checks with zero issues.
 
 ### Risks Remaining
 - The Vercel project has no environment variables. Quote requests intentionally fall back to a prepared email until `RESEND_API_KEY` and a verified `CONTACT_EMAIL_FROM` are configured.
-- The deployed state is a dirty working-tree deployment based on commit `a4305b4`; it has not been committed or pushed because that authority was not provided. A later Git-triggered deployment from the current remote `main` could restore the old application.
 
 ### Follow-up Recommendations
-- Authorize and perform a reviewed commit/push of this exact verified state before the next Git-triggered deployment.
 - Configure and verify the three documented contact-email variables if automatic form delivery is required.

@@ -22,6 +22,7 @@ Complete the approved pivot to a production-ready public marketing website: remo
 - `.env.example`, `.gitignore`, `.vercelignore`: retained only contact-email variables, removed the local obsolete env file, excluded local QA/docs from deployment, and kept secrets/build evidence local.
 - `README.md`, `AGENTS.md`, `docs/deployment-production-checklist.md`, `docs/cleanup-plan.md`, `docs/cleanup-summary.md`, `tasks.todo.md`: aligned durable documentation and completed the implementation review.
 - Production: linked the correct Vercel project, confirmed no hosted environment variables, created/verified lean previews, and promoted final deployment `dpl_6TLg5qzDM14yv7x2HebaCn47UcMv` to `www.builtbykiefer.com`.
+- Release finalization: confirmed cleanup commit `4f80427` on local and remote `main`, verified its Git-triggered production deployment, repeated the complete live browser review, and finalized tag `v1.0-marketing-site`.
 
 ## Verification
 
@@ -43,21 +44,20 @@ Complete the approved pivot to a production-ready public marketing website: remo
   - Lighthouse: 97-98 performance and 100 accessibility/best-practices/SEO on three representative pages.
   - Production headers: `www` 200; apex 307 to `www`; guide/video 200 with correct types; retired routes and removed guide PNG 404.
   - Vercel: final deployment `READY`, aliases assigned with no error, Node 24.x, build completed in 29 seconds, no runtime error clusters after QA.
+  - Fresh Git-backed production review: 29 desktop routes, 29 mobile routes, 8 interactions, 30 internal destinations, and 9 retired routes passed with zero issues; representative desktop/mobile screenshots were visually reviewed.
 
 ## Blocked / Not Run
 
 - Automatic quote-email delivery was not exercised because the Vercel project has no environment variables and fake external submissions were explicitly excluded. The tested UI provides the intended email fallback.
-- Commit and push were not run because the user did not authorize them. Production was deployed directly from the verified dirty worktree.
 - No hosted Supabase resource was changed; external decommissioning was outside the approved repository scope.
 
 ## Current Worktree State
 
-- Branch: `main...origin/main`.
-- Large approved cleanup remains uncommitted: 754 tracked files changed at the final pre-handoff count, including 698 tracked deletions and about 110 MiB removed.
-- Completion/audit/session documents and retained public-route/guide files include untracked additions.
+- Branch: `main`, synchronized with `origin/main`.
+- The complete marketing-site cleanup is committed and pushed; release tag `v1.0-marketing-site` identifies the verified release state.
 - `git diff --check` passes.
 - No agent-started local server remains. The unrelated Docker listener on port 3000 remains.
-- Vercel records the production deployment as `gitDirty=1` based on commit `a4305b4`; a later Git-triggered deploy from current remote `main` can restore the old code.
+- Vercel production is Git-backed from `main`; the dirty-worktree deployment risk is closed.
 
 ## Next Agent Start Here
 
@@ -68,6 +68,4 @@ Complete the approved pivot to a production-ready public marketing website: remo
 
 ## Next Steps
 
-- Obtain explicit owner approval to commit and push this exact verified state so the Vercel Git integration cannot overwrite production with old `main`.
 - If automatic form delivery is required, configure `RESEND_API_KEY`, verified `CONTACT_EMAIL_FROM`, and optional `CONTACT_EMAIL_TO`, then submit one owner-approved real smoke inquiry.
-
