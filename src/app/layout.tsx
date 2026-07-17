@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import GlobalFloatingAction from "@/components/GlobalFloatingAction";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -161,67 +162,22 @@ const websiteSchema = {
   },
 };
 
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "What is the process for building a custom home with Kiefer Built Contracting?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Our process has four steps: (1) Consultation — we meet in person to discuss your vision, needs, and budget. (2) Design & Plan — our team creates detailed plans and 3D renderings. (3) Build — track every detail through our BuilderTrend portal with full transparency. (4) Final Walkthrough — we walk every inch together before handing you the keys.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What areas does Kiefer Built Contracting serve in Northern Colorado?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "We build custom homes throughout Northern Colorado, including Windsor, Fort Collins, Loveland, Greeley, and Timnath. We're based in Windsor, CO.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What types of construction projects does Kiefer Built Contracting handle?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "We specialize in custom new home construction, home renovations, and commercial construction projects. With over 25 years of experience, we bring quality craftsmanship to every project.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How can I contact Kiefer Built Contracting for a quote?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "You can reach us by phone at (970) 515-5059, email at info@kbuiltco.com, or submit a request through our website contact form. We'd love to hear about your project.",
-      },
-    },
-  ],
-};
-
-import GlobalFloatingAction from "@/components/GlobalFloatingAction";
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} scroll-smooth`}>
       <head>
-        <link rel="preconnect" href="https://buildertrend.net" />
-        <link rel="dns-prefetch" href="https://buildertrend.net" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify([localBusinessSchema, websiteSchema, faqSchema]),
+            __html: JSON.stringify([localBusinessSchema, websiteSchema]),
           }}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         {children}
         <GlobalFloatingAction />
         <GoogleAnalytics gaId="G-BBCR31BJSM" />

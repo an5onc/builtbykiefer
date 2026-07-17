@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildQuoteRequestMailto, formatQuoteRequestEmail, type QuoteRequest } from "./quote-email";
-import { buildQuoteRequestLeadInput, parseQuoteRequestPayload } from "./quote-request";
+import { parseQuoteRequestPayload } from "./quote-request";
 
 const request: QuoteRequest = {
   name: "Jordan Client",
@@ -55,26 +55,5 @@ describe("quote request validation", () => {
     });
 
     expect(result.success).toBe(false);
-  });
-});
-
-describe("quote request lead capture", () => {
-  it("converts quote requests into new CRM lead input", () => {
-    expect(buildQuoteRequestLeadInput({ ...request, company: "" }, new Date("2026-05-17T12:00:00-06:00"))).toEqual({
-      name: "Jordan Client",
-      email: "jordan@example.com",
-      phone: "(970) 555-0199",
-      projectType: "Custom home",
-      budgetRange: "$900k-$1.2M",
-      status: "new",
-      nextFollowUp: "2026-05-18",
-      notes: [
-        "Website Quote Request",
-        "Source: builtbykiefer.com contact form",
-        "Project location: Windsor, CO",
-        "Timeline: This year",
-        "Project details: We are planning a custom home and want to discuss build options.",
-      ].join("\n"),
-    });
   });
 });

@@ -16,7 +16,6 @@ const request: QuoteRequestPayload = {
 
 function deps(overrides: Partial<ProcessDeps> = {}): ProcessDeps {
   return {
-    createLead: vi.fn(async () => ({ ok: true, leadId: "lead_1" })),
     sendEmail: vi.fn(async () => ({ ok: true })),
     emailConfigured: true,
     ...overrides,
@@ -25,27 +24,14 @@ function deps(overrides: Partial<ProcessDeps> = {}): ProcessDeps {
 
 describe("processQuoteRequest", () => {
   it("succeeds when the email sends", async () => {
-    const result = await processQuoteRequest(request, deps());
+    const sendEmail = vi.fn(async () => ({ ok: true }));
+    const result = await processQuoteRequest(request, deps({ sendEmail }));
     expect(result.ok).toBe(true);
     expect(result.status).toBe(200);
-    expect(result.body.emailSent).toBe(true);
-  });
-
-  it("still succeeds when the CRM write fails", async () => {
-    const createLead = vi.fn(async () => ({ ok: false }));
-    const result = await processQuoteRequest(request, deps({ createLead }));
-    expect(result.ok).toBe(true);
-    expect(result.status).toBe(200);
-    expect(result.body.emailSent).toBe(true);
-  });
-
-  it("still succeeds when the CRM write throws", async () => {
-    const createLead = vi.fn(async () => {
-      throw new Error("supabase unreachable");
-    });
-    const result = await processQuoteRequest(request, deps({ createLead }));
-    expect(result.ok).toBe(true);
-    expect(result.status).toBe(200);
+    expect(result.body).toEqual({ ok: true, emailSent: true });
+    expect(sendEmail).toHaveBeenCalledWith(
+      expect.objectContaining({ replyTo: "jordan@example.com" }),
+    );
   });
 
   it("fails clearly when email is not configured", async () => {

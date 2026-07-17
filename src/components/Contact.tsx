@@ -41,7 +41,7 @@ function getField(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
 }
 
-export default function Contact() {
+export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
@@ -87,7 +87,7 @@ export default function Contact() {
       }
 
       setSubmitState("success");
-      setMessage("Thanks. Your request was saved for the Kiefer Built team and they will follow up soon.");
+      setMessage("Thanks. Your request was sent to the Kiefer Built team and they will follow up soon.");
       form.reset();
     } catch {
       setSubmitState("error");
@@ -96,6 +96,7 @@ export default function Contact() {
   }
 
   const isSubmitting = submitState === "submitting";
+  const Heading = headingLevel;
 
   return (
     <section
@@ -119,9 +120,9 @@ export default function Contact() {
           <p className="mb-3 text-sm font-bold uppercase tracking-[0.24em] text-[#ffb4a8]">
             Get a Free Quote
           </p>
-          <h2 id="contact-heading" className="text-4xl font-bold leading-tight text-white md:text-5xl">
+          <Heading id="contact-heading" className="text-4xl font-bold leading-tight text-white md:text-5xl">
             Tell Kiefer Built what you want to build.
-          </h2>
+          </Heading>
           <p className="mt-6 max-w-xl text-base leading-8 text-white/68">
             Share the project type, location, rough budget, and timing. The form sends a structured
             quote request to Kiefer Built so the first follow-up starts with the right details.

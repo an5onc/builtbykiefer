@@ -1,3 +1,5 @@
+import { existsSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { publicPages } from "./content";
 
@@ -41,13 +43,17 @@ describe("why-kiefer-built education content", () => {
     expect(comparison?.rows.map((row) => row.sourceId)).toEqual([9, 3, 4]);
   });
 
-  it("configures the guide download without assuming the PDF asset exists", () => {
+  it("configures the supplied homeowner guide download", () => {
     expect(publicPages.whyKieferBuilt.guideDownload?.href).toBe(
       "/guides/kiefer-built-homeowner-guide.pdf",
     );
     expect(publicPages.costOfOwnership.guideDownload?.href).toBe(
       "/guides/kiefer-built-homeowner-guide.pdf",
     );
+
+    const guidePath = join(process.cwd(), "public", "guides", "kiefer-built-homeowner-guide.pdf");
+    expect(existsSync(guidePath)).toBe(true);
+    expect(statSync(guidePath).size).toBeLessThanOrEqual(15 * 1024 * 1024);
   });
 
   it("teases the education hub from the services page", () => {

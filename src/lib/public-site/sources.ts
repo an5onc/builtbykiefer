@@ -86,4 +86,4 @@ export const educationSources: EducationSource[] = [
 ];
 
 export const SOURCES_DISCLAIMER =
-  "Citations 1, 2, and 6–13 draw on independent government, national laboratory, and public agency data. Citations 3–5 reflect structural insulated panel industry testing and manufacturer field data, cited here by source rather than represented as independent research.";
+  "Sources marked “Industry testing data” reflect structural insulated panel industry testing and manufacturer field data, cited here by source rather than represented as independent research. All other sources draw on independent government, national laboratory, and public agency data.";

@@ -1,15 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Metadata } from "next";
 import { ArrowRight, ClipboardCheck, Layers3, Ruler, ShieldCheck } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { createMarketingMetadata } from "@/lib/public-site/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createMarketingMetadata({
   title: "Custom Residential Elevators | Kiefer Built Contracting",
   description:
     "Custom residential elevator builds and installations coordinated with structure, finish work, access planning, and designer-selected details in Northern Colorado.",
-};
+  pathname: "/services/custom-elevators",
+  image: "/images/project-4/DSC05502.jpg",
+  imageAlt: "Custom glass residential elevator installed by Kiefer Built Contracting",
+});
 
 const proofPoints = [
   "Residential elevator builds",

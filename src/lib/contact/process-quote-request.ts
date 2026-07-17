@@ -1,28 +1,13 @@
-import type { LeadCreateInput } from "@/lib/admin/leads";
-import { buildQuoteRequestEmail, buildQuoteRequestLeadInput, type QuoteRequestPayload } from "./quote-request";
+import { buildQuoteRequestEmail, type QuoteRequestPayload } from "./quote-request";
 
 export type ProcessResult = { ok: boolean; status: number; body: Record<string, unknown> };
 
 export type ProcessDeps = {
-  createLead: (input: LeadCreateInput) => Promise<{ ok: boolean; leadId?: string }>;
   sendEmail: (args: { subject: string; html: string; text: string; replyTo: string }) => Promise<{ ok: boolean }>;
   emailConfigured: boolean;
 };
 
 export async function processQuoteRequest(request: QuoteRequestPayload, deps: ProcessDeps): Promise<ProcessResult> {
-  // Best-effort CRM write: never blocks or fails the request.
-  let leadId: string | undefined;
-  try {
-    const leadResult = await deps.createLead(buildQuoteRequestLeadInput(request));
-    if (leadResult.ok) {
-      leadId = leadResult.leadId;
-    } else {
-      console.error("[quote-request] CRM lead write failed (non-blocking)");
-    }
-  } catch (error) {
-    console.error("[quote-request] CRM lead write threw (non-blocking)", error);
-  }
-
   if (!deps.emailConfigured) {
     return {
       ok: false,
@@ -55,5 +40,5 @@ export async function processQuoteRequest(request: QuoteRequestPayload, deps: Pr
     };
   }
 
-  return { ok: true, status: 200, body: { ok: true, emailSent: true, leadId } };
+  return { ok: true, status: 200, body: { ok: true, emailSent: true } };
 }

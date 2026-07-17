@@ -19,13 +19,13 @@ export default function FloatingCTA() {
     <AnimatePresence>
       {visible && (
         <motion.a
-          href="#contact"
+          href="/#contact"
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.8, y: 20 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
           className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-md bg-[#c9281c] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-black/20 transition-colors hover:bg-[#a91f16] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c9281c] focus-visible:ring-offset-2"
-          aria-label="Get a free quote — scroll to contact form"
+          aria-label="Get a free quote from Kiefer Built"
         >
           <svg
             className="h-4 w-4"

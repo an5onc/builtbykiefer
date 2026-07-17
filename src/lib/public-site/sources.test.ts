@@ -38,8 +38,11 @@ describe("education source integrity", () => {
       expect(source.independent).toBe(![3, 4, 5].includes(source.id));
     }
 
-    expect(SOURCES_DISCLAIMER).toMatch(/Citations 1, 2, and 6–13/);
-    expect(SOURCES_DISCLAIMER).toMatch(/Citations 3–5 reflect/);
+    // Disclaimer is number-agnostic: pages renumber sources locally, so it keys
+    // off the "Industry testing data" badge rather than the guide's global IDs.
+    expect(SOURCES_DISCLAIMER).toMatch(/Industry testing data/);
+    expect(SOURCES_DISCLAIMER).toMatch(/independent government, national laboratory, and public agency data/);
+    expect(SOURCES_DISCLAIMER).not.toMatch(/Citations?\s+\d/);
   });
 
   it("resolves every citation attached to every education page", () => {

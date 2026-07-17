@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/tmp/
 
 # next.js
 /.next/
@@ -23,10 +24,6 @@
 # misc
 .DS_Store
 *.pem
-.superpowers/
-.worktrees/
-outputs/
-supabase/.temp/
 
 # debug
 npm-debug.log*
@@ -44,19 +41,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Large local-only videos (not used by site, exceed GitHub size limit)
+# Large local-only source videos
 public/images/**/*.mov
 *.mov
 
-# design-sync (machine state; .design-sync durable files ARE committed)
-.ds-sync/
-ds-bundle/
-.design-sync/.cache/
-.design-sync/learnings/
-.design-sync/node_modules
+# Runtime audit evidence stays local until the old-site comparison is complete.
+docs/runtime-site-audit/screenshots/
 
-# Local project archives
-public.zip
-src.zip
-supabase.zip
+# Local archives
 *.zip

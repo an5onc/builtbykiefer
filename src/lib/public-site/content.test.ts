@@ -19,4 +19,22 @@ describe("public site content", () => {
     expect(projectCard?.href).toBe("/services/custom-elevators");
     expect(elevatorSection).toBeUndefined();
   });
+
+  it("links both detailed home tours from the project gallery", () => {
+    const hrefs = (publicPages.projects.cards ?? []).map((card) => card.href);
+
+    expect(hrefs).toContain("/projects/contemporary-ranch");
+    expect(hrefs).toContain("/projects/mountain-modern");
+  });
+
+  it("routes every journal card to a complete public destination", () => {
+    const hrefs = (publicPages.blog.cards ?? []).map((card) => card.href);
+
+    expect(hrefs).toEqual([
+      "/why-kiefer-built/sips",
+      "/why-kiefer-built/energy-efficiency",
+      "/why-kiefer-built/indoor-air-quality",
+      "/projects/mountain-modern",
+    ]);
+  });
 });

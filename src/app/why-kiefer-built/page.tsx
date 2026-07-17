@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import PublicPage from "@/components/public-site/PublicPage";
 import { publicPages } from "@/lib/public-site/content";
+import { createPublicPageMetadata } from "@/lib/public-site/metadata";
 
-export const metadata: Metadata = {
-  title: "Why Build With Kiefer Built | SIPs, Efficiency & Craftsmanship",
-  description: publicPages.whyKieferBuilt.description,
-};
+export const metadata = createPublicPageMetadata(
+  publicPages.whyKieferBuilt,
+  "/why-kiefer-built",
+  "Why Build With Kiefer Built | SIPs, Efficiency & Craftsmanship",
+);
 
 export default function WhyKieferBuiltPage() {
   return <PublicPage content={publicPages.whyKieferBuilt} />;

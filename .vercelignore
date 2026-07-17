@@ -1,0 +1,17 @@
+# Local project records and QA evidence
+.sessions/
+docs/
+tmp/
+AGENTS.md
+README.md
+tasks.todo.md
+
+# Development-only checks and generated caches
+**/*.test.ts
+eslint.config.mjs
+vitest.config.ts
+*.tsbuildinfo
+
+# Local configuration and operating-system metadata
+.env*
+.DS_Store

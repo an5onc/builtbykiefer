@@ -1,85 +1,68 @@
-# Kiefer Built CRM Deployment Checklist
+# Kiefer Built Marketing Website Deployment Checklist
 
-Use this checklist when moving the local CRM from `localhost:3000` to a hosted Kiefer review or production environment.
+Use this checklist for preview and production releases of the public Kiefer Built website.
 
-## Current Hosting Facts
+## Before Deployment
 
-- `builtbykiefer.com` and `www.builtbykiefer.com` are served by Vercel.
-- The repo README says Vercel auto-deploys from `main`; verify current Vercel project settings before relying on this.
-- Re-check live production routes and DNS before deployment planning; older route/DNS observations may be stale.
-- Current repo work is on `main` as of the 2026-05-22 handoff cleanup.
+- Confirm the intended branch and review `git status --short --branch`.
+- Run `npm install` using the committed lockfile.
+- Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`.
+- Review dependency audit output; do not use forced or breaking audit fixes without a separate review.
+- Confirm `public/guides/kiefer-built-homeowner-guide.pdf` exists and remains reasonably sized.
+- Confirm no admin, auth, portal, CRM, database, demo, or retired utility routes are present in the build output.
+- Confirm the runtime-audit screenshots remain local and are not included in the deployment.
 
-## Required Vercel Environment Variables
+## Environment Variables
 
-Set these in Vercel before deploying the CRM routes:
+Configure these for Preview and Production when quote-request email should work:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://yediihmkophbyknshmqw.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<production anon key>
-NEXT_PUBLIC_DEMO_MODE=false
-ADMIN_EMAIL=<approved admin email>
-NEXT_PUBLIC_APP_URL=https://www.builtbykiefer.com
 RESEND_API_KEY=<production email API key>
-CONTACT_EMAIL_FROM=Kiefer Built <quotes@builtbykiefer.com>
+CONTACT_EMAIL_FROM="Kiefer Built <quotes@builtbykiefer.com>"
 CONTACT_EMAIL_TO=info@kbuiltco.com
 ```
 
-Do not expose Supabase service-role keys in `NEXT_PUBLIC_` variables.
+The sender domain must be verified with the email provider. No database, authentication, Supabase, demo-mode, or application-URL variables are required.
 
-## Required Supabase Auth URLs
+## Vercel and Domain Checks
 
-In Supabase Auth URL settings, allow:
+- Verify the Vercel project is connected to the intended Git repository and production branch.
+- Verify `www.builtbykiefer.com` is the canonical production origin.
+- Confirm the apex domain redirects to the preferred origin if that is the active domain policy.
+- Confirm Preview and Production use the intended environment-variable values.
+- Do not add a database, authentication provider, or operations subdomain for this marketing-only application.
 
-- `https://www.builtbykiefer.com/auth/callback`
-- `https://builtbykiefer.com/auth/callback`
-- Any Vercel preview URL used for client review.
+## Preview Review
 
-If using a separate admin subdomain later, also add:
+- Open the homepage at desktop and mobile widths.
+- Open every header dropdown and the mobile menu.
+- Visit every route listed in `src/lib/public-site/routes.ts`.
+- Confirm the two detailed project tours are linked from `/projects`.
+- Confirm `/service-areas` is linked from the homepage.
+- Confirm the Blog remains visibly usable as a card landing page without implying that article cards open.
+- Verify citations and source anchors on every Why Kiefer Built page.
+- Download and open the Homeowner Guide from `/why-kiefer-built` and `/why-kiefer-built/cost-of-ownership`.
+- Check `/sitemap.xml` and `/robots.txt`.
+- Check browser console and network panels for errors, missing images, and failed assets.
 
-- `https://admin.builtbykiefer.com/auth/callback`
+## Quote Request Verification
 
-## Database State
+Only submit a real test request when the owner has authorized it and the recipient expects the message.
 
-The local repo currently includes CRM migrations through:
+- Confirm required fields, email validation, minimum project-detail length, loading state, and disabled submit state.
+- Confirm configured delivery produces a success message stating that the request was sent.
+- Confirm unconfigured or failed delivery exposes the prepared email fallback.
+- Confirm the API response and logs contain no CRM, database, or portal behavior.
 
-- `20260517225648_allow_public_quote_lead_capture.sql`
+## Production Smoke Test
 
-Before deployment, confirm with:
+- Homepage, About, Services, Projects, Why Kiefer Built, Process, Products, Testimonials, Careers, Contact, Vendors, and Blog load.
+- Detailed project, renovation, service-area, custom-elevator, and education routes load.
+- Header, mobile navigation, footer, floating quote CTA, and internal cross-links work.
+- Images, project video, gallery controls, citation anchors, and the guide download work.
+- Page titles, descriptions, canonicals, Open Graph tags, and Twitter metadata match the current route.
+- `/sitemap.xml` contains the retained public pages and no retired application routes.
+- Retired `/admin`, `/login`, `/portal`, `/vendor`, `/demo-slider`, `/estimate`, and `/project-timelines` paths return 404.
+- No console errors, broken images, or unresolved internal links appear.
 
-```bash
-supabase migration list --linked
-npm run build
-```
-
-## Deployment Options
-
-Recommended path for review:
-
-1. Commit the current reviewed work on the intended branch.
-2. Push the branch to GitHub.
-3. Let Vercel create a preview deployment for review.
-4. Add the preview callback URL in Supabase Auth.
-5. Test `/login`, `/admin`, `/portal`, `/vendor/login`, and `/admin/finance-tools` on the preview URL.
-
-Recommended path for production:
-
-1. Merge the reviewed CRM branch into `main`.
-2. Confirm Vercel production environment variables are set.
-3. Deploy `main`.
-4. Test `https://www.builtbykiefer.com/admin`.
-5. Only add `admin.builtbykiefer.com` if Kiefer wants a separate operations subdomain.
-
-## Post-Deploy Smoke Test
-
-- Public site loads.
-- Public quote form submits and sends a formatted email to `info@kbuiltco.com`.
-- `/login` renders the admin login.
-- Approved admin can sign in.
-- `/admin` command center renders without Supabase fallback errors.
-- `/admin/finance-tools` renders all Kiefer Built calculators.
-- `/vendor/login` renders vendor login.
-- Unauthenticated `/vendor` redirects to `/vendor/login?next=%2Fvendor`.
-- Signed-in vendor sees only their own assignments.
-- Vendor RFI response submission saves.
-- Vendor submittal upload saves metadata and file.
-- Admin project page shows the vendor submittal and download link.
+Record the deployment URL, commit SHA, checks performed, and any exceptions in the current session record.

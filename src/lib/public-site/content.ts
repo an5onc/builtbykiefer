@@ -202,6 +202,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         meta: "April 21, 2025 · Mark Kiefer",
         description:
           "A builder's look at how structural insulated panels support energy efficiency, comfort, and long-term performance.",
+        href: "/why-kiefer-built/sips",
         image: "/images/project-2/exterior-winter-detail.jpg",
       },
       {
@@ -209,6 +210,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         meta: "April 14, 2025 · Mark Kiefer",
         description:
           "How Kiefer Built uses structural insulated panels to improve strength, reduce waste, and create more efficient homes.",
+        href: "/why-kiefer-built/energy-efficiency",
         image: "/images/project-2/exterior-solar-shed.jpg",
       },
       {
@@ -216,6 +218,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         meta: "March 19, 2025 · Mark Kiefer",
         description:
           "A practical view of how planning, insulation, window placement, and finish decisions shape the way a home lives.",
+        href: "/why-kiefer-built/indoor-air-quality",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
       },
       {
@@ -223,6 +226,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         meta: "March 19, 2025 · Mark Kiefer",
         description:
           "A Red Feather Lakes project shows how modern building methods can support both mountain durability and daily comfort.",
+        href: "/projects/mountain-modern",
         image: "/images/project-2/exterior-front-facade.jpg",
       },
     ],
@@ -318,7 +322,7 @@ export const publicPages: Record<string, PublicPageContent> = {
   process: {
     title: "A Design-Build Approach",
     description:
-      "A practical process from consultation to construction, client portal communication, final walkthrough, and warranty support.",
+      "A practical process from consultation to construction, clear project communication, final walkthrough, and warranty support.",
     heroImage: "/images/project-3/interior-living-to-entry.jpg",
     heroAlt: "Finished custom home interior by Kiefer Built",
     primaryCta: cta,
@@ -339,9 +343,9 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Coordinate trades, materials, inspections, photos, schedule updates, and field decisions.",
       },
       {
-        title: "04 · Portal Communication",
+        title: "04 · Project Communication",
         description:
-          "Keep project information organized with schedules, photos, requests, expenses, and messages in one place.",
+          "Keep schedules, photos, field decisions, requests, and messages organized throughout construction.",
       },
       {
         title: "05 · Final Walkthrough",
@@ -383,7 +387,6 @@ export const publicPages: Record<string, PublicPageContent> = {
     heroImage: "/images/project-3/aerial-front-twilight.jpg",
     heroAlt: "Aerial view of a Kiefer Built custom home",
     primaryCta: cta,
-    cardsLayout: "fourColumn",
     cards: [
       {
         title: "New Builds",
@@ -408,6 +411,20 @@ export const publicPages: Record<string, PublicPageContent> = {
         description: "A specialty home improvement combining custom elevator access, bathroom upgrades, and refined finish work.",
         href: "/services/custom-elevators",
         image: "/images/project-4/DSC05502.jpg",
+      },
+      {
+        title: "Contemporary Ranch",
+        description:
+          "Tour a finished Northern Colorado ranch from its twilight exterior and open great room to custom cabinetry and primary-suite details.",
+        href: "/projects/contemporary-ranch",
+        image: "/images/project-3/aerial-front-twilight.jpg",
+      },
+      {
+        title: "Mountain Modern",
+        description:
+          "Follow a Colorado mountain home through excavation, structure, exterior systems, solar, and the completed property.",
+        href: "/projects/mountain-modern",
+        image: "/images/project-2/exterior-panoramic.jpg",
       },
     ],
   },
@@ -498,7 +515,6 @@ export const publicPages: Record<string, PublicPageContent> = {
     heroImage: "/images/project-3/interior-great-room-kitchen.jpg",
     heroAlt: "Finished Kiefer Built great room and kitchen",
     primaryCta: cta,
-    secondaryCta: { label: "Leave A Review", href: "https://www.houzz.com/professionals/general-contractors/kiefer-built-contracting-pfvwus-pf~1042242452" },
     testimonials: [
       {
         name: "Jeff T",
@@ -655,7 +671,7 @@ export const publicPages: Record<string, PublicPageContent> = {
     guideDownload: {
       label: "Download The Guide",
       href: "/guides/kiefer-built-homeowner-guide.pdf",
-      note: "Read the complete 19-page case for healthier, more efficient, Colorado-ready homebuilding.",
+      note: "Read the complete 9-page case for healthier, more efficient, Colorado-ready homebuilding.",
     },
   },
   sips: {
@@ -849,7 +865,7 @@ export const publicPages: Record<string, PublicPageContent> = {
     guideDownload: {
       label: "Download The Guide",
       href: "/guides/kiefer-built-homeowner-guide.pdf",
-      note: "Use the full 19-page guide to compare health, energy, resilience, and long-term value before you build.",
+      note: "Use the full 9-page guide to compare health, energy, resilience, and long-term value before you build.",
     },
   },
   indoorAirQuality: {

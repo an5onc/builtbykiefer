@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import PublicPage from "@/components/public-site/PublicPage";
 import { publicPages } from "@/lib/public-site/content";
+import { createPublicPageMetadata } from "@/lib/public-site/metadata";
 
-export const metadata: Metadata = {
-  title: "Energy Efficiency | Lower Bills, Even Comfort | Kiefer Built",
-  description: publicPages.energyEfficiency.description,
-};
+export const metadata = createPublicPageMetadata(
+  publicPages.energyEfficiency,
+  "/why-kiefer-built/energy-efficiency",
+  "Energy Efficiency | Lower Bills, Even Comfort | Kiefer Built",
+);
 
 export default function EnergyEfficiencyPage() {
   return <PublicPage content={publicPages.energyEfficiency} />;

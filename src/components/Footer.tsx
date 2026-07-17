@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6">
         {/* Partner acknowledgment */}
         <div className="flex items-center justify-center gap-8 mb-8 border-b border-white/10 pb-8">
-          <span className="text-sm tracking-wider text-white/45">In partnership with</span>
+          <span className="text-sm tracking-wider text-white/60">In partnership with</span>
           <a
             href="https://epsbuildings.com"
             target="_blank"
@@ -75,17 +75,17 @@ export default function Footer() {
             </a>
           </nav>
           <div className="text-right">
-            <p className="text-charcoal-400 text-xs">
+            <p className="text-xs text-white/60">
               &copy; {new Date().getFullYear()} Kiefer Built Contracting. All
               rights reserved.
             </p>
-            <p className="text-charcoal-500 text-xs mt-1">
+            <p className="mt-1 text-xs text-white/60">
               Created and Powered by{" "}
               <a
                 href="https://nexgenstudio.io"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#c9281c]/80 transition-colors hover:text-[#c9281c]"
+                className="text-[#ff6b5c] underline decoration-current/60 underline-offset-2 transition-colors hover:text-white"
               >
                 Nexgen Studio
               </a>

@@ -389,7 +389,7 @@ export default function ServiceAreasPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
-                  href="tel:(970)515-5059"
+                  href="tel:+19705155059"
                   className="inline-flex items-center justify-center px-8 py-4 bg-walnut-500 hover:bg-walnut-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-walnut-500/20"
                 >
                   Call (970) 515-5059

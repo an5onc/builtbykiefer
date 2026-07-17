@@ -75,7 +75,7 @@ function getRevealDirection(index: number): { x: number; y: number } {
 
 /* ── Per-card mouse parallax hook ──────────────────────────────── */
 function useCardParallax(strength = 18) {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLButtonElement>(null);
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
 
@@ -89,7 +89,7 @@ function useCardParallax(strength = 18) {
   const tiltX = useTransform(springY, [-1, 1], [4, -4]);
   const tiltY = useTransform(springX, [-1, 1], [-4, 4]);
 
-  const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+  const onPointerMove = useCallback((e: React.PointerEvent<HTMLButtonElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     rawX.set(((e.clientX - rect.left) / rect.width) * 2 - 1);
@@ -146,12 +146,14 @@ function BentoCell({
       className="relative overflow-hidden cursor-pointer group select-none"
     >
       {/* Tappable area */}
-      <div
+      <button
+        type="button"
         ref={cardRef}
-        className="absolute inset-0"
+        className="absolute inset-0 w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-sage-500)]"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
         onClick={() => onOpen(index)}
+        aria-label={`Open ${photo.caption} in gallery`}
       >
         {/* Parallax image — slightly oversized so shifts don't show edge */}
         <motion.div
@@ -225,7 +227,7 @@ function BentoCell({
             <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
           </svg>
         </motion.div>
-      </div>
+      </button>
     </motion.div>
   );
 }
@@ -254,7 +256,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
   return (
     <section
       id="gallery"
-      className="py-20 md:py-28"
+      className="overflow-x-clip py-20 md:py-28"
       style={{ background: "white" }}
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
@@ -269,7 +271,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
         >
           <p
             className="text-sm tracking-[0.35em] uppercase mb-3 font-semibold"
-            style={{ color: "var(--color-sage-500)" }}
+            style={{ color: "var(--color-sage-700)" }}
           >
             Gallery
           </p>
@@ -298,7 +300,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
                 whileTap={{ scale: 0.97 }}
                 className="relative px-5 py-2.5 text-xs font-semibold uppercase tracking-widest rounded-full transition-colors cursor-pointer overflow-hidden"
                 style={active
-                  ? { background: "var(--color-sage-500)", color: "white", boxShadow: "0 4px 14px rgba(78,148,67,0.3)" }
+                  ? { background: "var(--color-sage-600)", color: "white", boxShadow: "0 4px 14px rgba(61,120,53,0.3)" }
                   : { background: "var(--color-cream-100)", color: "var(--color-slate-600)", border: "1px solid var(--color-cream-300)" }
                 }
               >
@@ -306,12 +308,12 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
                   <motion.span
                     layoutId="filter-pill"
                     className="absolute inset-0 rounded-full"
-                    style={{ background: "var(--color-sage-500)" }}
+                    style={{ background: "var(--color-sage-600)" }}
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
                 <span className="relative z-10">
-                  {cat} <span className="opacity-60 font-normal">({count})</span>
+                  {cat} <span className="font-normal">({count})</span>
                 </span>
               </motion.button>
             );

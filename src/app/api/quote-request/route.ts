@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { createLead } from "@/lib/admin/queries";
 import { parseQuoteRequestPayload } from "@/lib/contact/quote-request";
 import { processQuoteRequest } from "@/lib/contact/process-quote-request";
 
@@ -41,7 +40,6 @@ export async function POST(request: Request) {
   const to = process.env.CONTACT_EMAIL_TO ?? defaultRecipient;
 
   const result = await processQuoteRequest(parsed.data, {
-    createLead,
     emailConfigured: Boolean(apiKey && from),
     sendEmail: async ({ subject, html, text, replyTo }) => {
       const response = await fetch(resendEndpoint, {

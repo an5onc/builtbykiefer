@@ -1,128 +1,93 @@
 # Built by Kiefer
 
-Portfolio website for **Kiefer Built Contracting** — custom home building, renovations, and commercial construction in Northern Colorado.
+Public marketing website for Kiefer Built Contracting, a Northern Colorado builder focused on custom homes, renovations, commercial work, custom elevators, and high-performance construction education.
 
-**Live site:** [builtbykiefer.com](https://builtbykiefer.com)
+Production site: [www.builtbykiefer.com](https://www.builtbykiefer.com)
 
-## Tech Stack
+## Scope
 
-- **Framework:** Next.js 16 (App Router)
-- **Styling:** Tailwind CSS 4
-- **Animations:** Framer Motion
-- **Contact Form:** Kiefer Built quote request form with server-side email delivery
-- **Deployment:** Vercel (auto-deploy from `main`)
+This repository contains only the customer-facing website:
 
-## Phase 1 Operations Platform
+- Company, team, accolades, careers, testimonials, and vendor information
+- Services, process, products, service areas, project galleries, and detailed project tours
+- The Why Kiefer Built education series with source-backed citations
+- The downloadable Kiefer Built Homeowner Guide
+- A public quote-request form with server-side email delivery
+- SEO metadata, structured data, sitemap, robots rules, analytics, responsive layouts, and accessible navigation
 
-The public website remains the marketing front door. The operations platform adds authenticated server-side functionality under `/admin`, so this project no longer uses `output: "export"`.
+There is no admin dashboard, CRM, authentication system, client portal, vendor portal, project-management system, or database integration in this repository.
 
-Server-side functionality is required for:
+## Stack
 
-- Admin authentication
-- Secure file/document workflows
-- Supabase access
-- Branded invoice PDF generation
-- Vercel deployment with server routes
+- Next.js 16 App Router and React 19
+- TypeScript in strict mode
+- Tailwind CSS 4
+- Framer Motion, Lucide React, and Yet Another React Lightbox
+- Zod validation for quote requests
+- Resend HTTP API for quote-request email delivery
+- Vitest, ESLint, and TypeScript checks
+- Google Analytics through `@next/third-parties`
 
-## Getting Started
+## Local Setup
+
+Requirements: Node.js 20.9 or newer and npm.
 
 ```bash
 npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the site.
-
-## Build
-
-```bash
-npm run build
-```
-
-## Local Operations Demo
-
-Create `.env.local` from `.env.example`:
-
-```bash
 cp .env.example .env.local
-```
-
-For the Phase 1 demo, keep:
-
-```env
-NEXT_PUBLIC_DEMO_MODE=true
-```
-
-Run locally:
-
-```bash
 npm run dev
 ```
 
-Open:
+Open [http://localhost:3000](http://localhost:3000).
 
-- Public site: http://localhost:3000
-- Admin login: http://localhost:3000/login
-- Admin console: http://localhost:3000/admin
-- Invoice PDF demo: http://localhost:3000/admin/invoices/invoice-1/download
+## Environment Variables
 
-## Supabase Backend Setup
-
-This repo is wired for Supabase Auth, Postgres, and private Storage, while keeping demo data available when Supabase is not configured.
-
-1. Create a Supabase project.
-2. Apply `supabase/migrations/0001_phase_1_schema.sql` in the Supabase SQL editor or with the Supabase CLI.
-3. Apply `supabase/seed.sql` if you want the hosted database to mirror the demo records.
-4. Create the first admin user in Supabase Auth.
-5. Promote that user after signup:
-
-```sql
-update profiles
-set role = 'admin'
-where email = 'owner@example.com';
-```
-
-6. Set local/hosting env vars:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-NEXT_PUBLIC_DEMO_MODE=false
-ADMIN_EMAIL=owner@example.com
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-```
-
-The migrations create the CRM schema, RLS policies, and storage buckets used by admin, client portal, and vendor portal workflows. Apply all migrations in order before relying on hosted Supabase behavior.
-
-## Quote Request Email Setup
-
-The public contact form posts to `/api/quote-request` and sends a formatted quote request to `info@kbuiltco.com`.
-
-Set these in local and hosted environments before relying on email delivery:
+The website renders without environment variables. Quote-request email delivery requires:
 
 ```env
 RESEND_API_KEY=your_resend_api_key
-CONTACT_EMAIL_FROM=Kiefer Built <quotes@builtbykiefer.com>
+CONTACT_EMAIL_FROM="Kiefer Built <quotes@builtbykiefer.com>"
 CONTACT_EMAIL_TO=info@kbuiltco.com
 ```
 
-`CONTACT_EMAIL_FROM` must use a sender domain verified with the email provider. Without these values, the form still renders but shows a fallback email link instead of silently dropping the request.
+`CONTACT_EMAIL_FROM` must use a sender domain verified with the email provider. When delivery is not configured or fails, the form presents a prepared email fallback instead of reporting a false success.
 
-## Project Structure
+## Quality Commands
 
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
-src/
-├── app/
-│   ├── layout.tsx      # Root layout with metadata/SEO
-│   ├── page.tsx         # Home page
-│   └── globals.css      # Global styles & Tailwind
-├── components/
-│   ├── Header.tsx       # Fixed header with mobile menu
-│   ├── Hero.tsx         # Full-screen hero with parallax
-│   ├── ProjectGallery.tsx # Scrapbook-style image gallery
-│   ├── Process.tsx      # 4-step build process section
-│   ├── Contact.tsx      # Contact info + Kiefer quote request form
-│   └── Footer.tsx       # Site footer with social links
-public/
-└── images/              # Project photography
-```
+
+## Source of Truth
+
+- `src/app/` - App Router pages, root metadata, sitemap, and quote API
+- `src/lib/public-site/routes.ts` - retained public route manifest
+- `src/lib/public-site/nav.ts` - desktop and mobile navigation
+- `src/lib/public-site/content.ts` - shared marketing-page content
+- `src/lib/public-site/sources.ts` - education citations and independent/industry labeling
+- `src/components/public-site/PublicPage.tsx` - shared marketing-page renderer
+- `src/components/Contact.tsx` - public quote form
+- `src/lib/contact/` - validation, email formatting, and delivery orchestration
+- `public/images/` - active project photography and brand assets
+- `public/guides/kiefer-built-homeowner-guide.pdf` - owner-provided downloadable guide
+- `docs/deployment-production-checklist.md` - production deployment and smoke tests
+
+## Content Maintenance
+
+Most standard marketing pages are content-driven through `src/lib/public-site/content.ts`. Detailed galleries and interactive pages live in their route or dedicated component files. When updating content, preserve route paths, citations, metadata, image alternative text, and quote-form fallback behavior.
+
+The Blog is a curated landing page whose cards lead to the site's existing education and project pages. Add dedicated article routes only when complete article content is ready to publish.
+
+Ongoing content work:
+
+- Add completed projects and project photography.
+- Refresh portfolio descriptions and featured work as the company evolves.
+
+## Deployment
+
+The application is designed for Vercel and includes one server route at `POST /api/quote-request`; it is not configured as a static export. Verify the active Vercel Git integration and environment-variable scopes before relying on automatic deployment.
+
+Do not commit `.env.local`, local archives, generated build output, or the runtime-audit screenshot corpus.

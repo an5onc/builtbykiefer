@@ -197,7 +197,7 @@ export default function Home() {
         <section id="custom-elevators" className="bg-[#232323] px-6 py-20 text-white md:py-24">
           <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
-              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#c9281c]">New Service</p>
+              <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#ff6b5c]">New Service</p>
               <h2 className="mt-4 text-3xl font-bold leading-tight md:text-5xl">
                 Custom elevators for homes, designers, and long-term access.
               </h2>
@@ -329,6 +329,13 @@ export default function Home() {
               <p className="mt-5 text-lg leading-8 text-[#655c52]">
                 Kiefer Built works across the communities where Northern Colorado families are building, renovating, and planning their next chapter.
               </p>
+              <Link
+                href="/service-areas"
+                className="mt-7 inline-flex items-center gap-2 rounded-md bg-[#171717] px-5 py-3 text-sm font-bold uppercase tracking-[0.14em] text-white transition hover:bg-[#333]"
+              >
+                Explore Service Areas
+                <ArrowRight className="size-4" />
+              </Link>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {serviceAreas.map((area) => (

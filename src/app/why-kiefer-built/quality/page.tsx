@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import PublicPage from "@/components/public-site/PublicPage";
 import { publicPages } from "@/lib/public-site/content";
+import { createPublicPageMetadata } from "@/lib/public-site/metadata";
 
-export const metadata: Metadata = {
-  title: "Quality & Craftsmanship | Family-Built Homes | Kiefer Built",
-  description: publicPages.quality.description,
-};
+export const metadata = createPublicPageMetadata(
+  publicPages.quality,
+  "/why-kiefer-built/quality",
+  "Quality & Craftsmanship | Family-Built Homes | Kiefer Built",
+);
 
 export default function QualityPage() {
   return <PublicPage content={publicPages.quality} />;

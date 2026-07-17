@@ -100,6 +100,7 @@ export default function ContemporaryRanchProject() {
         </Link>
       </div>
 
+      <main id="main-content">
       {/* ════════ HERO ════════ */}
       <section className="relative h-[85vh] overflow-hidden">
         <motion.div className="absolute inset-0" style={{ y: heroParallax }}>
@@ -209,7 +210,7 @@ export default function ContemporaryRanchProject() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/#contact"
               className="px-8 py-3 font-semibold rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 text-white"
-              style={{ background: "var(--color-sage-500)" }}>
+              style={{ background: "var(--color-sage-600)" }}>
               Start Your Project
             </Link>
             <Link href="/"
@@ -224,6 +225,7 @@ export default function ContemporaryRanchProject() {
           </div>
         </div>
       </SectionWrapper>
+      </main>
 
       {/* Footer */}
       <footer className="py-8 border-t" style={{ background: "var(--color-cream-100)", borderColor: "var(--color-cream-300)" }}>
@@ -247,13 +249,13 @@ export default function ContemporaryRanchProject() {
               ))}
             </nav>
             <div className="text-center md:text-right">
-              <p className="text-xs" style={{ color: "var(--color-slate-400)" }}>
+              <p className="text-xs" style={{ color: "var(--color-slate-600)" }}>
                 &copy; {new Date().getFullYear()} Kiefer Built Contracting. All rights reserved.
               </p>
-              <p className="text-xs mt-1" style={{ color: "var(--color-slate-300)" }}>
+              <p className="text-xs mt-1" style={{ color: "var(--color-slate-600)" }}>
                 Created and Powered by{" "}
                 <a href="https://nexgenstudio.io" target="_blank" rel="noopener noreferrer"
-                  className="transition-colors hover:underline" style={{ color: "var(--color-sage-500)" }}>
+                  className="underline decoration-current/60 underline-offset-2 transition-colors hover:no-underline" style={{ color: "var(--color-sage-700)" }}>
                   Nexgen Studio
                 </a>
               </p>
@@ -286,7 +288,7 @@ function SectionHeader({ tag, title, desc }: { tag: string; title: string; desc:
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
     >
-      <p className="text-sm tracking-[0.3em] uppercase mb-3 font-medium" style={{ color: "var(--color-sage-500)" }}>{tag}</p>
+      <p className="text-sm tracking-[0.3em] uppercase mb-3 font-medium" style={{ color: "var(--color-sage-700)" }}>{tag}</p>
       <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--color-slate-800)" }}>{title}</h2>
       <p className="max-w-lg mx-auto" style={{ color: "var(--color-slate-500)" }}>{desc}</p>
     </motion.div>
