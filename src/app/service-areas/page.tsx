@@ -110,7 +110,7 @@ export default function ServiceAreasPage() {
                   key={area.city}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                   transition={{ duration: 0.6, delay: index * 0.08 }}
                   className="group h-full"
                 >
@@ -168,7 +168,7 @@ export default function ServiceAreasPage() {
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{ duration: 0.6 }}
               className="text-center mb-14"
             >
@@ -187,7 +187,7 @@ export default function ServiceAreasPage() {
             <motion.div
               initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{ duration: 0.8 }}
               className="relative rounded-lg overflow-hidden border border-charcoal-700 shadow-2xl bg-charcoal-900"
             >
@@ -226,7 +226,7 @@ export default function ServiceAreasPage() {
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{ duration: 0.6 }}
               className="text-center mb-14"
             >
@@ -248,7 +248,7 @@ export default function ServiceAreasPage() {
                   key={`distance-${area.city}`}
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                   transition={{ duration: 0.4, delay: index * 0.06 }}
                   className="flex items-center gap-4 p-5 rounded-lg bg-charcoal-800 border border-charcoal-700 hover:border-walnut-500/30 transition-colors"
                 >
@@ -273,7 +273,7 @@ export default function ServiceAreasPage() {
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{ duration: 0.6 }}
               className="text-center mb-14"
             >
@@ -340,7 +340,7 @@ export default function ServiceAreasPage() {
                   key={service.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   className="bg-charcoal-900 border border-charcoal-700 rounded-xl p-8 hover:border-walnut-500/30 transition-colors"
                 >
@@ -373,7 +373,7 @@ export default function ServiceAreasPage() {
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "0px 0px 200px 0px" }}
               transition={{ duration: 0.6 }}
             >
               <p className="text-xs font-semibold text-walnut-400 uppercase tracking-widest mb-4">

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import GlobalFloatingAction from "@/components/GlobalFloatingAction";
+import MotionProvider from "@/components/MotionProvider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -76,6 +77,7 @@ export const metadata: Metadata = {
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon.png", sizes: "512x512", type: "image/png" },
     ],
+    shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
   other: {
@@ -178,8 +180,10 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        {children}
-        <GlobalFloatingAction />
+        <MotionProvider>
+          {children}
+          <GlobalFloatingAction />
+        </MotionProvider>
         <GoogleAnalytics gaId="G-BBCR31BJSM" />
       </body>
     </html>

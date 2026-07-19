@@ -43,7 +43,7 @@ function getField(formData: FormData, key: string) {
 
 export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const inView = useInView(ref, { once: true, margin: "0px 0px 200px 0px" });
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [message, setMessage] = useState("");
   const [mailtoHref, setMailtoHref] = useState("");

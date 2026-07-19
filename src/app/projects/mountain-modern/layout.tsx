@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mountain Modern | Built by Kiefer",
+  title: "Mountain Modern | Kiefer Built Contracting",
   description:
     "A custom mountain home built from the ground up in the Colorado mountains — dark metal panel siding, ICF foundation, standing seam metal roof, solar array, and boulder landscaping. Built by Kiefer Built Contracting.",
   openGraph: {
-    title: "Mountain Modern | Built by Kiefer",
+    title: "Mountain Modern | Kiefer Built Contracting",
     description:
       "Custom mountain home featuring dark steel siding, ICF foundation, and solar array — built from excavation to finish by Kiefer Built Contracting in Northern Colorado.",
     url: "https://www.builtbykiefer.com/projects/mountain-modern",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mountain Modern | Built by Kiefer",
+    title: "Mountain Modern | Kiefer Built Contracting",
     description:
       "Custom mountain home built from the ground up — dark steel, natural stone, and Colorado pine.",
     images: ["/images/project-2/exterior-front-facade.jpg"],

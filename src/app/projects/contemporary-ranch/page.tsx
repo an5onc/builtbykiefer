@@ -149,7 +149,7 @@ export default function ContemporaryRanchProject() {
                 }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ delay: i * 0.07 }}
               >
                 <span className="text-2xl mb-3 block">{phase.icon}</span>
@@ -180,7 +180,7 @@ export default function ContemporaryRanchProject() {
                 }}
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ delay: i * 0.06 }}
               >
                 <div className="w-1 h-full min-h-[2.5rem] rounded-full flex-shrink-0" style={{ background: "var(--color-sage-400)" }} />
@@ -279,7 +279,7 @@ function SectionWrapper({ id, bg, children }: { id: string; bg: string; children
 
 function SectionHeader({ tag, title, desc }: { tag: string; title: string; desc: string }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "0px 0px 200px 0px" });
   return (
     <motion.div
       ref={ref}

@@ -121,7 +121,7 @@ function BentoCell({
   const { cardRef, imgX, imgY, tiltX, tiltY, onPointerMove, onPointerLeave } =
     useCardParallax(colSpan === 2 ? 24 : 16);
   const inViewRef = useRef(null);
-  const inView = useInView(inViewRef, { once: true, margin: "-60px" });
+  const inView = useInView(inViewRef, { once: true, margin: "0px 0px 200px 0px" });
   const { x: dx, y: dy } = getRevealDirection(index);
 
   const isHero = index === 0;
@@ -266,7 +266,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "0px 0px 200px 0px" }}
           transition={{ duration: 0.55 }}
         >
           <p
@@ -356,7 +356,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
           style={{ color: "var(--color-slate-400)" }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: "0px 0px 200px 0px" }}
         >
           {filtered.length} of {photos.length} photos
         </motion.p>

@@ -73,7 +73,7 @@ function Lightbox({ photo, onClose, onPrev, onNext }: {
 /* ── Main Page ─────────────────────────────────────────────────── */
 export default function MountainModernProject() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   const heroParallax = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
@@ -86,7 +86,7 @@ export default function MountainModernProject() {
   const nextPhoto = () => setLightboxIdx((i) => i !== null ? (i + 1) % photos.length : null);
 
   return (
-    <div ref={containerRef} className="bg-steel-900 min-h-screen">
+    <main id="main-content" ref={containerRef} className="bg-steel-900 min-h-screen">
       {/* Progress bar */}
       <motion.div
         className="fixed top-0 left-0 h-[3px] bg-pine-400 z-[100]"
@@ -174,7 +174,7 @@ export default function MountainModernProject() {
                 className="p-5 rounded-lg bg-steel-800 border border-steel-700/40 hover:border-pine-500/30 transition-colors"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ delay: i * 0.08 }}
               >
                 <span className="text-2xl mb-2 block">{phase.icon}</span>
@@ -203,7 +203,7 @@ export default function MountainModernProject() {
                 className="flex items-start gap-3 p-4 rounded-lg bg-steel-800/60 border border-pine-800/30"
                 initial={{ opacity: 0, x: -10 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ delay: i * 0.06 }}
               >
                 <div className="w-1 h-full min-h-[2.5rem] bg-pine-500 rounded-full flex-shrink-0" />
@@ -257,7 +257,7 @@ export default function MountainModernProject() {
                 onClick={() => openLightbox(i + 1)}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ delay: i * 0.06 }}
               >
                 <Image
@@ -399,7 +399,7 @@ export default function MountainModernProject() {
           />
         )}
       </AnimatePresence>
-    </div>
+    </main>
   );
 }
 
@@ -415,7 +415,7 @@ function SectionWrapper({ id, className, children }: { id: string; className: st
 /* ── Reusable section header ───────────────────────────────────── */
 function SectionHeader({ tag, title, desc }: { tag: string; title: string; desc: string }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const inView = useInView(ref, { once: true, margin: "0px 0px 200px 0px" });
   return (
     <motion.div
       ref={ref}
