@@ -143,7 +143,7 @@ const localBusinessSchema = {
     "https://www.instagram.com/kieferbuiltcontracting",
     "https://kbuiltco.com",
   ],
-  image: "https://www.builtbykiefer.com/images/project-1/exterior-1.jpg",
+  image: "https://www.builtbykiefer.com/og-image.jpg",
   priceRange: "$$$",
   knowsAbout: [
     "Custom Home Building",
