@@ -47,10 +47,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/project-1/exterior-1.jpg",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Custom craftsman home built by Kiefer Built Contracting in Northern Colorado",
+        alt: "Custom modern home at twilight built by Kiefer Built Contracting in Northern Colorado",
       },
     ],
   },
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     title: "Built by Kiefer | Custom Home Builder in Northern Colorado",
     description:
       "Custom homes built with precision and purpose in Windsor & Northern Colorado. 25+ years of quality craftsmanship.",
-    images: ["/images/project-1/exterior-1.jpg"],
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
