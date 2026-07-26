@@ -146,7 +146,7 @@ async function main() {
   log(`New since last run: ${fresh.length.toLocaleString()}`);
 
   // --- 3. Qualify ----------------------------------------------------------
-  const { qualified, dropReasons, duplicates } = qualifyAll(fresh, { config, now });
+  const { qualified, dropReasons, duplicates, transientKeys } = qualifyAll(fresh, { config, now });
 
   log('');
   log('Qualification:');
@@ -195,8 +195,16 @@ async function main() {
   await sendAlert(qualified, config, { log, sheetUrl });
 
   // --- 6. Remember ---------------------------------------------------------
-  markSeen(fresh, state);
+  // Transiently-rejected sales (owner file lagging, address missing) are left
+  // unseen so the next county refresh re-evaluates them instead of burning the
+  // lead forever. They naturally stop being retried once the sale ages out of
+  // the lookback window.
+  const remember = fresh.filter((l) => !transientKeys.has(l.key));
+  markSeen(remember, state);
   await saveState(config.paths.stateFile, state);
+  if (transientKeys.size) {
+    log(`Held for next refresh (county record not caught up yet): ${transientKeys.size}`);
+  }
 
   log('');
   log(`Done in ${((Date.now() - started) / 1000).toFixed(1)}s. ${qualified.length} new lead(s) ready to mail.`);

@@ -222,7 +222,11 @@ export async function readMailedKeys({ keyFile, sheetId, tabName }) {
   return mailed;
 }
 
-/** Ensure the tab exists with a header row, then append new leads at the top. */
+/**
+ * Ensure the tab exists with a header row, then append the new leads.
+ * The Sheets append API adds rows at the BOTTOM of the tab; sort by the
+ * Sale Date column in the sheet itself if you want newest first.
+ */
 export async function appendToGoogleSheet(rows, { keyFile, sheetId, tabName }, { log = () => {} } = {}) {
   const token = await getAccessToken(keyFile);
 

@@ -233,6 +233,46 @@ describe('evaluate', () => {
   });
 });
 
+describe('seller-address guard', () => {
+  // The Larimer owner file can lag the sale: until it catches up, the mailing
+  // address on the account still belongs to the SELLER.
+  it('rejects a lead whose owner record shares no name with the buyer', () => {
+    const r = evaluate(
+      lead({ buyerName: 'PEARLMAN MATTHEW, HALES CATHERINE', mailName: 'BAUER HENRY A/BETTY ANN' }),
+      { config, now: NOW }
+    );
+    expect(r.qualified).toBe(false);
+    expect(r.rejections.join(' ')).toContain('seller');
+    expect(r.transient).toBe(true);
+  });
+
+  it('accepts when any name token matches, including couples and trusts', () => {
+    const r = evaluate(
+      lead({ buyerName: 'SMITH JOHN A', mailName: 'SMITH FAMILY LIVING TRUST' }),
+      { config, now: NOW }
+    );
+    expect(r.qualified).toBe(true);
+  });
+
+  it('treats a missing mailing address as transient, not permanent', () => {
+    const r = evaluate(lead({ mailAddress1: '', mailAddress2: '' }), { config, now: NOW });
+    expect(r.qualified).toBe(false);
+    expect(r.transient).toBe(true);
+  });
+
+  it('treats a flagged buyer as a final decision even with other transient issues', () => {
+    const r = evaluate(lead({ buyerName: 'LENNAR HOMES LLC', mailName: 'SOMEONE ELSE' }), { config, now: NOW });
+    expect(r.transient).toBe(false);
+  });
+
+  it('keeps transiently-rejected keys out of the remembered set', () => {
+    const bad = lead({ accountNo: 'R77', receptionNo: '7', buyerName: 'PEARLMAN MATTHEW', mailName: 'BAUER HENRY' });
+    const { qualified, transientKeys } = qualifyAll([bad], { config, now: NOW });
+    expect(qualified).toHaveLength(0);
+    expect(transientKeys.has(bad.key)).toBe(true);
+  });
+});
+
 describe('qualifyAll', () => {
   it('sends only one postcard to a buyer who bought several parcels', () => {
     const batch = [

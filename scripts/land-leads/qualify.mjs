@@ -127,13 +127,35 @@ export function evaluate(lead, { config = defaultConfig, now = new Date() } = {}
     rejections.push('No deliverable mailing address');
   }
 
+  // --- Owner record actually shows the buyer -------------------------------
+  // In Larimer the mailing address comes from the owner file, which can lag
+  // the sale. If the owner name shares no token with the buyer, the address on
+  // file is still the SELLER's - and the postcard would congratulate the
+  // people who just left. Hold these; the owner file catches up within days.
+  let transient = false;
+  if (lead.buyerName && lead.mailName) {
+    const tokens = (s) => s.toUpperCase().match(/[A-Z]{3,}/g) || [];
+    const b = new Set(tokens(lead.buyerName));
+    const shared = tokens(lead.mailName).some((t) => b.has(t));
+    if (!shared) {
+      rejections.push('Owner record not yet updated - address on file is the seller');
+      transient = true;
+    }
+  }
+
+  // A missing parcel or address can also appear on the next county refresh.
+  if (rejections.some((r) => r === 'No deliverable mailing address' || r === 'No matching parcel record')) {
+    transient = true;
+  }
+
   // --- Buyer type ----------------------------------------------------------
   const buyer = classifyBuyer(lead.buyerName, config);
   if (buyer.flagged) {
     rejections.push(buyer.flagReason);
+    transient = false; // a flagged buyer is a final decision, not a data lag
   }
 
-  return { qualified: rejections.length === 0, reasons, rejections, buyer };
+  return { qualified: rejections.length === 0, reasons, rejections, buyer, transient };
 }
 
 /**
@@ -144,12 +166,17 @@ export function qualifyAll(leads, { config = defaultConfig, now = new Date() } =
   const qualified = [];
   const dropReasons = new Map();
   const seenInBatch = new Set();
+  // Keys rejected only because the county record has not caught up yet.
+  // These must NOT be remembered as seen, or the lead is lost forever even
+  // after the county fixes the record on a later refresh.
+  const transientKeys = new Set();
   let duplicates = 0;
 
   for (const lead of leads) {
-    const { qualified: ok, reasons, rejections, buyer } = evaluate(lead, { config, now });
+    const { qualified: ok, reasons, rejections, buyer, transient } = evaluate(lead, { config, now });
 
     if (!ok) {
+      if (transient) transientKeys.add(lead.key);
       // Attribute the drop to its first reason for the summary.
       const primary = rejections[0];
       dropReasons.set(primary, (dropReasons.get(primary) || 0) + 1);
@@ -169,5 +196,5 @@ export function qualifyAll(leads, { config = defaultConfig, now = new Date() } =
   }
 
   qualified.sort((a, b) => (b.saleDate?.getTime() || 0) - (a.saleDate?.getTime() || 0));
-  return { qualified, dropReasons, duplicates };
+  return { qualified, dropReasons, duplicates, transientKeys };
 }
