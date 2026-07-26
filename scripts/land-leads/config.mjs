@@ -87,6 +87,10 @@ export const config = {
     /\b(BANK|MORTGAGE|LENDING|CREDIT UNION|FINANCIAL|CAPITAL ONE|FANNIE MAE|FREDDIE MAC|HUD|SECRETARY OF)\b/i,
     // Builders / developers / competitors
     /\b(\w*HOMES|HOMEBUILD\w*|BUILDERS?|CONSTRUCTION|CONTRACTING|DEVELOPMENT|DEVELOPERS?|COMMUNITIES|PROPERTIES INC|REALTY|LAND COMPANY|INVESTMENTS?)\b/i,
+    // Commercial buyers and investment vehicles. These buy land as a business
+    // asset, not a homesite - e.g. Dillon Companies LLC (Kroger) bought 14
+    // acres for $3.9M, which is a grocery store, not a custom home.
+    /\b(COMPANY|COMPANIES|CAPITAL|HOLDINGS?|VENTURES?|PARTNERS(HIP)?|ENTERPRISES?|EQUITY|ACQUISITIONS?|PORTFOLIO)\b/i,
     // HOA / church / nonprofit
     /\b(HOMEOWNERS|ASSOCIATION|HOA|CHURCH|MINISTRIES|FOUNDATION|NONPROFIT)\b/i,
   ],

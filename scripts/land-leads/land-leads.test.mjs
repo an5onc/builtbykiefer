@@ -163,8 +163,22 @@ describe('buyer classification', () => {
     ['POUDRE SCHOOL DISTRICT'],
     ['WELLS FARGO BANK N A'],
     ['XYZ CONSTRUCTION INC'],
+    // Commercial buyers: land as a business asset, not a homesite.
+    ['DILLON COMPANIES LLC'],
+    ['NORTHGATE LAND CAPITAL LLC'],
+    ['STORM MOUNTAIN VENTURES'],
+    ['THOMPSON JOINT VENTURE LLC'],
+    ['AS HOLDINGS LLP'],
   ])('flags non-prospect %s', (name) => {
     expect(classifyBuyer(name).flagged).toBe(true);
+  });
+
+  it.each([
+    ['SUNDANCE RANCH LLC'],
+    ['LEE DAVID JAY LIVING TRUST'],
+    ['SMITH FAMILY TRUST'],
+  ])('still keeps ordinary entity buyer %s', (name) => {
+    expect(classifyBuyer(name).flagged).toBe(false);
   });
 
   it('flags a missing buyer name', () => {
