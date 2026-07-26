@@ -156,11 +156,26 @@ Configuration:
   email alerts: ON  -> you@example.com
 ```
 
-A note on the sender: `LAND_LEADS_ALERT_FROM` defaults to your
-`builtbykiefer.com` address, which works if that domain is verified in Resend.
-If the test email fails with a domain error, switch it to
-`onboarding@resend.dev` — that always works but can only deliver to the address
-that owns the Resend account.
+### About the sender domain
+
+`builtbykiefer.com` is **not currently verified in Resend**, confirmed by a 403
+on a test send:
+
+```
+The builtbykiefer.com domain is not verified.
+```
+
+So `LAND_LEADS_ALERT_FROM` is set to `onboarding@resend.dev`, which always
+works — but only delivers to the address that owns the Resend account.
+
+**This affects the website too.** `src/app/api/quote-request/route.ts` sends
+from `CONTACT_EMAIL_FROM` (`quotes@builtbykiefer.com`) using the same key, so
+quote requests fail the same way and the customer gets a 502. There is no
+workaround for that one: `onboarding@resend.dev` cannot deliver to
+`info@kbuiltco.com`.
+
+Verifying the domain at <https://resend.com/domains> (add the DNS records it
+gives you) fixes both, and lets alerts come from your own address again.
 
 Without any of this the script still runs and still updates the spreadsheet; it
 just does not email you.
