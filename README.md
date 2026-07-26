@@ -90,4 +90,6 @@ Ongoing content work:
 
 The application is designed for Vercel and includes one server route at `POST /api/quote-request`; it is not configured as a static export. Verify the active Vercel Git integration and environment-variable scopes before relying on automatic deployment.
 
+For how the live site is actually hosted, served, and addressed — Vercel, the GoDaddy domain and DNS records, Resend email delivery, and where each environment variable belongs — see [docs/infrastructure.md](docs/infrastructure.md). Use [docs/deployment-production-checklist.md](docs/deployment-production-checklist.md) for the pre-deploy procedure.
+
 Do not commit `.env.local`, local archives, generated build output, or the runtime-audit screenshot corpus.
