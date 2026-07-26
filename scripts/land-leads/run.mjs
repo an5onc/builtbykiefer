@@ -106,6 +106,10 @@ async function main() {
   if (args.reset && !args.dryRun) {
     await rm(config.paths.stateFile, { force: true });
     log('State reset - all matching sales will be treated as new.');
+    log('  Rows already in the CSV are still skipped, so it will not gain duplicates.');
+    if (googleConfigured(config)) {
+      log('  Note: rows already in the Google Sheet CANNOT be detected and will be appended again.');
+    }
   }
 
   // --- 1. Pull county data ------------------------------------------------

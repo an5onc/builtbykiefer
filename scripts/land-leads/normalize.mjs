@@ -41,12 +41,21 @@ export function clean(value) {
   return String(value ?? '').replace(/\s+/g, ' ').trim();
 }
 
-/** Title-case a SHOUTING county name for postcard use: "SMITH JOHN A" -> "Smith John A". */
+/**
+ * Title-case a SHOUTING county name for postcard use:
+ * "SMITH JOHN A" -> "Smith John A".
+ *
+ * Initialisms are restored afterwards. TBD matters most: the county uses it for
+ * parcels with no street number assigned yet ("TBD DEWCLAW RD"), which is a
+ * common and useful signal that the land is genuinely raw.
+ */
+const KEEP_UPPERCASE = /\b(Llc|Llp|Lp|Inc|Ii|Iii|Iv|Tbd|Po|Ne|Nw|Se|Sw)\b/g;
+
 export function titleCase(value) {
   return clean(value)
     .toLowerCase()
     .replace(/\b([a-z])/g, (m) => m.toUpperCase())
-    .replace(/\b(Llc|Llp|Lp|Inc|Ii|Iii|Iv)\b/g, (m) => m.toUpperCase());
+    .replace(KEEP_UPPERCASE, (m) => m.toUpperCase());
 }
 
 /** ISO date (YYYY-MM-DD) or empty string. */

@@ -3,7 +3,12 @@ import { parseLine, toCsv } from './lib/csv.mjs';
 import { parseDate, parseMoney, parseAcres, titleCase, makeLead } from './normalize.mjs';
 import { classifyBuyer, isVacant, isMailable, evaluate, qualifyAll } from './qualify.mjs';
 import { resolveColumns } from './sources/weld.mjs';
-import { toRow, COLUMNS, formatZip, googleStatus } from './sheet.mjs';
+import { toRow, COLUMNS, formatZip, googleStatus, writeLocalCsv } from './sheet.mjs';
+import { readFileSync, rmSync } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+let counter = 0;
 import { buildEmail } from './notify.mjs';
 import { splitNew, markSeen } from './store.mjs';
 import { parseEnv, loadEnv } from './lib/env.mjs';
@@ -77,6 +82,17 @@ describe('field normalization', () => {
   it('title-cases shouting county names but keeps LLC upper', () => {
     expect(titleCase('SMITH JOHN A')).toBe('Smith John A');
     expect(titleCase('SUNDANCE RANCH LLC')).toBe('Sundance Ranch LLC');
+  });
+
+  // TBD marks a parcel with no street number yet - a raw-land signal.
+  it('keeps TBD uppercase in an unassigned address', () => {
+    expect(titleCase('TBD DEWCLAW RD')).toBe('TBD Dewclaw Rd');
+    expect(titleCase('TBD COUNTY ROAD 9')).toBe('TBD County Road 9');
+  });
+
+  it('keeps PO Box and directional initialisms uppercase', () => {
+    expect(titleCase('PO BOX 271')).toBe('PO Box 271');
+    expect(titleCase('1234 NE FRONTAGE RD')).toBe('1234 NE Frontage Rd');
   });
 });
 
@@ -267,6 +283,45 @@ describe('weld column resolution', () => {
     expect(m.buyerName).toBe('Grantee');
     expect(m.saleDate).toBe('Sale Date');
     expect(m.acres).toBe('Total Acres');
+  });
+});
+
+describe('local CSV writing', () => {
+  const tmp = () => path.join(os.tmpdir(), `land-leads-test-${counter++}.csv`);
+  const row = (over = {}) =>
+    toRow({ ...lead(), buyerType: 'Individual', matchReasons: 'Vacant land', ...over });
+
+  it('writes a header plus rows on first run', async () => {
+    const f = tmp();
+    const r = await writeLocalCsv([row()], f);
+    expect(r).toEqual({ written: 1, skipped: 0 });
+    expect(readFileSync(f, 'utf8').split('\n').filter(Boolean)).toHaveLength(2);
+    rmSync(f, { force: true });
+  });
+
+  // --reset clears the state file; without this guard every lead is appended
+  // a second time and someone receives two postcards.
+  it('skips rows already present instead of duplicating them', async () => {
+    const f = tmp();
+    await writeLocalCsv([row()], f);
+    const second = await writeLocalCsv([row()], f);
+
+    expect(second).toEqual({ written: 0, skipped: 1 });
+    expect(readFileSync(f, 'utf8').split('\n').filter(Boolean)).toHaveLength(2);
+    rmSync(f, { force: true });
+  });
+
+  it('still appends genuinely new rows alongside existing ones', async () => {
+    const f = tmp();
+    await writeLocalCsv([row()], f);
+    const next = await writeLocalCsv(
+      [row(), toRow({ ...lead({ accountNo: 'R999', receptionNo: '555' }), buyerType: 'Individual', matchReasons: '' })],
+      f
+    );
+
+    expect(next).toEqual({ written: 1, skipped: 1 });
+    expect(readFileSync(f, 'utf8').split('\n').filter(Boolean)).toHaveLength(3);
+    rmSync(f, { force: true });
   });
 });
 

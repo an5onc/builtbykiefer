@@ -12,7 +12,7 @@ import { writeFile, readFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { toCsv } from './lib/csv.mjs';
+import { toCsv, parseLine } from './lib/csv.mjs';
 import { isoDate, titleCase } from './normalize.mjs';
 
 /** Columns in the order they appear in the sheet. */
@@ -76,7 +76,37 @@ export function toRow(lead) {
  * Local CSV
  * ------------------------------------------------------------------ */
 
-/** Append rows to the local CSV, preserving anything already there. */
+/** Identity of a row within the CSV: county + account + reception. */
+function rowKey(values, idx) {
+  return `${values[idx.county] ?? ''}:${values[idx.account] ?? ''}:${values[idx.reception] ?? ''}`;
+}
+
+/** Keys already present in an existing CSV, so they are never written twice. */
+function existingKeys(text) {
+  const lines = text.split('\n').filter(Boolean);
+  if (lines.length < 2) return new Set();
+
+  const header = parseLine(lines[0]).fields;
+  const idx = {
+    county: header.indexOf('County'),
+    account: header.indexOf('Account No'),
+    reception: header.indexOf('Reception No'),
+  };
+  if (idx.account === -1) return new Set();
+
+  const keys = new Set();
+  for (const line of lines.slice(1)) keys.add(rowKey(parseLine(line).fields, idx));
+  return keys;
+}
+
+/**
+ * Append rows to the local CSV, preserving anything already there.
+ *
+ * Rows already in the file are skipped. The run-level state file normally
+ * prevents repeats, but --reset deliberately clears that state, and without
+ * this guard a reset would append a second copy of every lead - which is
+ * exactly how someone ends up receiving two postcards.
+ */
 export async function writeLocalCsv(rows, outputPath, { log = () => {} } = {}) {
   await mkdir(path.dirname(outputPath), { recursive: true });
 
@@ -89,15 +119,28 @@ export async function writeLocalCsv(rows, outputPath, { log = () => {} } = {}) {
 
   if (!existing.trim()) {
     await writeFile(outputPath, toCsv(COLUMNS, rows));
-  } else {
-    // Append only the data lines, newest first under the existing header.
-    const body = toCsv(COLUMNS, rows).split('\n').slice(1).filter(Boolean);
-    const lines = existing.split('\n').filter(Boolean);
-    const header = lines[0];
-    const prior = lines.slice(1);
-    await writeFile(outputPath, [header, ...body, ...prior].join('\n') + '\n');
+    log(`  wrote ${rows.length} row(s) to ${outputPath}`);
+    return { written: rows.length, skipped: 0 };
   }
-  log(`  wrote ${rows.length} row(s) to ${outputPath}`);
+
+  const seen = existingKeys(existing);
+  const fresh = rows.filter(
+    (r) => !seen.has(`${r.County ?? ''}:${r['Account No'] ?? ''}:${r['Reception No'] ?? ''}`)
+  );
+  const skipped = rows.length - fresh.length;
+
+  if (fresh.length > 0) {
+    // Newest first, under the existing header.
+    const body = toCsv(COLUMNS, fresh).split('\n').slice(1).filter(Boolean);
+    const lines = existing.split('\n').filter(Boolean);
+    await writeFile(outputPath, [lines[0], ...body, ...lines.slice(1)].join('\n') + '\n');
+  }
+
+  log(
+    `  wrote ${fresh.length} row(s) to ${outputPath}` +
+      (skipped ? ` (${skipped} already present, skipped)` : '')
+  );
+  return { written: fresh.length, skipped };
 }
 
 /* ------------------------------------------------------------------ *

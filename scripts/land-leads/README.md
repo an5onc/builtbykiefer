@@ -220,7 +220,7 @@ automatically, so keys do not need to be repeated in the plist.
 | --- | --- |
 | `--dry-run` | Show what would happen, write and send nothing |
 | `--offline` | Use already-downloaded files, skip the network |
-| `--reset` | Forget history and re-surface everything |
+| `--reset` | Forget history and re-surface everything (the CSV still skips rows it already has, so it gains no duplicates; a Google Sheet cannot be checked this way and will get a second copy) |
 | `--lookback 30` | Override the 120-day window |
 | `--test-email` | Send one sample alert to check the Resend key |
 
