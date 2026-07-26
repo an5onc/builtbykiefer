@@ -3,7 +3,7 @@ import { parseLine, toCsv } from './lib/csv.mjs';
 import { parseDate, parseMoney, parseAcres, titleCase, makeLead } from './normalize.mjs';
 import { classifyBuyer, isVacant, isMailable, evaluate, qualifyAll } from './qualify.mjs';
 import { resolveColumns } from './sources/weld.mjs';
-import { toRow, COLUMNS, formatZip } from './sheet.mjs';
+import { toRow, COLUMNS, formatZip, googleStatus } from './sheet.mjs';
 import { buildEmail } from './notify.mjs';
 import { splitNew, markSeen } from './store.mjs';
 import { parseEnv, loadEnv } from './lib/env.mjs';
@@ -267,6 +267,30 @@ describe('weld column resolution', () => {
     expect(m.buyerName).toBe('Grantee');
     expect(m.saleDate).toBe('Sale Date');
     expect(m.acres).toBe('Total Acres');
+  });
+});
+
+describe('google sheet status', () => {
+  const cfg = (google) => ({ google: { tabName: 'Leads', ...google } });
+
+  it('is off when nothing is set', () => {
+    expect(googleStatus(cfg({ keyFile: '', sheetId: '' })).ok).toBe(false);
+  });
+
+  it('explains a missing sheet id', () => {
+    expect(googleStatus(cfg({ keyFile: '/tmp/k.json', sheetId: '' })).reason).toContain('SHEET_ID');
+  });
+
+  // The common setup mistake: the example path filled in before the key exists.
+  it('reports a key file that does not exist rather than claiming it is on', () => {
+    const s = googleStatus(cfg({ keyFile: '/nonexistent/key.json', sheetId: 'abc123' }));
+    expect(s.ok).toBe(false);
+    expect(s.reason).toContain('not found');
+  });
+
+  it('is on when the sheet id is set and the key file exists', () => {
+    // package.json is guaranteed to exist; only presence is checked here.
+    expect(googleStatus(cfg({ keyFile: 'package.json', sheetId: 'abc123' })).ok).toBe(true);
   });
 });
 

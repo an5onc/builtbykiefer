@@ -9,6 +9,7 @@
  */
 
 import { writeFile, readFile, mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { toCsv } from './lib/csv.mjs';
@@ -215,7 +216,24 @@ export async function appendToGoogleSheet(rows, { keyFile, sheetId, tabName }, {
   log(`  appended ${rows.length} row(s) to Google Sheet`);
 }
 
-/** True when Google Sheets output is configured. */
+/**
+ * Whether Google Sheets output is usable, and if not, why.
+ *
+ * Checks that the key file actually exists rather than only that a path was
+ * set: a path pointing at nothing is the common case when someone fills in the
+ * example value before downloading the key, and it otherwise surfaces later as
+ * a bare ENOENT in the middle of a run.
+ */
+export function googleStatus(config) {
+  const { keyFile, sheetId } = config.google;
+  if (!keyFile && !sheetId) return { ok: false, reason: 'not configured' };
+  if (!sheetId) return { ok: false, reason: 'LAND_LEADS_SHEET_ID is not set in .env' };
+  if (!keyFile) return { ok: false, reason: 'GOOGLE_SERVICE_ACCOUNT_JSON is not set in .env' };
+  if (!existsSync(keyFile)) return { ok: false, reason: `service-account key not found at ${keyFile}` };
+  return { ok: true, reason: '' };
+}
+
+/** True when Google Sheets output is configured and the key file exists. */
 export function googleConfigured(config) {
-  return Boolean(config.google.keyFile && config.google.sheetId);
+  return googleStatus(config).ok;
 }

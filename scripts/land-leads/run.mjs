@@ -15,7 +15,7 @@ import { loadLarimerLeads } from './sources/larimer.mjs';
 import { loadWeldLeads } from './sources/weld.mjs';
 import { qualifyAll } from './qualify.mjs';
 import { loadState, saveState, splitNew, markSeen } from './store.mjs';
-import { toRow, writeLocalCsv, appendToGoogleSheet, readMailedKeys, googleConfigured } from './sheet.mjs';
+import { toRow, writeLocalCsv, appendToGoogleSheet, readMailedKeys, googleConfigured, googleStatus } from './sheet.mjs';
 import { sendAlert } from './notify.mjs';
 
 function parseArgs(argv) {
@@ -44,11 +44,13 @@ function logConfiguration(config, log) {
     log(`  email alerts: off (set ${missing} in .env)`);
   }
 
-  log(
-    googleConfigured(config)
-      ? '  google sheet: ON'
-      : `  google sheet: off (local CSV at ${config.paths.outputCsv})`
-  );
+  const google = googleStatus(config);
+  if (google.ok) {
+    log('  google sheet: ON');
+  } else {
+    log(`  google sheet: off - ${google.reason}`);
+    log(`                leads still land in ${config.paths.outputCsv}`);
+  }
   log('');
 }
 
