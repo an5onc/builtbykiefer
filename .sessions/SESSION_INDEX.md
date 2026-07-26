@@ -4,6 +4,7 @@ Newest sessions first. Add a new entry at the top whenever a handoff file is cre
 
 | Date | Session | Summary |
 | --- | --- | --- |
+| 2026-07-20 | [Land Purchase Lead Alert Roadmap](./2026-07-20-land-purchase-lead-alert-roadmap.md) | Researched official Larimer and Weld County data paths and produced a branded, 12-page fillable PDF roadmap for a compliant vacant-land buyer alert and postcard pilot. |
 | 2026-07-17 | [Production Marketing Website Completion](./2026-07-17-production-marketing-completion.md) | Finished the marketing-only cleanup, passed complete local/preview/live QA, synchronized Git-backed production, and finalized `v1.0-marketing-site`. |
 | 2026-07-16 | [Production Cleanup Analysis](./2026-07-16-production-cleanup-analysis.md) | Mapped all 840 tracked files and 286 source files, isolated the quote-to-CRM dependency, classified features, and proposed an approval-gated marketing-only cleanup plan without deleting application code. |
 | 2026-07-15 | [Runtime Production Site Audit](./2026-07-15-runtime-site-audit.md) | Browser-crawled 120 production routes, captured 345 screenshots, mapped public/demo operations architecture, validated interactions/SEO, and documented four broken runtime destinations. |

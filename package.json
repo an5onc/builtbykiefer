@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "leads": "node scripts/land-leads/run.mjs",
+    "leads:preview": "node scripts/land-leads/run.mjs --dry-run"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.10",

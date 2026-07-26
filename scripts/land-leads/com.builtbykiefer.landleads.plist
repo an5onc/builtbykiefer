@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Runs the land lead alert every morning at 8:00.
+
+  Install:
+    cp scripts/land-leads/com.builtbykiefer.landleads.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.builtbykiefer.landleads.plist
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.builtbykiefer.landleads.plist
+
+  A launchd job does not inherit your shell profile, so any API keys must be
+  listed in EnvironmentVariables below rather than exported in .zshrc.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.builtbykiefer.landleads</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/env</string>
+    <string>node</string>
+    <string>/Users/ansoncordeiro/dev/builtbykiefer/scripts/land-leads/run.mjs</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/ansoncordeiro/dev/builtbykiefer</string>
+
+  <!-- Fill these in to enable the Google Sheet and the email alert. -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+    <!--
+    <key>GOOGLE_SERVICE_ACCOUNT_JSON</key>
+    <string>/Users/ansoncordeiro/land-leads-service-account.json</string>
+    <key>LAND_LEADS_SHEET_ID</key>
+    <string>your-sheet-id</string>
+    <key>RESEND_API_KEY</key>
+    <string>re_your_key</string>
+    <key>LAND_LEADS_ALERT_TO</key>
+    <string>you@example.com</string>
+    -->
+  </dict>
+
+  <!-- 8:00 every morning. -->
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>8</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+
+  <!-- If the Mac was asleep at 8:00, run once it wakes. -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/ansoncordeiro/dev/builtbykiefer/.land-leads-data/run.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/ansoncordeiro/dev/builtbykiefer/.land-leads-data/run.log</string>
+</dict>
+</plist>

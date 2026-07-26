@@ -50,3 +50,11 @@ docs/runtime-site-audit/screenshots/
 
 # Local archives
 *.zip
+
+# Land lead alert working data.
+# Contains ~170 MB of county exports plus buyer names and home mailing
+# addresses. This is personal information about real people: it stays on the
+# local machine and must never be committed or pushed.
+/.land-leads-data/
+# Service-account key for the lead spreadsheet.
+land-leads-service-account*.json
