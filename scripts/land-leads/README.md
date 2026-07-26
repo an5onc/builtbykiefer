@@ -125,16 +125,45 @@ Keep the key file out of the repo. It is your credential, not the script's.
 
 ### Email alerts
 
+Settings live in a `.env` file at the project root. It is git-ignored, so the
+key never leaves this machine.
+
 ```bash
-export RESEND_API_KEY="re_..."
-export LAND_LEADS_ALERT_TO="you@example.com"
+cp .env.example .env    # if you do not have one yet
 ```
 
-The key comes from <https://resend.com>. Note the site's quote form uses the
-same key, and it is currently invalid in production — fixing it fixes both.
+Then open `.env` and fill in:
 
-Without this the script still runs and still updates the spreadsheet; it just
-does not email you.
+```
+RESEND_API_KEY=re_your_key_here
+LAND_LEADS_ALERT_TO=you@example.com
+```
+
+The key comes from <https://resend.com/api-keys>. **The website's quote form
+uses this same key**, so filling it in here also fixes quote-request email
+locally.
+
+Check that it worked — this sends one real email with two sample leads:
+
+```bash
+npm run leads -- --test-email
+```
+
+Every run also prints whether alerts are on, near the top:
+
+```
+Configuration:
+  email alerts: ON  -> you@example.com
+```
+
+A note on the sender: `LAND_LEADS_ALERT_FROM` defaults to your
+`builtbykiefer.com` address, which works if that domain is verified in Resend.
+If the test email fails with a domain error, switch it to
+`onboarding@resend.dev` — that always works but can only deliver to the address
+that owns the Resend account.
+
+Without any of this the script still runs and still updates the spreadsheet; it
+just does not email you.
 
 ### Weld County
 
@@ -167,9 +196,8 @@ That runs it at 8:00am daily and logs to `.land-leads-data/run.log`. To stop:
 launchctl unload ~/Library/LaunchAgents/com.builtbykiefer.landleads.plist
 ```
 
-Edit `StartCalendarInterval` in the file to change the hour. Note that a
-schedule only picks up environment variables defined inside the plist itself,
-so put your keys there too if you use launchd.
+Edit `StartCalendarInterval` in the file to change the hour. Your `.env` is read
+automatically, so keys do not need to be repeated in the plist.
 
 ## Options
 
@@ -179,6 +207,9 @@ so put your keys there too if you use launchd.
 | `--offline` | Use already-downloaded files, skip the network |
 | `--reset` | Forget history and re-surface everything |
 | `--lookback 30` | Override the 120-day window |
+| `--test-email` | Send one sample alert to check the Resend key |
+
+With `npm run`, pass flags after `--`, e.g. `npm run leads -- --test-email`.
 
 ## Files
 

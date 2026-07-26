@@ -9,8 +9,9 @@
   Uninstall:
     launchctl unload ~/Library/LaunchAgents/com.builtbykiefer.landleads.plist
 
-  A launchd job does not inherit your shell profile, so any API keys must be
-  listed in EnvironmentVariables below rather than exported in .zshrc.
+  The script reads the project's .env file itself, so API keys do NOT need to be
+  repeated here. Only add something to EnvironmentVariables below if you want it
+  to override .env for the scheduled run specifically.
 -->
 <plist version="1.0">
 <dict>
@@ -27,21 +28,14 @@
   <key>WorkingDirectory</key>
   <string>/Users/ansoncordeiro/dev/builtbykiefer</string>
 
-  <!-- Fill these in to enable the Google Sheet and the email alert. -->
+  <!--
+    Keys come from .env automatically. PATH is set here only so launchd can
+    find node, which it otherwise cannot.
+  -->
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
     <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
-    <!--
-    <key>GOOGLE_SERVICE_ACCOUNT_JSON</key>
-    <string>/Users/ansoncordeiro/land-leads-service-account.json</string>
-    <key>LAND_LEADS_SHEET_ID</key>
-    <string>your-sheet-id</string>
-    <key>RESEND_API_KEY</key>
-    <string>re_your_key</string>
-    <key>LAND_LEADS_ALERT_TO</key>
-    <string>you@example.com</string>
-    -->
   </dict>
 
   <!-- 8:00 every morning. -->

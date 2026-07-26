@@ -5,6 +5,10 @@
  * Everything else in scripts/land-leads/ reads from here.
  */
 
+// Must come first: this populates process.env from .env before the values
+// below are read. Real environment variables still take precedence.
+import './lib/env.mjs';
+
 export const config = {
   /** Counties to include. Weld requires a manual weekly CSV drop (see README). */
   counties: {

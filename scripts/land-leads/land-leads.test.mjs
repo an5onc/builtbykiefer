@@ -6,6 +6,7 @@ import { resolveColumns } from './sources/weld.mjs';
 import { toRow, COLUMNS, formatZip } from './sheet.mjs';
 import { buildEmail } from './notify.mjs';
 import { splitNew, markSeen } from './store.mjs';
+import { parseEnv, loadEnv } from './lib/env.mjs';
 import { config } from './config.mjs';
 
 /** Minimal qualifying lead; override fields per test. */
@@ -266,6 +267,37 @@ describe('weld column resolution', () => {
     expect(m.buyerName).toBe('Grantee');
     expect(m.saleDate).toBe('Sale Date');
     expect(m.acres).toBe('Total Acres');
+  });
+});
+
+describe('.env loading', () => {
+  it('parses plain key=value pairs', () => {
+    expect(parseEnv('RESEND_API_KEY=re_abc123')).toEqual({ RESEND_API_KEY: 're_abc123' });
+  });
+
+  it('ignores comments and blank lines', () => {
+    expect(parseEnv('# a comment\n\nFOO=bar\n')).toEqual({ FOO: 'bar' });
+  });
+
+  it('strips surrounding quotes', () => {
+    expect(parseEnv('FROM="Land Leads <a@b.com>"').FROM).toBe('Land Leads <a@b.com>');
+    expect(parseEnv("FROM='single'").FROM).toBe('single');
+  });
+
+  it('tolerates a line copied from a shell profile', () => {
+    expect(parseEnv('export RESEND_API_KEY=re_xyz').RESEND_API_KEY).toBe('re_xyz');
+  });
+
+  it('keeps = signs inside the value', () => {
+    expect(parseEnv('TOKEN=abc=def==').TOKEN).toBe('abc=def==');
+  });
+
+  it('skips keys left blank in the template', () => {
+    expect(parseEnv('RESEND_API_KEY=\nFOO=bar')).toEqual({ RESEND_API_KEY: '', FOO: 'bar' });
+  });
+
+  it('does nothing when the file does not exist', () => {
+    expect(loadEnv('/nonexistent/.env')).toEqual({ loaded: false, keys: [] });
   });
 });
 

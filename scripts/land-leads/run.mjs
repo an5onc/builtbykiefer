@@ -19,15 +19,37 @@ import { toRow, writeLocalCsv, appendToGoogleSheet, readMailedKeys, googleConfig
 import { sendAlert } from './notify.mjs';
 
 function parseArgs(argv) {
-  const args = { dryRun: false, offline: false, reset: false, lookback: null };
+  const args = { dryRun: false, offline: false, reset: false, lookback: null, testEmail: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--dry-run') args.dryRun = true;
     else if (a === '--offline') args.offline = true;
     else if (a === '--reset') args.reset = true;
+    else if (a === '--test-email') args.testEmail = true;
     else if (a === '--lookback') args.lookback = Number(argv[++i]);
   }
   return args;
+}
+
+/** Report what is wired up, without ever printing a secret. */
+function logConfiguration(config, log) {
+  log('Configuration:');
+
+  if (config.email.apiKey && config.email.to) {
+    log(`  email alerts: ON  -> ${config.email.to}`);
+  } else {
+    const missing = [!config.email.apiKey && 'RESEND_API_KEY', !config.email.to && 'LAND_LEADS_ALERT_TO']
+      .filter(Boolean)
+      .join(' and ');
+    log(`  email alerts: off (set ${missing} in .env)`);
+  }
+
+  log(
+    googleConfigured(config)
+      ? '  google sheet: ON'
+      : `  google sheet: off (local CSV at ${config.paths.outputCsv})`
+  );
+  log('');
 }
 
 const log = (msg = '') => console.log(msg);
@@ -46,6 +68,38 @@ async function main() {
   log(`Looking back ${config.lookbackDays} days (sales on/after ${since.toISOString().slice(0, 10)})`);
   if (args.dryRun) log('DRY RUN - nothing will be written or sent');
   log('='.repeat(64));
+  logConfiguration(config, log);
+
+  // Verify the Resend key end to end without waiting for real leads.
+  if (args.testEmail) {
+    log('Sending a test alert with two sample leads...');
+    const sample = [
+      {
+        buyerName: 'SAMPLE BUYER ONE',
+        situsAddress: '123 EXAMPLE RD',
+        subdivision: 'Example Ranch',
+        acres: 5,
+        salePrice: 250000,
+        saleDate: new Date(),
+      },
+      {
+        buyerName: 'SAMPLE BUYER TWO',
+        situsAddress: 'TBD COUNTY ROAD 9',
+        subdivision: '',
+        acres: 35,
+        salePrice: 207500,
+        saleDate: new Date(),
+      },
+    ];
+    const result = await sendAlert(sample, config, { log });
+    log('');
+    log(
+      result.sent
+        ? 'Test email sent. Check your inbox (and spam) - if it arrived, the key works.'
+        : `Test email NOT sent: ${result.reason}`
+    );
+    return;
+  }
 
   if (args.reset && !args.dryRun) {
     await rm(config.paths.stateFile, { force: true });
