@@ -120,7 +120,8 @@ async function main() {
     allLeads.push(...larimer);
   }
   if (config.counties.weld.enabled) {
-    const weld = await loadWeldLeads({ config, since, log });
+    log('Weld: querying county open-data service...');
+    const weld = await loadWeldLeads({ config, since, log, offline: args.offline });
     log(`Weld: ${weld.length.toLocaleString()} sales in window`);
     allLeads.push(...weld);
   }

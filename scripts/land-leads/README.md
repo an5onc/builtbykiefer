@@ -10,19 +10,21 @@ npm run leads           # real run: update the sheet and send the alert
 
 ## What it does
 
-1. Downloads the Larimer County assessor's daily public files (free, no account).
+1. Downloads Larimer County's daily assessor files and queries Weld County's
+   public open-data service. Both are free and need no account.
 2. Joins each sale to the parcel record and the owner's mailing address.
 3. Keeps only genuine vacant-land purchases (see *How leads are chosen*).
 4. Skips anything it has surfaced before, so nobody gets two postcards.
 5. Adds the new leads to your spreadsheet and emails you that they are there.
 
-You mail the postcards. The script never mails anything.
+Both counties are automatic. You mail the postcards; the script never mails
+anything.
 
 ## Realistic expectations
 
-**Volume:** about **4–6 new leads a week** from Larimer. That is the number left
-after removing resales of existing houses, family transfers, and builders buying
-lots. Weld adds more once you start dropping its file in.
+**Volume:** roughly **8–11 new leads a week** across both counties — about 4–6
+from Larimer and 4–5 from Weld. That is what remains after removing resales of
+existing houses, family transfers, and builders buying blocks of lots.
 
 **Timing:** you will not beat the closing table. The assessor publishes a sale
 roughly **1–3 weeks** after it closes, and recent weeks fill in gradually. In
@@ -182,20 +184,27 @@ just does not email you.
 
 ### Weld County
 
-Weld's download is behind a CDN that blocks scripts, and their recorder's terms
-prohibit automated searches. So Weld is manual, on purpose:
+**Nothing to set up — Weld is automatic.**
 
-1. Once a week (they update Wednesdays) open
-   <https://www.weld.gov/Government/Departments/Assessor/Data-Download>
-2. Download the assessor sales/owner CSV.
-3. Drop it in `.land-leads-data/inbox/weld/`.
+Weld publishes its assessor data as a public ArcGIS open-data service, the same
+layer behind the county's own Assessor Data Explorer. The script queries it
+directly; no credentials, no download, no weekly chore.
 
-The next run picks it up automatically. Column names vary between Weld exports,
-so the adapter matches headers by alias rather than assuming a fixed layout — if
-a required column is missing it says so by name and skips that file.
+Conveniently it is a single layer carrying owner name, mailing address, last
+sale and parcel facts together, so unlike Larimer no join is needed.
 
-**Do not point this script at Weld's recorder search portal.** Their terms
-forbid it.
+Two other Weld routes are deliberately **not** used:
+
+- The bulk CSV on the county website sits behind a CDN that refuses automated
+  requests.
+- The recorder's self-service portal prohibits automated searches in its terms.
+  **Never point anything at it.**
+
+If the open-data service is ever unavailable the run says so and falls back to
+the manual inbox, so you can still download the CSV from
+<https://www.weld.gov/Government/Departments/Assessor/Data-Download> and drop it
+in `.land-leads-data/inbox/weld/`. Column names vary between Weld exports, so
+that path matches headers by alias rather than assuming a fixed layout.
 
 ### Run it automatically every morning
 

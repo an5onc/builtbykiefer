@@ -27,11 +27,16 @@ export const config = {
   acres: { min: 0.1, max: 40 },
 
   /**
-   * Assessor account types worth mailing. Excludes Personal (business personal
-   * property), Exempt (government/nonprofit), Nat Resources (mineral rights)
-   * and Leasing, none of which are people building a house.
+   * Assessor account types worth mailing, across both counties.
+   *
+   * Excludes Personal (business personal property), Exempt (government and
+   * nonprofit), Nat Resources (mineral rights), Leasing, Commercial and
+   * Industrial - none of which are someone building a house.
+   *
+   * "Vacant Land" is Weld's own category; Larimer has no equivalent and marks
+   * vacancy through its building count instead.
    */
-  allowedAccountTypes: ['Residential', 'Agricultural'],
+  allowedAccountTypes: ['Residential', 'Agricultural', 'Vacant Land'],
 
   /** Ignore sales below this price: $1 transfers, gifts, corrections. */
   minSalePrice: 50_000,
@@ -55,18 +60,22 @@ export const config = {
   lookbackDays: 120,
 
   /**
-   * Deed codes treated as arms-length market sales.
+   * Deed codes treated as arms-length market sales. Union of both counties,
+   * verified against each county's live data over a trailing 120 days.
    *
-   * Verified against the live Larimer export (trailing 120 days):
-   *   WD / WDJ    Warranty Deed (JT = joint tenancy, usually a couple buying)
-   *   SWD / SWDJ  Special Warranty Deed
-   *   PRD / PRDJ  Personal Representative's Deed - a real purchase from an estate
+   *   WD / SWD    Warranty and Special Warranty Deed - the real purchases
+   *   *J          Larimer joint-tenancy variant, usually a couple buying
+   *   *E          Weld variant of the same deed types
+   *   PRD         Personal Representative's Deed - a real purchase from an estate
    *
-   * Deliberately excluded: QC/QCJ (quit claim - family and cleanup transfers),
-   * BSD (bargain & sale), VOA (verification of application), DE (bare deed),
-   * and every C* corrected deed.
+   * Deliberately excluded: QC (quit claim - family and cleanup transfers),
+   * TRU (trustee), CONS (conservator), D, BSD, VOA, and every corrected deed.
    */
-  armsLengthDeedCodes: ['WD', 'WDJ', 'SWD', 'SWDJ', 'PRD', 'PRDJ'],
+  armsLengthDeedCodes: [
+    'WD', 'WDJ', 'WDE',
+    'SWD', 'SWDJ', 'SWDE',
+    'PRD', 'PRDJ', 'PRDE',
+  ],
 
   /** Buyer name patterns that mark a non-prospect. Surfaced as a flag, not dropped. */
   excludePatterns: [
@@ -100,6 +109,23 @@ export const config = {
     owner: 'https://storage.googleapis.com/lc-public/asr/assessor-public-owner.csv',
     account: 'https://storage.googleapis.com/lc-public/asr/assessor-public-account.csv',
   },
+
+  /**
+   * Weld County's public open-data parcel service.
+   *
+   * This is the layer behind the county's own "Assessor Data Explorer and
+   * Download Tool" (an ArcGIS Experience app linked from their Data Download
+   * page). The service is owned by WeldCounty, published with public access,
+   * and named for open data, so querying it is the intended use.
+   *
+   * It is NOT the recorder self-service portal, whose terms prohibit automated
+   * searches. Do not point anything at that.
+   *
+   * One layer carries owner name, mailing address, last sale and parcel facts,
+   * so no join is needed.
+   */
+  weldParcelService:
+    'https://services.arcgis.com/ewjSqmSyHJnkfBLL/arcgis/rest/services/Parcels_open_data/FeatureServer/0',
 
   /**
    * Optional integrations. Both are read from environment variables so no

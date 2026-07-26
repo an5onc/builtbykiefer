@@ -79,6 +79,17 @@ describe('field normalization', () => {
     expect(parseMoney('')).toBe(0);
   });
 
+  // Weld's GIS_Acres is a computed float; full precision is noise on a list.
+  it('rounds computed acreage to two decimals', () => {
+    expect(parseAcres('7.7695344624')).toBe(7.77);
+    expect(parseAcres(39.2673166941)).toBe(39.27);
+    expect(parseAcres('0.138889')).toBe(0.14);
+  });
+
+  it('rounds acreage when a lead is built from a numeric field', () => {
+    expect(makeLead({ county: 'Weld', acres: 2.50702240351 }).acres).toBe(2.51);
+  });
+
   it('title-cases shouting county names but keeps LLC upper', () => {
     expect(titleCase('SMITH JOHN A')).toBe('Smith John A');
     expect(titleCase('SUNDANCE RANCH LLC')).toBe('Sundance Ranch LLC');

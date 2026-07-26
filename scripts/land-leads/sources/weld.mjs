@@ -1,14 +1,17 @@
 /**
  * Weld County adapter.
  *
- * Weld's assessor download is behind a CDN that blocks automated retrieval, and
- * their recorder's terms explicitly prohibit automated searches and scrapers.
- * So this adapter never touches the network: it reads whatever CSV you drop in
- * .land-leads-data/inbox/weld/ after downloading it in your browser.
+ * Weld publishes its assessor data as a public ArcGIS open-data service - the
+ * same layer behind the county's own Assessor Data Explorer. Querying it needs
+ * no credentials and no manual download, and unlike Larimer it returns owner
+ * name, mailing address, last sale and parcel facts from a single layer.
  *
- * Because the exact Weld export format depends on which file you download, the
- * column mapping is resolved by matching header aliases rather than assuming
- * fixed names.
+ * The bulk CSV on the county website is served through a CDN that refuses
+ * automated requests, and the recorder's self-service portal prohibits
+ * automated searches outright. This adapter touches neither.
+ *
+ * Any CSV dropped in the inbox is still read and merged, so a manual export
+ * remains usable if the service is ever unavailable.
  */
 
 import { readdir } from 'node:fs/promises';
@@ -16,33 +19,120 @@ import path from 'node:path';
 import { readCsv } from '../lib/csv.mjs';
 import { makeLead, parseAcres, parseDate, parseMoney, clean } from '../normalize.mjs';
 
-/** Candidate header names for each field we need, lowest-priority last. */
+const PAGE_SIZE = 2000; // the service's maxRecordCount
+
+const FIELDS = [
+  'ACCOUNTNO', 'RECEPTION_', 'PARCEL',
+  'NAME', 'ADDRESS1', 'ADDRESS2', 'CITY', 'STATE', 'ZIPCODE',
+  'SITUS', 'LOCCITY', 'SUBNAME',
+  'GIS_Acres', 'IMPACT', 'SALEP', 'SALEDT', 'DEEDTYPE', 'ACCTTYPE',
+].join(',');
+
+/** Format a Date as the SQL literal the ArcGIS query endpoint expects. */
+function sqlDate(date) {
+  return `DATE '${date.toISOString().slice(0, 10)}'`;
+}
+
+/**
+ * Fetch every parcel whose last sale is on or after `since`, following the
+ * service's 2000-record page limit.
+ */
+async function queryWeldService(serviceUrl, since, log) {
+  const leads = [];
+  let offset = 0;
+
+  for (;;) {
+    const params = new URLSearchParams({
+      where: `SALEDT >= ${sqlDate(since)}`,
+      outFields: FIELDS,
+      orderByFields: 'SALEDT DESC',
+      returnGeometry: 'false',
+      resultOffset: String(offset),
+      resultRecordCount: String(PAGE_SIZE),
+      f: 'json',
+    });
+
+    const res = await fetch(`${serviceUrl}/query?${params}`);
+    if (!res.ok) throw new Error(`Weld service returned ${res.status} ${res.statusText}`);
+
+    const body = await res.json();
+    if (body.error) {
+      throw new Error(`Weld service error: ${body.error.message || JSON.stringify(body.error)}`);
+    }
+
+    const features = body.features || [];
+    for (const { attributes: a } of features) {
+      // IMPACT is the assessed value of improvements. Zero means nothing is
+      // built on the parcel, which is Weld's equivalent of a blank building
+      // count in Larimer.
+      const improvementValue = Number(a.IMPACT) || 0;
+
+      leads.push(
+        makeLead({
+          county: 'Weld',
+          accountNo: clean(a.ACCOUNTNO),
+          receptionNo: clean(a.RECEPTION_),
+          parcelNo: clean(a.PARCEL),
+          buyerName: a.NAME,
+          mailName: a.NAME,
+          mailAddress1: a.ADDRESS1,
+          mailAddress2: a.ADDRESS2,
+          mailCity: a.CITY,
+          mailState: a.STATE,
+          mailZip: a.ZIPCODE,
+          situsAddress: a.SITUS,
+          situsCity: a.LOCCITY,
+          subdivision: a.SUBNAME,
+          acres: Number(a.GIS_Acres) || 0,
+          buildingCount: improvementValue > 0 ? 1 : 0,
+          salePrice: Number(a.SALEP) || 0,
+          saleDate: a.SALEDT ? new Date(a.SALEDT) : null,
+          deedCode: a.DEEDTYPE,
+          accountType: a.ACCTTYPE,
+        })
+      );
+    }
+
+    offset += features.length;
+    if (features.length < PAGE_SIZE || !body.exceededTransferLimit) break;
+  }
+
+  log(`  open-data service: ${leads.length.toLocaleString()} parcels sold since ${since.toISOString().slice(0, 10)}`);
+  return leads;
+}
+
+/* ------------------------------------------------------------------ *
+ * Manual CSV fallback
+ * ------------------------------------------------------------------ */
+
+/** Candidate header names for each field, highest priority first. */
 const ALIASES = {
   accountNo: ['accountno', 'account_no', 'account', 'accountnumber', 'parcelid', 'schedule', 'schedno'],
-  receptionNo: ['recptno', 'receptionno', 'reception_no', 'reception', 'docno', 'documentno'],
+  receptionNo: ['reception_', 'recptno', 'receptionno', 'reception', 'docno', 'documentno'],
   parcelNo: ['parcelno', 'parcel_no', 'parcelnumber', 'parcel'],
-  buyerName: ['grantee', 'buyer', 'ownername', 'owner_name', 'owner', 'name1'],
+  buyerName: ['grantee', 'buyer', 'ownername', 'owner_name', 'owner', 'name1', 'name'],
   sellerName: ['grantor', 'seller'],
-  mailAddress1: ['mailaddress1', 'mailingaddress1', 'mailaddr1', 'mailingaddress', 'mailaddress', 'address1'],
+  mailAddress1: ['mailaddress1', 'mailingaddress1', 'mailaddr1', 'address1', 'mailingaddress', 'mailaddress'],
   mailAddress2: ['mailaddress2', 'mailingaddress2', 'mailaddr2', 'address2'],
   mailCity: ['mailcity', 'mailingcity', 'city'],
   mailState: ['mailstate', 'mailingstate', 'state'],
   mailZip: ['mailzipcode', 'mailzip', 'mailingzip', 'zipcode', 'zip'],
   situsAddress: ['situsaddress', 'situs', 'propertyaddress', 'locationaddress', 'situsaddr'],
-  situsCity: ['situscity', 'propertycity'],
+  situsCity: ['situscity', 'propertycity', 'loccity'],
   situsZip: ['situszipcode', 'situszip', 'propertyzip'],
   subdivision: ['subdivisionname', 'subdivision', 'subname'],
-  acres: ['landgrossacres', 'grossacres', 'acres', 'acreage', 'totalacres', 'deededacres'],
-  buildingCount: ['buildingcount', 'bldgcount', 'buildings', 'improvementcount'],
-  salePrice: ['saleprice', 'salep', 'price', 'saleamount', 'considerationamount'],
-  saleDate: ['saledate', 'saledt', 'dateofsale', 'recordingdate', 'docdt'],
-  deedCode: ['deedcode', 'deedtype', 'instrumenttype', 'doctype'],
+  acres: ['gis_acres', 'landgrossacres', 'grossacres', 'acres', 'acreage', 'totalacres', 'deededacres'],
+  buildingCount: ['buildingcount', 'bldgcount', 'buildings', 'improvementcount', 'impcount'],
+  improvementValue: ['impact', 'impasd', 'improvementvalue'],
+  salePrice: ['salep', 'saleprice', 'price', 'saleamount', 'considerationamount'],
+  saleDate: ['saledt', 'saledate', 'dateofsale', 'recordingdate', 'docdt'],
+  deedCode: ['deedtype', 'deedcode', 'instrumenttype', 'doctype'],
   deedDescription: ['deeddescription', 'deeddesc', 'instrumentdescription'],
   accountType: ['accttype', 'accounttype', 'propertytype', 'classcode', 'proptype'],
   impvac: ['impvac', 'improvedvacant', 'vacantimproved', 'improvementstatus'],
 };
 
-/** Build header -> canonical field mapping for an actual file's headers. */
+/** Map a file's actual headers onto canonical field names. */
 export function resolveColumns(headers) {
   const norm = new Map();
   for (const h of headers) norm.set(h.toLowerCase().replace(/[^a-z0-9]/g, ''), h);
@@ -59,49 +149,42 @@ export function resolveColumns(headers) {
   return mapping;
 }
 
-/** Read every CSV in the Weld inbox and normalize it. */
-export async function loadWeldLeads({ config, since, log = () => {} }) {
+/** Read any CSV dropped in the Weld inbox. */
+async function loadWeldInbox({ config, since, log }) {
   const dir = config.paths.weldInbox;
   let files = [];
   try {
     files = (await readdir(dir)).filter((f) => f.toLowerCase().endsWith('.csv'));
   } catch {
-    log(`Weld: inbox ${dir} not found, skipping`);
     return [];
   }
-
-  if (files.length === 0) {
-    log(`Weld: no CSV in ${dir} - download this week's file and drop it there (see README)`);
-    return [];
-  }
+  if (files.length === 0) return [];
 
   const leads = [];
   for (const file of files) {
-    const filePath = path.join(dir, file);
     let mapping = null;
-    let rows = 0;
     let kept = 0;
 
-    for await (const row of readCsv(filePath)) {
+    for await (const row of readCsv(path.join(dir, file))) {
       if (!mapping) {
         mapping = resolveColumns(Object.keys(row));
         const missing = ['buyerName', 'saleDate'].filter((f) => !mapping[f]);
         if (missing.length) {
-          log(`Weld: ${file} is missing required column(s): ${missing.join(', ')} - skipping file`);
+          log(`  ${file}: missing column(s) ${missing.join(', ')} - skipping file`);
           break;
         }
       }
-      rows++;
       const get = (field) => (mapping[field] ? row[mapping[field]] : '');
 
       const saleDate = parseDate(get('saleDate'));
       if (!saleDate || saleDate < since) continue;
 
-      // Some Weld exports carry a Vacant/Improved string instead of a count.
       let buildingCount = null;
       const bc = clean(get('buildingCount'));
+      const impVal = clean(get('improvementValue'));
       const iv = clean(get('impvac')).toLowerCase();
       if (bc !== '') buildingCount = Number(bc);
+      else if (impVal !== '') buildingCount = Number(impVal) > 0 ? 1 : 0;
       else if (iv.startsWith('vac')) buildingCount = 0;
       else if (iv.startsWith('imp')) buildingCount = 1;
 
@@ -134,8 +217,37 @@ export async function loadWeldLeads({ config, since, log = () => {} }) {
         })
       );
     }
-    log(`Weld: ${file} - ${rows.toLocaleString()} rows, ${kept.toLocaleString()} within lookback window`);
+    log(`  inbox ${file}: ${kept.toLocaleString()} rows within lookback window`);
+  }
+  return leads;
+}
+
+/**
+ * Produce normalized Weld leads.
+ * Queries the open-data service, then merges anything in the manual inbox.
+ */
+export async function loadWeldLeads({ config, since, log = () => {}, offline = false }) {
+  const leads = [];
+
+  if (!offline && config.weldParcelService) {
+    try {
+      leads.push(...(await queryWeldService(config.weldParcelService, since, log)));
+    } catch (err) {
+      log(`  open-data service unavailable (${err.message})`);
+      log('  falling back to the manual inbox; see README to download this week\'s CSV');
+    }
+  } else if (offline) {
+    log('  offline mode, skipping the open-data service');
   }
 
-  return leads;
+  const inbox = await loadWeldInbox({ config, since, log });
+  if (inbox.length) leads.push(...inbox);
+
+  // A parcel present in both the service and a dropped CSV should appear once.
+  const seen = new Set();
+  return leads.filter((l) => {
+    if (seen.has(l.key)) return false;
+    seen.add(l.key);
+    return true;
+  });
 }

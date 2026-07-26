@@ -30,10 +30,16 @@ export function parseMoney(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
-/** Parse an acreage string into a number. */
+/**
+ * Parse an acreage into a number, rounded to two decimals.
+ *
+ * Both counties store computed acreage at full float precision
+ * ("7.7695344624"), which is noise on a lead list. Two decimals is well below
+ * the smallest parcel the filters admit.
+ */
 export function parseAcres(value) {
   const n = Number(String(value ?? '').replace(/[,\s]/g, ''));
-  return Number.isFinite(n) ? n : 0;
+  return Number.isFinite(n) ? Math.round(n * 100) / 100 : 0;
 }
 
 /** Collapse whitespace and trim. */
@@ -85,7 +91,7 @@ export function makeLead(fields) {
     situsCity = '',
     situsZip = '',
     subdivision = '',
-    acres = 0,
+    acres: rawAcres = 0,
     buildingCount = null,
     salePrice = 0,
     saleDate = null,
@@ -112,7 +118,9 @@ export function makeLead(fields) {
     situsCity: clean(situsCity),
     situsZip: clean(situsZip),
     subdivision: clean(subdivision),
-    acres,
+    // Normalized here too, since adapters that read a numeric field directly
+    // never pass through parseAcres().
+    acres: parseAcres(rawAcres),
     buildingCount,
     salePrice,
     saleDate,
