@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/public-site/seo";
+import { businessContact } from "@/lib/public-site/business";
+
+const projectUrl = `${SITE_URL}/projects/mountain-modern`;
 
 export const metadata: Metadata = {
   title: "Mountain Modern | Kiefer Built Contracting",
@@ -8,8 +12,8 @@ export const metadata: Metadata = {
     title: "Mountain Modern | Kiefer Built Contracting",
     description:
       "Custom mountain home featuring dark steel siding, ICF foundation, and solar array — built from excavation to finish by Kiefer Built Contracting in Northern Colorado.",
-    url: "https://www.builtbykiefer.com/projects/mountain-modern",
-    siteName: "Built by Kiefer",
+    url: projectUrl,
+    siteName: businessContact.name,
     locale: "en_US",
     type: "article",
     images: [
@@ -29,7 +33,7 @@ export const metadata: Metadata = {
     images: ["/images/project-2/exterior-front-facade.jpg"],
   },
   alternates: {
-    canonical: "https://www.builtbykiefer.com/projects/mountain-modern",
+    canonical: projectUrl,
   },
 };
 
@@ -39,12 +43,12 @@ const projectSchema = {
   name: "Mountain Modern Custom Home",
   description:
     "A custom mountain home built from the ground up in the Colorado mountains featuring dark metal panel siding, ICF insulated concrete form foundation, standing seam metal roof, solar array, cedar post balcony with cable railing, and boulder retaining wall landscaping.",
-  url: "https://www.builtbykiefer.com/projects/mountain-modern",
-  image: "https://www.builtbykiefer.com/images/project-2/exterior-front-facade.jpg",
+  url: projectUrl,
+  image: `${SITE_URL}/images/project-2/exterior-front-facade.jpg`,
   author: {
     "@type": "Organization",
     name: "Kiefer Built Contracting",
-    url: "https://www.builtbykiefer.com",
+    url: SITE_URL,
   },
   locationCreated: {
     "@type": "Place",

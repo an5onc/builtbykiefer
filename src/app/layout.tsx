@@ -1,5 +1,4 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import GlobalFloatingAction from "@/components/GlobalFloatingAction";
 import MotionProvider from "@/components/MotionProvider";
 import { homeMetadata, localBusinessSchema, websiteSchema } from "@/lib/public-site/seo";
@@ -39,7 +38,6 @@ export default function RootLayout({
           {children}
           <GlobalFloatingAction />
         </MotionProvider>
-        <GoogleAnalytics gaId="G-BBCR31BJSM" />
       </body>
     </html>
   );

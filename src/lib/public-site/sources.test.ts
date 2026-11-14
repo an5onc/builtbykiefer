@@ -67,6 +67,29 @@ describe("education source integrity", () => {
     expect(coloradoIds.some((sourceId) => industryIds.has(sourceId))).toBe(true);
   });
 
+  it("offers original-source HTTPS links for every retained citation", () => {
+    const primaryHosts = new Set(["www.epa.gov", "pubmed.ncbi.nlm.nih.gov", "www.sips.org", "www.energy.gov", "www.portersips.com", "doi.colorado.gov", "bouldercounty.gov", "wwa.colorado.edu", "www.larimer.gov"]);
+    for (const source of educationSources) {
+      expect(source.links.length, `source ${source.id} needs a readable original link`).toBeGreaterThan(0);
+      for (const link of source.links) {
+        const url = new URL(link.url);
+        expect(url.protocol).toBe("https:");
+        expect(primaryHosts.has(url.hostname)).toBe(true);
+        expect(link.label.length).toBeGreaterThan(5);
+      }
+    }
+  });
+
+  it("keeps research comparisons separate from Kiefer project guarantees", () => {
+    expect(publicPages.sips.sections?.[0].comparison?.columns).not.toContain("Kiefer Built SIP");
+    expect(publicPages.energyEfficiency.sections?.[0].body).toMatch(/calibrated-model comparison/);
+    expect(publicPages.energyEfficiency.sections?.[1].body).toMatch(/Mantell-Hecathorn/);
+    expect(publicPages.indoorAirQuality.sections?.[1].body).toMatch(/overall health did not differ significantly/);
+    const copy = JSON.stringify(EDUCATION_KEYS.map((key) => publicPages[key]));
+    expect(copy).not.toMatch(/140\+ mph|R-9\.5|ten-month|12,000|national hail-claim rank|standard-construction control/);
+    expect(publicPages.accolades.cards?.[0].href).toBe("https://www.sips.org/sipa-2025-building-excellence-award-winners");
+  });
+
   it("keeps explicitly omitted figures out of published education copy", () => {
     const publishedCopy = JSON.stringify(EDUCATION_KEYS.map((key) => publicPages[key]));
     expect(publishedCopy).not.toMatch(/20\.6%/i);

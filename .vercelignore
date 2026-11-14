@@ -2,16 +2,38 @@
 .sessions/
 docs/
 tmp/
+tools/
 AGENTS.md
 README.md
 tasks.todo.md
+PRODUCT.md
+release-files.json
+
+# Separate operations, private/generated client outputs and local context.
+scripts/
+output/
+outputs/
+.land-leads-data/
+land-leads-service-account*.json
+Postcard v1.0.pdf
+-.en.vtt
+.impeccable/
+.claude/
+.codex/
+.git/
 
 # Development-only checks and generated caches
+.github/
 **/*.test.ts
 eslint.config.mjs
 vitest.config.ts
+vitest.config.mts
 *.tsbuildinfo
+.nvmrc
 
 # Local configuration and operating-system metadata
 .env*
 .DS_Store
+
+# Synthetic careers unit/browser fixtures; never serve or upload these.
+**/__fixtures__/

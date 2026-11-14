@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { businessContact } from "./business";
 import {
   SITE_URL,
   SOCIAL_IMAGE,
@@ -9,6 +10,7 @@ import {
   SOCIAL_IMAGE_WIDTH,
   homeMetadata,
   localBusinessSchema,
+  websiteSchema,
 } from "./seo";
 
 /**
@@ -19,7 +21,7 @@ import {
  * deliberately, and shows up in review.
  */
 const EXPECTED_IMAGE_PATH = "/og-image.jpg";
-const EXPECTED_IMAGE_URL = "https://www.builtbykiefer.com/og-image.jpg";
+const EXPECTED_IMAGE_URL = "https://kbuiltco.com/og-image.jpg";
 const EXPECTED_WIDTH = 1200;
 const EXPECTED_HEIGHT = 630;
 
@@ -31,6 +33,20 @@ const EXPECTED_HEIGHT = 630;
 const STALE_IMAGE = "exterior-1.jpg";
 
 const socialImagePath = join(process.cwd(), "public", EXPECTED_IMAGE_PATH);
+
+describe("PNG icon dimensions", () => {
+  it("keeps declared icon sizes consistent with the actual PNG headers", () => {
+    const icons = homeMetadata.icons as { icon: Array<{ url: string; sizes: string; type: string }> };
+    expect(icons.icon).toHaveLength(2);
+    for (const icon of icons.icon) {
+      const bytes = readFileSync(join(process.cwd(), "public", icon.url));
+      expect(bytes.subarray(0, 8)).toEqual(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+      expect(bytes.subarray(12, 16).toString()).toBe("IHDR");
+      expect(icon.type).toBe("image/png");
+      expect(icon.sizes).toBe(`${bytes.readUInt32BE(16)}x${bytes.readUInt32BE(20)}`);
+    }
+  });
+});
 
 /**
  * Reads intrinsic dimensions from a JPEG by walking its segment markers to the
@@ -90,6 +106,22 @@ function collectImageSurfaces() {
 }
 
 describe("homepage social image metadata", () => {
+  it("uses the client apex origin across canonical, social and business identities", () => {
+    expect(SITE_URL).toBe("https://kbuiltco.com");
+    expect(homeMetadata.metadataBase?.toString()).toBe("https://kbuiltco.com/");
+    expect(homeMetadata.alternates?.canonical).toBe("https://kbuiltco.com");
+    expect(homeMetadata.openGraph).toMatchObject({ url: "https://kbuiltco.com", siteName: "Kiefer Built Contracting" });
+    expect(localBusinessSchema).toMatchObject({ url: "https://kbuiltco.com", "@id": "https://kbuiltco.com/#business" });
+    expect(websiteSchema).toMatchObject({ url: "https://kbuiltco.com", name: "Kiefer Built Contracting" });
+    expect(JSON.stringify({ homeMetadata, localBusinessSchema, websiteSchema })).not.toContain("builtbykiefer.com");
+  });
+  it("matches the owner-confirmed contact record and public Instagram profile", () => {
+    expect(businessContact.phone).toBe("(970) 515-5059");
+    expect(localBusinessSchema.telephone).toBe("+19705155059");
+    expect(localBusinessSchema.email).toBe("info@kbuiltco.com");
+    expect(localBusinessSchema.sameAs).toContain("https://www.instagram.com/kieferbuiltco");
+    expect(localBusinessSchema.sameAs).not.toContain("https://www.instagram.com/kieferbuiltcontracting");
+  });
   it("points Open Graph at the current social image", () => {
     const { openGraph } = collectImageSurfaces();
 

@@ -48,4 +48,36 @@ describe("processQuoteRequest", () => {
     expect(result.status).toBe(502);
     expect(result.body.code).toBe("email_send_failed");
   });
+
+  it("does not attempt delivery without configuration", async () => {
+    const sendEmail = vi.fn(async () => ({ ok: true }));
+    await processQuoteRequest(request, deps({ emailConfigured: false, sendEmail }));
+    expect(sendEmail).not.toHaveBeenCalled();
+  });
+
+  it("handles provider transport failure without leaking it or retrying", async () => {
+    const sendEmail = vi.fn(async () => { throw new Error("provider key and customer details must stay private"); });
+    const result = await processQuoteRequest(request, deps({ sendEmail }));
+    expect(result.status).toBe(502);
+    expect(result.body).toMatchObject({ ok: false, code: "email_send_unconfirmed" });
+    expect(JSON.stringify(result)).not.toContain("must stay private");
+    expect(sendEmail).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports timeout as an unconfirmed submission", async () => {
+    const result = await processQuoteRequest(request, deps({
+      sendEmail: async () => { throw new DOMException("Timed out", "TimeoutError"); },
+    }));
+    expect(result.status).toBe(504);
+    expect(result.body).toMatchObject({ ok: false, code: "email_timeout" });
+    expect(result.body.error).toContain("couldn't confirm");
+  });
+
+  it("keeps the accepted provider reference out of the public response body", async () => {
+    const result = await processQuoteRequest(request, deps({
+      sendEmail: async () => ({ ok: true, emailId: "49a3999c-0ce1-4ea6-ab68-afcd6dc2e794" }),
+    }));
+    expect(result.emailId).toBe("49a3999c-0ce1-4ea6-ab68-afcd6dc2e794");
+    expect(result.body).toEqual({ ok: true, emailSent: true });
+  });
 });

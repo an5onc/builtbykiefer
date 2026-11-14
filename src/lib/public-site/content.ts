@@ -1,8 +1,13 @@
+import { businessContact } from "./business";
+
 export type PublicCard = {
   title: string;
   description: string;
   href?: string;
   image?: string;
+  imageAlt?: string;
+  /** Override the slot hint when a landscape image is cropped into a tall card. */
+  imageSizes?: string;
   imagePosition?: string;
   meta?: string;
 };
@@ -10,8 +15,12 @@ export type PublicCard = {
 export type PublicSection = {
   id?: string;
   title: string;
-  body: string;
+  /** Omitted when an interactive feature carries the section's explanation. */
+  body?: string;
+  /** Interactive feature rendered under the title in place of the image, body and points. */
+  feature?: "wall-comparison";
   image?: string;
+  imageAlt?: string;
   points?: string[];
   sourceIds?: number[];
   comparison?: {
@@ -58,6 +67,7 @@ export type PublicPageContent = {
   cards?: PublicCard[];
   sections?: PublicSection[];
   testimonials?: TestimonialSummary[];
+  closingCta?: { title: string; body: string; label: string; href: string };
   guideDownload?: {
     label: string;
     href: string;
@@ -95,6 +105,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Kiefer Built treats every project as a relationship, not a transaction. Scope, budget, schedule, and finish decisions are discussed early so clients understand what is happening and why.",
         image: "/images/project-3/interior-great-room-wide.jpg",
+        imageAlt: "Great room with a stone fireplace, wood flooring and sliding glass doors",
         points: ["Owner involvement", "Transparent communication", "Organized decisions"],
       },
       {
@@ -102,6 +113,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "The company blends time-tested craftsmanship with project visibility, photo documentation, and client communication tools that keep homeowners and business owners informed.",
         image: "/images/project-1/kitchen-8.jpg",
+        imageAlt: "Kitchen with a dark island, wood cabinets and black pendant lights",
         points: ["Project visibility", "Finish coordination", "Long-term value"],
         dark: true,
       },
@@ -122,6 +134,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Mark leads the build side with hands-on construction experience, practical problem solving, and a standard of work that puts quality ahead of shortcuts.",
         image: "/images/team/mark-kiefer.jpg",
+        imageAlt: "Mark Kiefer wearing a Kiefer Built shirt outdoors",
         imagePosition: "center 28%",
       },
       {
@@ -130,6 +143,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Mindy supports the financial and operational discipline that keeps projects organized, accountable, and grounded in real numbers.",
         image: "/images/team/mindy-kiefer.jpg",
+        imageAlt: "Mindy Kiefer wearing a Kiefer Built shirt beside a doorway",
         imagePosition: "center 30%",
       },
       {
@@ -138,6 +152,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Miles helps translate early project ideas into scope, pricing, schedules, and day-to-day coordination that clients can follow.",
         image: "/images/team/miles-kiefer-tight.jpg",
+        imageAlt: "Miles Kiefer wearing a Kiefer Built shirt and cap outdoors",
         imagePosition: "center 24%",
       },
       {
@@ -146,6 +161,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Marlys supports the operational systems, team coordination, and follow-through that keep Kiefer Built projects moving with clarity.",
         image: "/images/team/marlys-kiefer.jpg",
+        imageAlt: "Marlys Kiefer wearing a Kiefer Built shirt outdoors",
         imagePosition: "center 34%",
       },
     ],
@@ -167,18 +183,21 @@ export const publicPages: Record<string, PublicPageContent> = {
     primaryCta: cta,
     cards: [
       {
-        title: "2025 SIPA Building Excellence Award",
+        title: "2025 SIPA Building Excellence Recognition",
         meta: "Single Family Homes under 3,000 sq. ft.",
         description:
-          "Kiefer Built's Red Feather Lakes project was recognized for its use of structural insulated panels, energy performance, durability, and sustainable construction.",
+          "SIPA recognized Kiefer Built's Red Feather Lakes project in its 2025 Building Excellence Awards. See the issuer's announcement for the project and category details.",
+        href: "https://www.sips.org/sipa-2025-building-excellence-award-winners",
         image: "/images/project-2/exterior-front-balcony.jpg",
+        imageAlt: "Dark-sided two-story home beside an open yard and wooded hillside",
       },
       {
-        title: "Best of Houzz Service",
-        meta: "Client service recognition",
+        title: "Client Service",
+        meta: "Communication and follow-through",
         description:
-          "The award reflects the company's reputation for communication, follow-through, and detail-oriented project delivery.",
+          "Kiefer Built emphasizes communication, follow-through, and detail-oriented project delivery.",
         image: "/images/project-1/interior-8.jpg",
+        imageAlt: "Bathroom with a double vanity, patterned tile and a window beside the toilet",
       },
       {
         title: "Built to Perform",
@@ -186,6 +205,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Kiefer Built uses modern building systems where they make sense, pairing energy performance with a comfortable finished home.",
         image: "/images/project-2/exterior-winter-wide.jpg",
+        imageAlt: "Foundation construction with framed walls and lifting equipment in an open landscape",
       },
     ],
   },
@@ -199,35 +219,39 @@ export const publicPages: Record<string, PublicPageContent> = {
     cards: [
       {
         title: "How SIPs Support a Greener Tomorrow",
-        meta: "April 21, 2025 · Mark Kiefer",
+        meta: "Building resource · SIPs",
         description:
           "A builder's look at how structural insulated panels support energy efficiency, comfort, and long-term performance.",
         href: "/why-kiefer-built/sips",
         image: "/images/project-2/exterior-winter-detail.jpg",
+        imageAlt: "Exposed floor framing above a partially built foundation with equipment nearby",
       },
       {
         title: "Building Smarter With SIPs",
-        meta: "April 14, 2025 · Mark Kiefer",
+        meta: "Building resource · Energy efficiency",
         description:
           "How Kiefer Built uses structural insulated panels to improve strength, reduce waste, and create more efficient homes.",
         href: "/why-kiefer-built/energy-efficiency",
         image: "/images/project-2/exterior-solar-shed.jpg",
+        imageAlt: "Small open-sided outbuilding with a steep dark roof in an open landscape",
       },
       {
         title: "Efficiency and Comfort in a Modern Home",
-        meta: "March 19, 2025 · Mark Kiefer",
+        meta: "Building resource · Indoor air quality",
         description:
           "A practical view of how planning, insulation, window placement, and finish decisions shape the way a home lives.",
         href: "/why-kiefer-built/indoor-air-quality",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
+        imageAlt: "Ranch home exterior at twilight with an arched entry and stone columns",
       },
       {
-        title: "Award-Winning Energy-Efficient Home",
-        meta: "March 19, 2025 · Mark Kiefer",
+        title: "SIPA-Recognized Energy-Efficient Home",
+        meta: "Project overview · Red Feather Lakes",
         description:
           "A Red Feather Lakes project shows how modern building methods can support both mountain durability and daily comfort.",
         href: "/projects/mountain-modern",
         image: "/images/project-2/exterior-front-facade.jpg",
+        imageAlt: "Two-story home with a gabled roof, large upper windows and a covered porch",
       },
     ],
   },
@@ -246,6 +270,8 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Custom homes, cabins, modern retreats, and energy-efficient builds planned around the way the owner wants to live.",
         href: "/services/home-building",
         image: "/images/project-3/exterior-twilight-front.jpg",
+        imageSizes: "(max-width: 767px) 188vw, (max-width: 1279px) 94vw, 47vw",
+        imageAlt: "Ranch home exterior with a stone entry, wood siding and a driveway at twilight",
       },
       {
         title: "Renovations & Additions",
@@ -253,6 +279,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Kitchens, bathrooms, living spaces, exteriors, and additions coordinated with clear scope and clean execution.",
         href: "/projects/renovations-additions",
         image: "/images/project-1/kitchen-8.jpg",
+        imageAlt: "Kitchen with a dark island, wood cabinets and black pendant lights",
       },
       {
         title: "Commercial Construction",
@@ -260,6 +287,8 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Commercial remodels, tenant improvements, and business spaces built around operations, durability, and schedule.",
         href: "/projects/commercial",
         image: "/images/kiefer-commercial-agfinity.jpg",
+        imageSizes: "(max-width: 767px) 188vw, (max-width: 1279px) 94vw, 47vw",
+        imageAlt: "Wood-finished stairs and upper-level railings inside a commercial space",
       },
       {
         title: "Custom Elevators",
@@ -267,6 +296,8 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Residential elevator builds and installations coordinated with framing, finishes, access, and designer-selected details.",
         href: "/services/custom-elevators",
         image: "/images/project-4/DSC05496.jpg",
+        imageSizes: "(max-width: 767px) 188vw, (max-width: 1279px) 94vw, 47vw",
+        imageAlt: "Glass elevator enclosure beside a doorway into a laundry room",
       },
       {
         title: "Why Build With Kiefer Built",
@@ -275,6 +306,8 @@ export const publicPages: Record<string, PublicPageContent> = {
           "SIPs construction, real energy efficiency, and family craftsmanship — see exactly why a Kiefer Built home is built better.",
         href: "/why-kiefer-built",
         image: "/images/project-2/exterior-wide-property.jpg",
+        imageSizes: "(max-width: 767px) 168vw, (max-width: 1279px) 84vw, 42vw",
+        imageAlt: "Mountain home across an open yard with a wooded hillside behind it",
       },
     ],
   },
@@ -298,24 +331,28 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "High-quality, accessible cabinet lines with solid wood construction, soft-close hardware, and practical finish options.",
         image: "/images/project-3/kitchen-overview.jpg",
+        imageAlt: "Kitchen with a dark island, wood cabinets and recessed lighting",
       },
       {
         title: "Espresso",
         description:
           "A dark stained option that supports modern contrast, clean lines, and warm interior palettes.",
         image: "/images/project-3/kitchen-island-front.jpg",
+        imageAlt: "Kitchen island beneath a wood-trimmed range hood with dark and wood cabinetry",
       },
       {
         title: "Pebble Grey",
         description:
           "A softer painted finish for kitchens, baths, and utility spaces that need light without feeling plain.",
         image: "/images/project-1/kitchen-6.jpg",
+        imageAlt: "Kitchen range and stacked ovens with wood cabinets and a black hood",
       },
       {
         title: "Polar White",
         description:
           "A bright cabinet finish that pairs well with stone, tile, and clean modern trim packages.",
         image: "/images/project-1/kitchen-10.jpg",
+        imageAlt: "Kitchen island with dark pendant lights, wood cabinets and large windows",
       },
     ],
   },
@@ -368,6 +405,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Kiefer Built guides custom home clients from early ideas through plans, materials, budget decisions, and construction details so the finished home feels personal and durable.",
         image: "/images/project-3/interior-open-plan.jpg",
+        imageAlt: "Open kitchen and living area with a dark island and wood flooring",
         points: ["Custom home design-build", "Cabins and retreats", "Modern family homes"],
       },
       {
@@ -375,6 +413,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Structural insulated panels can improve energy efficiency, strength, and comfort. Kiefer Built uses these systems where they fit the project and client priorities.",
         image: "/images/project-2/exterior-winter-snow.jpg",
+        imageAlt: "Foundation and wall framing at a construction site with hills in the distance",
         points: ["Energy efficiency", "Structural strength", "Flexible finishes"],
         dark: true,
       },
@@ -393,24 +432,28 @@ export const publicPages: Record<string, PublicPageContent> = {
         description: "Space efficient homes, modern homes, barns, garages, and new construction projects.",
         href: "/projects/new-builds",
         image: "/images/project-3/exterior-front-daytime.jpg",
+        imageAlt: "Ranch home front elevation with stone columns and an arched entry at twilight",
       },
       {
         title: "Commercial",
         description: "Business spaces, tenant improvements, remodels, and functional commercial interiors.",
         href: "/projects/commercial",
         image: "/images/kiefer-commercial-agfinity.jpg",
+        imageAlt: "Wood-finished stairs and upper-level railings inside a commercial space",
       },
       {
         title: "Renovations & Additions",
         description: "Kitchens, bathrooms, living spaces, exteriors, additions, and custom improvements.",
         href: "/projects/renovations-additions",
         image: "/images/project-1/kitchen-8.jpg",
+        imageAlt: "Kitchen with a dark island, wood cabinets and black pendant lights",
       },
       {
         title: "Custom Elevator Renovation",
         description: "A specialty home improvement combining custom elevator access, bathroom upgrades, and refined finish work.",
         href: "/services/custom-elevators",
         image: "/images/project-4/DSC05502.jpg",
+        imageAlt: "Round glass elevator enclosure set into a finished room",
       },
       {
         title: "Contemporary Ranch",
@@ -418,6 +461,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Tour a finished Northern Colorado ranch from its twilight exterior and open great room to custom cabinetry and primary-suite details.",
         href: "/projects/contemporary-ranch",
         image: "/images/project-3/aerial-front-twilight.jpg",
+        imageAlt: "Ranch home entrance and driveway viewed from above at twilight",
       },
       {
         title: "Mountain Modern",
@@ -425,6 +469,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Follow a Colorado mountain home through excavation, structure, exterior systems, solar, and the completed property.",
         href: "/projects/mountain-modern",
         image: "/images/project-2/exterior-panoramic.jpg",
+        imageAlt: "Side of a dark-sided mountain home with a sloping metal roof and large boulders",
       },
     ],
   },
@@ -441,18 +486,25 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Smart layouts, durable envelopes, and finish decisions that make the most of every square foot.",
         image: "/images/project-3/interior-open-plan.jpg",
+        imageAlt: "Open kitchen and living area with a dark island and wood flooring",
+        href: "/projects/contemporary-ranch",
+        meta: "Home tour example: Contemporary Ranch",
       },
       {
         title: "Modern Homes",
         description:
           "Clean lines, natural light, efficient systems, and practical details built for Northern Colorado living.",
         image: "/images/project-2/exterior-front-balcony.jpg",
+        imageAlt: "Dark-sided two-story home beside an open yard and wooded hillside",
+        href: "/projects/mountain-modern",
+        meta: "Home tour example: Mountain Modern",
       },
       {
         title: "Barns and Garages",
         description:
           "Useful structures planned around storage, property needs, and long-term durability.",
         image: "/images/project-2/exterior-solar-shed.jpg",
+        imageAlt: "Small open-sided outbuilding with a steep dark roof in an open landscape",
       },
     ],
   },
@@ -469,6 +521,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Kiefer Built supports commercial remodels, tenant improvements, office buildouts, and specialized spaces with practical scopes, schedule awareness, and trade coordination.",
         image: "/images/kiefer-commercial-agfinity.jpg",
+        imageAlt: "Wood-finished stairs and upper-level railings inside a commercial space",
         points: ["Tenant improvements", "Office buildouts", "Business remodels"],
       },
     ],
@@ -485,26 +538,31 @@ export const publicPages: Record<string, PublicPageContent> = {
         title: "Kitchens",
         description: "Cabinetry, counters, lighting, layout changes, and finish coordination.",
         image: "/images/project-1/kitchen-4.jpg",
+        imageAlt: "Kitchen range beneath a black hood with wood cabinetry and a tile backsplash",
       },
       {
         title: "Bathrooms",
         description: "Tile, vanities, fixtures, storage, and durable daily-use details.",
         image: "/images/project-3/interior-primary-bath.jpg",
+        imageAlt: "Bathroom with wood vanity cabinets, round mirrors and a glass shower",
       },
       {
         title: "Living Spaces",
         description: "Open rooms, fireplaces, flooring, lighting, and better flow between spaces.",
-        image: "/images/project-3/interior-great-room-fireplace.jpg",
+        image: "/images/project-3/interior-great-room-wide.jpg",
+        imageAlt: "Great room with a stone fireplace, wood flooring and sliding glass doors",
       },
       {
         title: "Exteriors",
         description: "Siding, entries, outdoor spaces, garage elevations, and curb appeal.",
         image: "/images/project-3/exterior-entry-close.jpg",
+        imageAlt: "Dark front doors recessed inside a wood-clad entry",
       },
       {
         title: "Custom Elevators",
         description: "Residential elevator planning, finish coordination, and installation for homes that need better long-term access.",
         image: "/images/project-4/DSC05499.jpg",
+        imageAlt: "Laundry room with white cabinets and a glass elevator enclosure at the side",
       },
     ],
   },
@@ -555,12 +613,18 @@ export const publicPages: Record<string, PublicPageContent> = {
     heroImage: "/images/project-3/exterior-entry-portico.jpg",
     heroAlt: "Kiefer Built custom home entry detail",
     primaryCta: {
-      label: "Email Your Resume",
-      href: "mailto:info@kbuiltco.com?subject=Careers at Kiefer Built Contracting",
+      label: "Apply Now",
+      href: "/careers#apply",
     },
     secondaryCta: {
-      label: "Contact The Team",
-      href: "/contact",
+      label: "Call With Questions",
+      href: businessContact.telHref,
+    },
+    closingCta: {
+      title: "Ready to build with us?",
+      body: "Introduce yourself and share your résumé using the application above.",
+      label: "Apply Now",
+      href: "/careers#apply",
     },
     intro: {
       title: "A construction career with real projects and accountable standards.",
@@ -574,6 +638,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Lead schedules, trades, client communication, change requests, and jobsite details with the discipline needed to keep projects moving.",
         image: "/images/project-2/exterior-wide-property.jpg",
+        imageAlt: "Mountain home across an open yard with a wooded hillside behind it",
       },
       {
         title: "Carpenter",
@@ -581,6 +646,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Support framing, finish work, repairs, remodels, and field details with clean work habits and pride in the finished product.",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
+        imageAlt: "Ranch home exterior at twilight with an arched entry and stone columns",
       },
       {
         title: "Trade Partners",
@@ -588,6 +654,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Kiefer Built values skilled trade partners who communicate, show up prepared, and protect the quality standard on each project.",
         image: "/images/kiefer-commercial-agfinity.jpg",
+        imageAlt: "Wood-finished stairs and upper-level railings inside a commercial space",
       },
     ],
     sections: [
@@ -610,8 +677,8 @@ export const publicPages: Record<string, PublicPageContent> = {
     secondaryCta: { label: "See The Work", href: "/projects" },
     proof: [
       { value: "2–5×", label: "Some indoor pollutants versus outdoors", sourceId: 1 },
-      { value: "40–50%", label: "DOE ZERH efficiency versus a typical new home", sourceId: 7 },
-      { value: "#2", label: "Colorado's national hail-claim rank", sourceId: 11 },
+      { value: "40–50%", label: "DOE certified-home program, not a project guarantee", sourceId: 7 },
+      { value: "Hail", label: "Colorado insurance planning", sourceId: 11 },
     ],
     intro: {
       title: "The finishes matter. The parts behind them matter longer.",
@@ -626,6 +693,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "See how structural insulated panels change airtightness, whole-wall insulation, and tested structural performance.",
         href: "/why-kiefer-built/sips",
         image: "/images/project-2/exterior-solar-shed.jpg",
+        imageAlt: "Small open-sided outbuilding with a steep dark roof in an open landscape",
       },
       {
         title: "Energy Efficiency",
@@ -634,6 +702,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Move beyond projections to a full year of Oak Ridge data, national DOE results, and a Colorado homeowner case study.",
         href: "/why-kiefer-built/energy-efficiency",
         image: "/images/project-2/exterior-winter-wide.jpg",
+        imageAlt: "Foundation construction with framed walls and lifting equipment in an open landscape",
       },
       {
         title: "Indoor Air Quality",
@@ -642,6 +711,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Learn why a leaky home and an airtight home without planned ventilation both miss half of the indoor-air problem.",
         href: "/why-kiefer-built/indoor-air-quality",
         image: "/images/project-3/interior-open-plan.jpg",
+        imageAlt: "Open kitchen and living area with a dark island and wood flooring",
       },
       {
         title: "Built for Colorado",
@@ -650,6 +720,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Connect material and structural decisions to the weather risks Northern Colorado homes actually face.",
         href: "/why-kiefer-built/built-for-colorado",
         image: "/images/project-2/exterior-winter-snow.jpg",
+        imageAlt: "Foundation and wall framing at a construction site with hills in the distance",
       },
       {
         title: "Quality & Craftsmanship",
@@ -658,6 +729,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "See how owner accountability and moisture-aware material coordination protect the work long after move-in.",
         href: "/why-kiefer-built/quality",
         image: "/images/project-3/interior-great-room-wide.jpg",
+        imageAlt: "Great room with a stone fireplace, wood flooring and sliding glass doors",
       },
       {
         title: "Cost Of Ownership",
@@ -666,12 +738,13 @@ export const publicPages: Record<string, PublicPageContent> = {
           "Compare the lowest construction price with the energy, weather exposure, and repair costs that continue after closing.",
         href: "/why-kiefer-built/cost-of-ownership",
         image: "/images/project-2/exterior-panoramic.jpg",
+        imageAlt: "Side of a dark-sided mountain home with a sloping metal roof and large boulders",
       },
     ],
     guideDownload: {
       label: "Download The Guide",
-      href: "/guides/kiefer-built-homeowner-guide.pdf",
-      note: "Read the complete 9-page case for healthier, more efficient, Colorado-ready homebuilding.",
+      href: "/guides/kiefer-built-homeowner-guide-2026.pdf",
+      note: "2026 homeowner guide with practical project questions, sources and their limits.",
     },
   },
   sips: {
@@ -679,13 +752,13 @@ export const publicPages: Record<string, PublicPageContent> = {
     description:
       "Structural insulated panels combine structure and insulation in one engineered assembly, reducing the gaps and thermal bridges that limit conventional framing.",
     heroImage: "/images/project-2/exterior-solar-shed.jpg",
-    heroAlt: "Kiefer Built home under construction using structural insulated panels",
+    heroAlt: "Finished outbuilding with rooftop solar at a Kiefer Built mountain property",
     primaryCta: cta,
     secondaryCta: { label: "See Energy Efficiency", href: "/why-kiefer-built/energy-efficiency" },
     proof: [
-      { value: "~15×", label: "Tighter in Oak Ridge blower-door testing", sourceId: 9 },
-      { value: "≈ R-14", label: "Reported SIP whole-wall performance", sourceId: 3 },
-      { value: "140+ mph", label: "Simulated wind-load testing", sourceId: 4 },
+      { value: "~15×", label: "Lower leakage in ORNL's best-sealed SIP test room", sourceId: 9 },
+      { value: "Whole-wall", label: "Specify the complete assembly", sourceId: 3 },
+      { value: "Tested", label: "Assembly-specific impact evidence", sourceId: 4 },
     ],
     intro: {
       title: "A wall performs as a whole wall, not a row of insulation cavities.",
@@ -694,31 +767,30 @@ export const publicPages: Record<string, PublicPageContent> = {
     },
     sections: [
       {
+        id: "wall-comparison",
         title: "Compare the assembly, not the insulation label.",
-        body:
-          "Oak Ridge blower-door testing found approximately 90% less leakage in a SIP test room than in an equivalent stick-framed room with fiberglass insulation. Industry technical data, informed by whole-wall research, reports roughly R-14 for a SIP wall versus R-9.5 for standard 2×4 framing after the framing itself is accounted for.",
-        image: "/images/project-2/exterior-front-facade.jpg",
-        points: ["Continuous insulation", "Fewer leakage paths", "Whole-wall performance"],
+        feature: "wall-comparison",
+        // The wall comparison cites ORNL (9) and SIPA (3); listing them keeps them in the page's sources.
         sourceIds: [9, 3],
         comparison: {
-          columns: ["Standard Stick-Frame", "Kiefer Built SIP"],
+          columns: ["Wood-Framed Example", "SIP Example"],
           rows: [
             {
-              label: "Air leakage, blower-door tested",
-              standard: "Baseline",
-              kiefer: "~15× tighter",
+              label: "ORNL test rooms at 50 pascals",
+              standard: "Comparison test room",
+              kiefer: "~15× lower leakage with best sealing",
               sourceId: 9,
             },
             {
               label: "Whole-wall insulation value",
-              standard: "≈ R-9.5",
-              kiefer: "≈ R-14",
+              standard: "Depends on framing and insulation",
+              kiefer: "Depends on panel thickness and connections",
               sourceId: 3,
             },
             {
-              label: "Tested wind resistance",
-              standard: "Code-required assembly",
-              kiefer: "140+ mph simulated loads",
+              label: "Structural and impact evidence",
+              standard: "Verify specified assembly and site loads",
+              kiefer: "SIPA reports a specific 6.5-inch panel impact test",
               sourceId: 4,
             },
           ],
@@ -729,6 +801,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "SIPs are not a finish upgrade; they are an early structural and envelope decision. The useful question is whether their airtightness, continuous insulation, erection sequence, and tested wind performance match the site, design, budget, and long-term goals of a particular home.",
         image: "/images/project-2/exterior-winter-detail.jpg",
+        imageAlt: "Exposed floor framing above a partially built foundation with equipment nearby",
         points: ["Project-specific engineering", "Envelope-first planning", "Documented tradeoffs"],
         sourceIds: [4, 9],
         dark: true,
@@ -740,13 +813,13 @@ export const publicPages: Record<string, PublicPageContent> = {
     description:
       "Federal research and homeowner data show what happens when an airtight, well-insulated envelope works with right-sized mechanical systems.",
     heroImage: "/images/project-2/exterior-winter-wide.jpg",
-    heroAlt: "High-performance Kiefer Built home in a Colorado winter",
+    heroAlt: "Kiefer Built mountain home foundation and floor framing beside construction equipment",
     primaryCta: cta,
     secondaryCta: { label: "Understand Cost Of Ownership", href: "/why-kiefer-built/cost-of-ownership" },
     proof: [
-      { value: "50%", label: "Less energy in ORNL's metered ZEH5 study", sourceId: 6 },
-      { value: "40–50%", label: "Typical DOE ZERH efficiency improvement", sourceId: 7 },
-      { value: "~$350", label: "Propane across a Durango heating season", sourceId: 8 },
+      { value: "53%", label: "ORNL ZEH5 modeled comparison, excluding PV", sourceId: 6 },
+      { value: "40–50%", label: "Typical DOE certified-home program improvement", sourceId: 7 },
+      { value: "HERS 21", label: "Other builder's Durango case, including PV", sourceId: 8 },
     ],
     intro: {
       title: "Start with measured homes, not a manufacturer projection.",
@@ -757,25 +830,28 @@ export const publicPages: Record<string, PublicPageContent> = {
       {
         title: "One full year under Oak Ridge instrumentation.",
         body:
-          "Oak Ridge National Laboratory and the U.S. Department of Energy monitored ZEH5, a 2,632-square-foot SIP demonstration home, for a full year. With an airtight envelope, mechanical ventilation, and extensive moisture controls, it used 50% less energy than the DOE Building America benchmark.",
+          "ORNL monitored ZEH5 in Tennessee during November 2008–October 2009. Its report separates measured consumption from a calibrated-model comparison, which estimated 53% less energy than the modeled Building America benchmark without solar PV. SIPs, geothermal equipment and solar water heating worked together; that comparison does not measure the savings from SIPs alone or predict a Kiefer Built utility bill.",
         image: "/images/project-2/exterior-winter-snow.jpg",
-        points: ["Federally monitored", "Full-year data", "1.65 ACH50 envelope"],
+        imageAlt: "Foundation and wall framing at a construction site with hills in the distance",
+        points: ["Occupied-year measurements", "Modeled benchmark comparison", "Whole-home system"],
         sourceIds: [6],
       },
       {
-        title: "The result also appears at national and Colorado scale.",
+        title: "Certification and Colorado case studies give useful context.",
         body:
-          "More than 12,000 DOE Zero Energy Ready Homes are typically 40–50% more efficient than a typical new home. In one DOE Tour of Zero case study, the owner of a 3,800-square-foot Durango home reported near-zero electric costs and about $350 in propane from July through May. That is a case study, not a promise for every home, but it makes the long-term opportunity concrete.",
+          "DOE describes its certified Efficient New Homes, formerly Zero Energy Ready Homes, as typically 40–50% more efficient than typical new homes. Its 2015 Durango case describes Mantell-Hecathorn Builders' advanced wood-framed home: HERS 50 without solar PV and 21 with PV. This is another builder's whole-home rating, not a Kiefer Built certification or a measured bill forecast.",
         image: "/images/project-2/exterior-solar-shed.jpg",
-        points: ["12,000+ certified homes", "Colorado case study", "Results, not guarantees"],
+        imageAlt: "Small open-sided outbuilding with a steep dark roof in an open landscape",
+        points: ["Third-party certification", "Named Colorado case study", "Ratings and bills differ"],
         sourceIds: [7, 8],
         dark: true,
       },
       {
         title: "Airtightness reduces the load before equipment meets it.",
         body:
-          "Oak Ridge testing found a SIP test room roughly fifteen times tighter than its stick-framed counterpart. Less uncontrolled leakage means the mechanical system is not constantly replacing conditioned air lost through cracks; related Building America SIP research reported reaching the same comfort target with substantially smaller HVAC equipment.",
+          "ORNL's best-sealed SIP test room had about fifteen times lower leakage than its wood-framed counterpart. Actual homes need their own blower-door results, ventilation plan and heating/cooling load calculations. Reducing uncontrolled leakage can help reduce conditioning loads; equipment sizing must still follow the specific home.",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
+        imageAlt: "Ranch home exterior at twilight with an arched entry and stone columns",
         points: ["Less uncontrolled leakage", "Steadier temperatures", "Right-sized systems"],
         sourceIds: [9, 6],
       },
@@ -805,6 +881,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Mark and Mindy Kiefer built the company around direct communication and durable work, with Miles involved in estimating and project management. Decisions stay close to the people who own the outcome, so quality is not delegated away.",
         image: "/images/project-3/interior-open-plan.jpg",
+        imageAlt: "Open kitchen and living area with a dark island and wood flooring",
         points: ["Owner involvement", "Clear communication", "Long-term durability"],
       },
       {
@@ -812,6 +889,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "EPA Indoor airPLUS requirements show what disciplined material coordination looks like: manage moisture, address combustion safety, plan ventilation, and select low-emission materials as connected parts of one system. Kiefer Built can use those principles to guide project-specific assemblies and selections without claiming every home carries that certification.",
         image: "/images/project-1/kitchen-8.jpg",
+        imageAlt: "Kitchen with a dark island, wood cabinets and black pendant lights",
         points: ["Moisture control", "Ventilation planning", "Low-emission options"],
         sourceIds: [10],
         dark: true,
@@ -827,9 +905,9 @@ export const publicPages: Record<string, PublicPageContent> = {
     primaryCta: cta,
     secondaryCta: { label: "Start With SIPs 101", href: "/why-kiefer-built/sips" },
     proof: [
-      { value: "40–50%", label: "Typical DOE ZERH efficiency improvement", sourceId: 7 },
-      { value: "~$350", label: "Durango case-study propane cost", sourceId: 8 },
-      { value: "#2", label: "Colorado's national hail-claim rank", sourceId: 11 },
+      { value: "40–50%", label: "DOE certified-home program, not bill savings", sourceId: 7 },
+      { value: "HERS 21", label: "Other builder's Durango case with solar PV", sourceId: 8 },
+      { value: "Hail", label: "Plan for coverage and replacement costs", sourceId: 11 },
     ],
     intro: {
       title: "A bid is a snapshot. Ownership is the full film.",
@@ -840,16 +918,18 @@ export const publicPages: Record<string, PublicPageContent> = {
       {
         title: "Energy costs repeat every month.",
         body:
-          "DOE-certified Zero Energy Ready Homes are typically 40–50% more efficient than typical new homes. A Durango case study makes the scale tangible: one owner reported near-zero electric costs and about $350 in propane over a ten-month heating season in a 3,800-square-foot home. Actual savings depend on design, climate, fuel prices, and occupant behavior.",
+          "DOE's typical 40–50% certified-home efficiency improvement is not a promise of the same percentage reduction in bills. Its 2015 Mantell-Hecathorn Durango case reports HERS 50 without solar PV and 21 with PV for an advanced wood-framed home. These ratings describe that project; actual costs depend on design, climate, energy prices and occupancy.",
         image: "/images/project-2/exterior-winter-wide.jpg",
+        imageAlt: "Foundation construction with framed walls and lifting equipment in an open landscape",
         points: ["Recurring savings", "Case-specific results", "Transparent assumptions"],
         sourceIds: [7, 8],
       },
       {
         title: "Colorado weather belongs in the ownership budget.",
         body:
-          "Colorado ranks second nationally for hail insurance claims, and hail led the state's insured losses in eight of eleven reported years. Impact-rated roofing and durable exterior assemblies are therefore not just finish choices; they are options worth pricing against replacement cycles, insurance terms, and site exposure.",
+          "Colorado's Division of Insurance includes hail in its disaster-readiness guidance. Impact-rated roofing and durable exterior assemblies are options worth discussing alongside replacement costs, coverage terms and site exposure. Check the actual policy and insurer's requirements before assuming a premium discount or coverage benefit.",
         image: "/images/project-3/aerial-front-twilight.jpg",
+        imageAlt: "Ranch home entrance and driveway viewed from above at twilight",
         points: ["Hail exposure", "Replacement cycles", "Insurance conversation"],
         sourceIds: [11],
         dark: true,
@@ -859,13 +939,14 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Kiefer Built's role is to explain what a proposed assembly costs, what evidence supports it, and what risk or operating expense it may reduce. That is the long view behind a forever home: not the most features, but the clearest decisions for the next forty years of living there.",
         image: "/images/project-3/interior-open-plan.jpg",
+        imageAlt: "Open kitchen and living area with a dark island and wood flooring",
         points: ["Open tradeoffs", "Evidence before upgrades", "Long-term fit"],
       },
     ],
     guideDownload: {
       label: "Download The Guide",
-      href: "/guides/kiefer-built-homeowner-guide.pdf",
-      note: "Use the full 9-page guide to compare health, energy, resilience, and long-term value before you build.",
+      href: "/guides/kiefer-built-homeowner-guide-2026.pdf",
+      note: "2026 homeowner guide with practical project questions, sources and their limits.",
     },
   },
   indoorAirQuality: {
@@ -892,14 +973,16 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Cracks and gaps admit air from wherever pressure finds a path, along with pollen, smoke, garage contaminants, and moisture. EPA research reports some indoor pollutant concentrations at two to five times typical outdoor levels and explicitly warns that tighter construction without sufficient ventilation can also make the problem worse by trapping pollutants.",
         image: "/images/project-3/interior-great-room-wide.jpg",
+        imageAlt: "Great room with a stone fireplace, wood flooring and sliding glass doors",
         points: ["Uncontrolled infiltration", "Trapped pollutants", "Moisture risk"],
         sourceIds: [1],
       },
       {
         title: "Airtight and ventilated—not one or the other.",
         body:
-          "The building-science answer is to reduce uncontrolled leakage and then engineer fresh-air exchange deliberately. Peer-reviewed field research found occupants of highly efficient, mechanically ventilated homes rated indoor air quality and comfort significantly higher than a standard-construction control group. A Kiefer Built project can evaluate balanced, filtered ventilation as part of its complete envelope and mechanical design.",
+          "Plan fresh-air exchange alongside air sealing. A 2017 Austrian field study compared 123 modern homes with mechanical or natural ventilation. Residents reported better perceived air quality and climate with mechanical ventilation, while overall health did not differ significantly. This is not evidence that a particular Kiefer Built home prevents illness. A project can evaluate balanced, filtered ventilation for its specific design.",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
+        imageAlt: "Ranch home exterior at twilight with an arched entry and stone columns",
         points: ["Controlled fresh air", "Filtered intake", "Balanced system design"],
         sourceIds: [1, 2],
         dark: true,
@@ -909,6 +992,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "DOE Zero Energy Ready Home certification requires EPA Indoor airPLUS measures covering moisture control, combustion safety, ventilation, and low-emission material selection. Even when a project is not pursuing certification, those requirements provide a useful, specific framework for deciding what belongs in scope and how it will be verified.",
         image: "/images/project-3/interior-primary-bath.jpg",
+        imageAlt: "Bathroom with wood vanity cabinets, round mirrors and a glass shower",
         points: ["Moisture management", "Combustion safety", "Low-emission choices"],
         sourceIds: [10, 7],
       },
@@ -919,11 +1003,11 @@ export const publicPages: Record<string, PublicPageContent> = {
     description:
       "Hail, fast-moving wildfire, local snow loads, and site-specific wind exposure turn resilience from a talking point into a design input.",
     heroImage: "/images/project-2/exterior-winter-snow.jpg",
-    heroAlt: "Kiefer Built mountain home designed for Northern Colorado weather",
+    heroAlt: "ICF foundation walls and exposed floor framing at a Kiefer Built mountain site",
     primaryCta: cta,
     secondaryCta: { label: "Understand SIPs", href: "/why-kiefer-built/sips" },
     proof: [
-      { value: "#2", label: "Colorado's national hail-claim rank", sourceId: 11 },
+      { value: "Hail", label: "Review roof options and insurance coverage", sourceId: 11 },
       { value: "1,084", label: "Homes destroyed in the Marshall Fire", sourceId: 12 },
       { value: "Local", label: "Snow and wind loads vary by site", sourceId: 13 },
     ],
@@ -936,16 +1020,18 @@ export const publicPages: Record<string, PublicPageContent> = {
       {
         title: "Hail is Colorado's recurring insurance event.",
         body:
-          "The Front Range sits in Hail Alley, Colorado ranks second nationally in hail claims, and hail drove the state's insured losses in eight of eleven reported years. The May 2017 Denver-metro storm alone caused an estimated $2.3 billion in damage. Class 4 impact-resistant roofing and durable exterior choices are options to evaluate against site exposure, insurer requirements, and replacement cost—not automatic promises about every project.",
+          "Colorado's Division of Insurance identifies hail among the state's disaster risks and offers insurance guidance after storms. Compare impact-rated roofing and exterior options with site exposure, replacement cost and the actual coverage terms. A material rating is not a promise that a roof will survive every storm or qualify for an insurance discount.",
         image: "/images/project-2/exterior-front-facade.jpg",
-        points: ["Hail Alley exposure", "Impact-rated options", "Insurance coordination"],
+        imageAlt: "Two-story home with a gabled roof, large upper windows and a covered porch",
+        points: ["Hail exposure", "Impact-rated options", "Insurance coordination"],
         sourceIds: [11],
       },
       {
         title: "The Marshall Fire changed the wildfire map.",
         body:
-          "Wind gusts above 100 mph drove the December 2021 Marshall Fire through Boulder County grass and subdivisions, destroying 1,084 homes in roughly six hours. More than half of Coloradans live in the wildland-urban interface. Depending on the site, the design conversation can include ignition-resistant materials, protected vents, Class A roofing, and noncombustible zones at grade.",
+          "The December 30, 2021 Marshall Fire destroyed 1,084 homes, according to Boulder County. CU Boulder researchers documented gusts exceeding 100 mph and compound fire hazards. It is a reminder to discuss site-specific fire exposure, exterior materials, vents, roofing and the area around the home with the project's qualified professionals.",
         image: "/images/project-2/exterior-panoramic.jpg",
+        imageAlt: "Side of a dark-sided mountain home with a sloping metal roof and large boulders",
         points: ["Grass-driven fire", "Windborne embers", "Site-specific detailing"],
         sourceIds: [12],
         dark: true,
@@ -953,8 +1039,9 @@ export const publicPages: Record<string, PublicPageContent> = {
       {
         title: "Snow and wind are local engineering numbers.",
         body:
-          "Colorado snow loads are set locally and change sharply with elevation. Larimer County references Structural Engineers Association of Colorado data and applies site-dependent roof and wind requirements; current county guidance includes a minimum uniform roof snow load of 35 psf and basic wind speeds from 115 to 225 mph depending on location. SIP industry tests and storm case reporting add useful—but separately labeled—evidence about panel performance.",
+          "Larimer County provides site-specific wind and snow resources. Ground snow load, roof snow load and ultimate wind speed are different inputs; verify the adopted requirements with the jurisdiction and engineer. Separately labeled SIP industry tests and storm anecdotes describe particular assemblies, not a universal wind rating or substitute for project engineering.",
         image: "/images/project-2/exterior-winter-wide.jpg",
+        imageAlt: "Foundation construction with framed walls and lifting equipment in an open landscape",
         points: ["County-set loads", "Site exposure", "Engineer-led decisions"],
         sourceIds: [13],
         comparison: {
@@ -967,21 +1054,21 @@ export const publicPages: Record<string, PublicPageContent> = {
               sourceId: 13,
             },
             {
-              label: "Basic wind speed",
+              label: "Wind design",
               standard: "Jurisdictional minimum",
-              kiefer: "115–225 mph in Larimer County, site dependent",
+              kiefer: "Verify site-specific ultimate wind speed",
               sourceId: 13,
             },
             {
               label: "SIP wall testing",
               standard: "Code-required assembly",
-              kiefer: "140+ mph simulated loads",
+              kiefer: "Specific 6.5-inch SIP debris-impact test reported by SIPA",
               sourceId: 4,
             },
             {
               label: "Severe-storm field report",
               standard: "Assembly performance varies",
-              kiefer: "Ramrod Key SIP home remained structurally intact",
+              kiefer: "SIPA reports minimal Irma damage to a Ramrod Key MgO SIP home; different builder and system",
               sourceId: 5,
             },
           ],

@@ -43,15 +43,15 @@ describe("why-kiefer-built education content", () => {
     expect(comparison?.rows.map((row) => row.sourceId)).toEqual([9, 3, 4]);
   });
 
-  it("configures the supplied homeowner guide download", () => {
+  it("configures the approved 2026 homeowner guide download", () => {
     expect(publicPages.whyKieferBuilt.guideDownload?.href).toBe(
-      "/guides/kiefer-built-homeowner-guide.pdf",
+      "/guides/kiefer-built-homeowner-guide-2026.pdf",
     );
     expect(publicPages.costOfOwnership.guideDownload?.href).toBe(
-      "/guides/kiefer-built-homeowner-guide.pdf",
+      "/guides/kiefer-built-homeowner-guide-2026.pdf",
     );
 
-    const guidePath = join(process.cwd(), "public", "guides", "kiefer-built-homeowner-guide.pdf");
+    const guidePath = join(process.cwd(), "public", "guides", "kiefer-built-homeowner-guide-2026.pdf");
     expect(existsSync(guidePath)).toBe(true);
     expect(statSync(guidePath).size).toBeLessThanOrEqual(15 * 1024 * 1024);
   });

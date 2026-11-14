@@ -1,126 +1,112 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useId } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { navLinks } from "@/lib/public-site/nav";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobilePath, setMobilePath] = useState<string | null>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const pathname = usePathname();
+  const mobileOpen = mobilePath === pathname;
+  const headerRef = useRef<HTMLElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const menuButtons = useRef<Record<string, HTMLButtonElement | null>>({});
+  const id = useId();
   const anchorPrefix = pathname === "/" ? "" : "/";
-  const isExternal = (href: string) => href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:");
-  const resolveHref = (href: string) => {
-    if (href.startsWith("#")) {
-      return `${anchorPrefix}${href}`;
-    }
-
-    return href;
-  };
+  const isExternal = (href: string) => /^(https?:|mailto:|tel:)/.test(href);
+  const resolveHref = (href: string) => href.startsWith("#") ? `${anchorPrefix}${href}` : href;
+  const closeNavigation = () => { setMobilePath(null); setOpenMenu(null); };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const desktop = window.matchMedia("(min-width: 1280px)");
+    const onResize = () => { setMobilePath(null); setOpenMenu(null); };
+    desktop.addEventListener("change", onResize);
+    const onPointerDown = (event: PointerEvent) => {
+      if (!headerRef.current?.contains(event.target as Node)) setOpenMenu(null);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      desktop.removeEventListener("change", onResize);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
   }, []);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!mobileOpen || !dialog) return;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    return () => {
+      if (dialog.open) dialog.close();
+      document.body.style.overflow = overflow;
+    };
+  }, [mobileOpen]);
 
   return (
     <>
-      {/* Skip to main content — accessibility */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[200] focus:bg-[#c9281c] focus:text-white focus:px-4 focus:py-2 focus:rounded"
-      >
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200] focus:bg-[#c9281c] focus:text-white focus:px-4 focus:py-2 focus:rounded">
         Skip to main content
       </a>
-      <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-[#151515]/96 shadow-lg backdrop-blur-md"
-            : "bg-black/20 backdrop-blur-[2px]"
-        }`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-4">
-            <span className="relative flex h-14 w-14 shrink-0 items-center justify-center">
-              <Image
-                src="/images/kiefer-k-logo.png"
-                alt="Kiefer Built Contracting"
-                fill
-                priority
-                sizes="56px"
-                className="object-contain"
-              />
+      <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 bg-[#151515]/95 backdrop-blur-md transition-shadow ${scrolled ? "shadow-lg" : ""}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
+          <Link href="/" className="flex min-w-0 items-center gap-2 sm:gap-4" onClick={closeNavigation}>
+            <span className="relative flex h-10 w-10 sm:h-14 sm:w-14 shrink-0 items-center justify-center">
+              <Image src="/images/kiefer-k-logo.png" alt="" fill priority sizes="(max-width: 640px) 40px, 56px" className="object-contain" />
             </span>
-            <span className="flex flex-col">
-              <span
-                className={`text-xl font-bold tracking-wider transition-colors ${
-                  scrolled ? "text-white" : "text-white"
-                }`}
-              >
-                KIEFER BUILT CONTRACTING
-              </span>
-              <span
-                className={`text-[10px] tracking-[0.3em] uppercase transition-colors ${
-                  scrolled ? "text-white/55" : "text-white/70"
-                }`}
-              >
-                Custom Homes &middot; Northern Colorado
-              </span>
+            <span className="flex min-w-0 flex-col">
+              <span className="text-sm sm:text-lg xl:text-xl font-bold leading-5 tracking-wider text-white">KIEFER BUILT CONTRACTING</span>
+              <span className="text-[9px] sm:text-[10px] leading-4 tracking-[0.18em] sm:tracking-[0.3em] uppercase text-white/75">Custom Homes &middot; Northern Colorado</span>
             </span>
           </Link>
-
-          <nav className="hidden items-center gap-4 md:flex" aria-label="Main navigation">
-            {navLinks.map((link) => (
+          <nav className="hidden items-center gap-4 xl:flex" aria-label="Main navigation">
+            {navLinks.map((link, index) => (
               <div
                 key={link.label}
                 className="relative"
-                onMouseEnter={() => link.children && setOpenMenu(link.label)}
-                onMouseLeave={() => link.children && setOpenMenu(null)}
+                onMouseLeave={(event) => {
+                  if (link.children && !event.currentTarget.contains(document.activeElement)) setOpenMenu(null);
+                }}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) setOpenMenu(null);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape" && openMenu === link.label) {
+                    event.preventDefault();
+                    setOpenMenu(null);
+                    menuButtons.current[link.label]?.focus();
+                  }
+                }}
               >
                 {link.children ? (
                   <button
+                    ref={(button) => { menuButtons.current[link.label] = button; }}
                     type="button"
-                    onClick={() => setOpenMenu((current) => (current === link.label ? null : link.label))}
-                    className={`flex items-center gap-1 py-3 text-xs font-medium uppercase tracking-[0.12em] transition-colors hover:text-[#c9281c] ${
-                      scrolled ? "text-white/80" : "text-white/90"
-                    }`}
+                    onClick={() => setOpenMenu((current) => current === link.label ? null : link.label)}
+                    className="flex items-center gap-1 py-3 text-xs font-medium uppercase tracking-[0.12em] text-white/90 transition-colors hover:text-[#ff6b5c]"
                     aria-expanded={openMenu === link.label}
+                    aria-controls={`${id}-submenu-${index}`}
                   >
-                    {link.label}
-                    <ChevronDown className={`size-3.5 transition-transform ${openMenu === link.label ? "rotate-180" : ""}`} />
+                    {link.label}<ChevronDown aria-hidden="true" className={`size-3.5 transition-transform ${openMenu === link.label ? "rotate-180" : ""}`} />
                   </button>
                 ) : (
-                  <a
-                    href={resolveHref(link.href)}
-                    target={isExternal(link.href) ? "_blank" : undefined}
-                    rel={isExternal(link.href) ? "noopener noreferrer" : undefined}
-                    className={`flex items-center gap-1 py-3 text-xs font-medium uppercase tracking-[0.12em] transition-colors hover:text-[#c9281c] ${
-                      scrolled ? "text-white/80" : "text-white/90"
-                    }`}
-                  >
+                  <a href={resolveHref(link.href)} target={isExternal(link.href) ? "_blank" : undefined} rel={isExternal(link.href) ? "noopener noreferrer" : undefined} onClick={closeNavigation} className="flex items-center gap-1 py-3 text-xs font-medium uppercase tracking-[0.12em] text-white/90 hover:text-[#ff6b5c]">
                     {link.label}
                   </a>
                 )}
-                {link.children && openMenu === link.label ? (
-                  <div className="absolute left-1/2 top-full min-w-56 -translate-x-1/2 border border-black/10 bg-white py-2 opacity-100 shadow-xl transition">
+                {link.children ? (
+                  <div id={`${id}-submenu-${index}`} hidden={openMenu !== link.label} className="absolute left-1/2 top-full min-w-56 -translate-x-1/2 border border-black/10 bg-white py-2 shadow-xl">
                     {link.children.map((item) => (
-                      <a
-                        key={item.label}
-                        href={resolveHref(item.href)}
-                        target={isExternal(item.href) ? "_blank" : undefined}
-                        rel={isExternal(item.href) ? "noopener noreferrer" : undefined}
-                        onClick={() => setOpenMenu(null)}
-                        className="block border-b border-black/10 px-5 py-3 text-center text-sm font-medium uppercase tracking-[0.08em] text-[#171717] transition last:border-b-0 hover:bg-[#f4efe7] hover:text-[#c9281c]"
-                      >
+                      <a key={item.label} href={resolveHref(item.href)} target={isExternal(item.href) ? "_blank" : undefined} rel={isExternal(item.href) ? "noopener noreferrer" : undefined} onClick={closeNavigation} className="block border-b border-black/10 px-5 py-3 text-center text-sm font-medium uppercase tracking-[0.08em] text-[#171717] last:border-b-0 hover:bg-[#f4efe7] hover:text-[#c9281c]">
                         {item.label}
                       </a>
                     ))}
@@ -129,76 +115,51 @@ export default function Header() {
               </div>
             ))}
           </nav>
-
-          <button
-            className="md:hidden text-white p-2"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-          >
-            <div className="w-6 flex flex-col gap-1.5">
-              <span
-                className={`block h-0.5 bg-current transition-all ${
-                  mobileOpen ? "rotate-45 translate-y-2" : ""
-                }`}
-              />
-              <span
-                className={`block h-0.5 bg-current transition-all ${
-                  mobileOpen ? "opacity-0" : ""
-                }`}
-              />
-              <span
-                className={`block h-0.5 bg-current transition-all ${
-                  mobileOpen ? "-rotate-45 -translate-y-2" : ""
-                }`}
-              />
-            </div>
+          <button type="button" className="xl:hidden shrink-0 text-white p-2" onClick={() => { setOpenMenu(null); setMobilePath(pathname); }} aria-label="Open menu" aria-haspopup="dialog" aria-controls={`${id}-mobile`} aria-expanded={mobileOpen}>
+            <Menu className="size-6" aria-hidden="true" />
           </button>
         </div>
-      </motion.header>
-
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-[#151515]/98"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div className="flex max-h-[72vh] w-full max-w-sm flex-col gap-5 overflow-y-auto px-8">
-              {navLinks.map((link) => (
-                <div key={link.label} className="text-center">
-                  <a
-                    href={resolveHref(link.href)}
-                    target={isExternal(link.href) ? "_blank" : undefined}
-                    rel={isExternal(link.href) ? "noopener noreferrer" : undefined}
-                    onClick={() => setMobileOpen(false)}
-                    className="text-2xl uppercase tracking-wider text-white transition-colors hover:text-[#c9281c]"
-                  >
-                    {link.label}
-                  </a>
-                  {link.children ? (
-                    <div className="mt-3 flex flex-col gap-2">
-                      {link.children.map((item) => (
-                        <a
-                          key={item.label}
-                          href={resolveHref(item.href)}
-                          target={isExternal(item.href) ? "_blank" : undefined}
-                          rel={isExternal(item.href) ? "noopener noreferrer" : undefined}
-                          onClick={() => setMobileOpen(false)}
-                          className="text-sm uppercase tracking-[0.16em] text-white/55 transition-colors hover:text-[#c9281c]"
-                        >
-                          {item.label}
-                        </a>
-                      ))}
-                    </div>
-                  ) : null}
+      </header>
+      <dialog
+        ref={dialogRef}
+        id={`${id}-mobile`}
+        aria-label="Site navigation"
+        className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none border-0 bg-[#151515] p-0 text-white backdrop:bg-black/60"
+        onCancel={() => setMobilePath(null)}
+        onClose={() => setMobilePath(null)}
+        onClick={(event) => { if (event.target === event.currentTarget) setMobilePath(null); }}
+      >
+        <div className="flex items-center justify-between gap-4 border-b border-white/20 px-6 py-4">
+          <p className="font-bold tracking-wider">KIEFER BUILT CONTRACTING</p>
+          <button type="button" onClick={() => setMobilePath(null)} aria-label="Close menu" className="shrink-0 rounded p-3 text-white"><X aria-hidden="true" className="size-6" /></button>
+        </div>
+        <nav aria-label="Mobile navigation" className="space-y-6 px-8 py-6">
+          {navLinks.map((link) => (
+            <div key={link.label}>
+              <a href={resolveHref(link.href)} target={isExternal(link.href) ? "_blank" : undefined} rel={isExternal(link.href) ? "noopener noreferrer" : undefined} onClick={closeNavigation} className="inline-block py-2 text-xl uppercase tracking-wider hover:text-[#ff6b5c]">{link.label}</a>
+              {link.children ? (
+                <div className="mt-1 flex flex-col">
+                  {link.children.map((item) => (
+                    <a key={item.label} href={resolveHref(item.href)} target={isExternal(item.href) ? "_blank" : undefined} rel={isExternal(item.href) ? "noopener noreferrer" : undefined} onClick={closeNavigation} className="py-2 text-sm uppercase tracking-[0.12em] text-white/80 hover:text-[#ff6b5c]">{item.label}</a>
+                  ))}
                 </div>
-              ))}
+              ) : null}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          ))}
+        </nav>
+      </dialog>
+      <noscript>
+        <nav aria-label="Navigation without JavaScript" className="bg-[#151515] px-6 pb-6 pt-28 text-white">
+          <details><summary className="cursor-pointer py-3 font-bold">Browse website</summary>
+            {navLinks.map((link) => (
+              <div key={link.label} className="py-2">
+                <a href={resolveHref(link.href)} className="underline">{link.label}</a>
+                {link.children?.map((item) => <a key={item.label} href={resolveHref(item.href)} className="ml-4 inline-block py-2 underline">{item.label}</a>)}
+              </div>
+            ))}
+          </details>
+        </nav>
+      </noscript>
     </>
   );
 }

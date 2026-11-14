@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import WallComparison from "@/components/wall-comparison/WallComparison";
 import type { PublicCard, PublicPageContent, PublicSection, TestimonialSummary } from "@/lib/public-site/content";
 import {
   educationSources,
@@ -119,7 +120,7 @@ function ActionLink({
 function Card({
   card,
   imageAspect = "aspect-[4/3]",
-  imageSizes = "(max-width: 768px) 100vw, 33vw",
+  imageSizes = "(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw",
 }: {
   card: PublicCard;
   imageAspect?: string;
@@ -131,9 +132,9 @@ function Card({
         <div className={`relative ${imageAspect} overflow-hidden bg-[#151515]`}>
           <Image
             src={card.image}
-            alt={`${card.title} by Kiefer Built Contracting`}
+            alt={card.imageAlt ?? ""}
             fill
-            sizes={imageSizes}
+            sizes={card.imageSizes ?? imageSizes}
             className="object-cover transition duration-700 group-hover:scale-105"
             style={card.imagePosition ? { objectPosition: card.imagePosition } : undefined}
           />
@@ -153,16 +154,18 @@ function Card({
     return body;
   }
 
+  const linkLabel = card.meta ? `${card.title} — ${card.meta}` : card.title;
+
   if (isExternal(card.href)) {
     return (
-      <a href={card.href} target="_blank" rel="noopener noreferrer" className="block h-full">
+      <a href={card.href} aria-label={linkLabel} target="_blank" rel="noopener noreferrer" className="block h-full">
         {body}
       </a>
     );
   }
 
   return (
-    <Link href={card.href} className="block h-full">
+    <Link href={card.href} aria-label={linkLabel} className="block h-full">
       {body}
     </Link>
   );
@@ -191,7 +194,7 @@ function ComparisonTable({
         }`}
       >
         <table className="w-full min-w-[680px] border-collapse text-left">
-          <caption className="sr-only">Comparison of standard construction and Kiefer Built SIP construction</caption>
+          <caption className="sr-only">{comparison.columns[0]} compared with {comparison.columns[1]}</caption>
           <thead>
             <tr className={dark ? "bg-white/8" : "bg-[#eee8df]"}>
               <th scope="col" className="px-5 py-4 text-xs font-bold uppercase tracking-[0.14em]">
@@ -245,6 +248,27 @@ function SplitSection({
 }) {
   const dark = section.dark ?? false;
 
+  if (section.feature === "wall-comparison") {
+    return (
+      <section
+        id={section.id}
+        className={`scroll-mt-24 px-6 py-20 md:py-24 ${dark ? "bg-[#232323] text-white" : "bg-white text-[#171717]"}`}
+      >
+        <div className="mx-auto max-w-7xl">
+          <h2 className="text-3xl font-bold leading-tight md:text-5xl">{section.title}</h2>
+          <div className="mt-10">
+            <WallComparison variant="full" localSourceNumbers={localNumbers} tone={dark ? "dark" : "light"} />
+          </div>
+          {section.comparison ? (
+            <div className="mt-12 min-w-0">
+              <ComparisonTable comparison={section.comparison} localNumbers={localNumbers} dark={dark} />
+            </div>
+          ) : null}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       id={section.id}
@@ -255,7 +279,7 @@ function SplitSection({
           <div className="relative min-h-[360px] overflow-hidden rounded-md bg-[#151515]">
             <Image
               src={section.image}
-              alt={`${section.title} by Kiefer Built Contracting`}
+              alt={section.imageAlt ?? ""}
               fill
               sizes="(max-width: 1024px) 100vw, 55vw"
               className="object-cover"
@@ -264,12 +288,14 @@ function SplitSection({
         ) : null}
         <div className={section.image ? "min-w-0" : "min-w-0 lg:col-span-2"}>
           <h2 className="text-3xl font-bold leading-tight md:text-5xl">{section.title}</h2>
-          <p className={`mt-5 max-w-3xl text-lg leading-8 ${dark ? "text-white/72" : "text-[#655c52]"}`}>
-            {section.body}
-            {section.sourceIds ? (
-              <CitationMarkers sourceIds={section.sourceIds} localNumbers={localNumbers} dark={dark} />
-            ) : null}
-          </p>
+          {section.body ? (
+            <p className={`mt-5 max-w-3xl text-lg leading-8 ${dark ? "text-white/72" : "text-[#655c52]"}`}>
+              {section.body}
+              {section.sourceIds ? (
+                <CitationMarkers sourceIds={section.sourceIds} localNumbers={localNumbers} dark={dark} />
+              ) : null}
+            </p>
+          ) : null}
           {section.points ? (
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               {section.points.map((point) => (
@@ -300,7 +326,7 @@ function GuideDownloadBand({ download }: { download: NonNullable<PublicPageConte
     <section className="border-y border-black/10 bg-[#e9e1d5] px-6 py-12 text-[#171717] md:py-14">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c9281c]">Free homeowner resource</p>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#a91f16]">Free homeowner resource</p>
           <h2 className="mt-2 text-3xl font-bold leading-tight md:text-4xl">The Kiefer Built Homeowner Guide</h2>
           {download.note ? <p className="mt-3 max-w-3xl text-base leading-7 text-[#655c52]">{download.note}</p> : null}
         </div>
@@ -335,6 +361,13 @@ function SourcesSection({ sources }: { sources: EducationSource[] }) {
                   </span>
                 ) : null}
                 <cite className="not-italic">{source.citation}</cite>
+                <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2">
+                  {source.links.map((link) => (
+                    <a key={link.url} href={link.url} className="underline decoration-current/60 underline-offset-4 hover:text-[#8f1c14]">
+                      {link.label}
+                    </a>
+                  ))}
+                </div>
               </li>
             );
           })}
@@ -378,13 +411,13 @@ function Testimonials({ testimonials }: { testimonials: TestimonialSummary[] }) 
   );
 }
 
-export default function PublicPage({ content }: { content: PublicPageContent }) {
+export default function PublicPage({ content, children }: { content: PublicPageContent; children?: ReactNode }) {
   const citationContext = buildCitationContext(content);
   const usesFourColumnCards = content.cardsLayout === "fourColumn";
   const cardGridClass =
     usesFourColumnCards ? "grid gap-5 md:grid-cols-2 xl:grid-cols-4" : "grid gap-5 md:grid-cols-2 lg:grid-cols-3";
   const cardImageAspect = usesFourColumnCards ? "aspect-[4/5]" : undefined;
-  const cardImageSizes = usesFourColumnCards ? "(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw" : undefined;
+  const cardImageSizes = usesFourColumnCards ? "(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 25vw" : undefined;
 
   return (
     <div className="bg-white text-[#171717]">
@@ -396,7 +429,7 @@ export default function PublicPage({ content }: { content: PublicPageContent }) 
             alt={content.heroAlt}
             fill
             priority
-            sizes="100vw"
+            sizes="(max-width: 767px) max(100vw, 150vh), 100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/84 via-black/56 to-black/18" />
@@ -469,15 +502,17 @@ export default function PublicPage({ content }: { content: PublicPageContent }) 
 
         {citationContext.sources.length > 0 ? <SourcesSection sources={citationContext.sources} /> : null}
 
+        {children}
+
         <section className="bg-[#151515] px-6 py-16 text-white md:py-20">
           <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
-              <h2 className="text-3xl font-bold md:text-4xl">Ready to talk through a project?</h2>
+              <h2 className="text-3xl font-bold md:text-4xl">{content.closingCta?.title ?? "Ready to talk through a project?"}</h2>
               <p className="mt-3 max-w-2xl text-white/66">
-                Share the project type, location, timeline, and finish level you have in mind. Kiefer Built can help determine fit before planning gets too far ahead.
+                {content.closingCta?.body ?? "Share the project type, location, timeline, and finish level you have in mind. Kiefer Built can help determine fit before planning gets too far ahead."}
               </p>
             </div>
-            <ActionLink href="/#contact">Start A Project</ActionLink>
+            <ActionLink href={content.closingCta?.href ?? "/#contact"}>{content.closingCta?.label ?? "Start A Project"}</ActionLink>
           </div>
         </section>
       </main>

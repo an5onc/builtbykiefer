@@ -6,6 +6,11 @@ function allHrefs(): string[] {
 }
 
 describe("public navigation", () => {
+  it("offers Contact Us as one direct route rather than a disclosure", () => {
+    const contact = navLinks.find((link) => link.label === "Contact Us");
+    expect(contact).toEqual({ label: "Contact Us", href: "/contact" });
+    expect(allHrefs().filter((href) => href === "/contact")).toHaveLength(1);
+  });
   it("includes the Why Kiefer Built hub and its child pages", () => {
     const hrefs = allHrefs();
     expect(hrefs).toContain("/why-kiefer-built");

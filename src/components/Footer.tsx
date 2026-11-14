@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { businessContact } from "@/lib/public-site/business";
 
 export default function Footer() {
   return (
@@ -17,6 +19,7 @@ export default function Footer() {
               src="/images/eps-buildings-logo.webp"
               alt="EPS Buildings"
               fill
+              sizes="224px"
               className="object-contain"
             />
           </a>
@@ -31,9 +34,9 @@ export default function Footer() {
               Custom Homes &middot; Northern Colorado
             </p>
           </div>
-          <nav className="flex gap-6" aria-label="Social links and external sites">
+          <nav className="flex flex-wrap items-center justify-center gap-6" aria-label="Company links and social profiles">
             <a
-              href="https://www.facebook.com/KieferBuiltContracting"
+              href={businessContact.facebook}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex size-9 items-center justify-center rounded-full border border-white/10 text-white/65 transition-colors hover:border-[#c9281c] hover:bg-[#c9281c] hover:text-white"
@@ -48,7 +51,7 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://www.instagram.com/kieferbuiltco"
+              href={businessContact.instagram}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex size-9 items-center justify-center rounded-full border border-white/10 text-white/65 transition-colors hover:border-[#c9281c] hover:bg-[#c9281c] hover:text-white"
@@ -64,15 +67,24 @@ export default function Footer() {
                 <path d="M16.94 2.5H7.06A4.56 4.56 0 0 0 2.5 7.06v9.88a4.56 4.56 0 0 0 4.56 4.56h9.88a4.56 4.56 0 0 0 4.56-4.56V7.06a4.56 4.56 0 0 0-4.56-4.56Zm2.94 14.44a2.94 2.94 0 0 1-2.94 2.94H7.06a2.94 2.94 0 0 1-2.94-2.94V7.06a2.94 2.94 0 0 1 2.94-2.94h9.88a2.94 2.94 0 0 1 2.94 2.94v9.88Z" />
               </svg>
             </a>
-            <a
-              href="https://kbuiltco.com"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/"
               className="text-sm text-white/55 transition-colors hover:text-[#c9281c]"
               aria-label="Visit kbuiltco.com"
             >
               kbuiltco.com
+            </Link>
+            <a
+              href={businessContact.clientLogin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-white/75 underline underline-offset-4 hover:text-white"
+            >
+              Client login <span className="sr-only">on Buildertrend (opens a new tab)</span>
             </a>
+            <Link href="/privacy-policy" className="text-sm text-white/75 underline underline-offset-4 hover:text-white">
+              Privacy &amp; data use
+            </Link>
           </nav>
           <div className="text-right">
             <p className="text-xs text-white/60">

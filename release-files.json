@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Local website candidate and verification export; does not publish or authorize deployment.",
+  "includeDirectories": [
+    "src",
+    "public",
+    "scripts/release"
+  ],
+  "includeFiles": [
+    "package.json",
+    "package-lock.json",
+    "next.config.ts",
+    "postcss.config.mjs",
+    "tsconfig.json",
+    "eslint.config.mjs",
+    "vitest.config.mts",
+    ".nvmrc",
+    ".gitignore",
+    ".vercelignore",
+    "release-files.json",
+    ".github/workflows/website-checks.yml"
+  ],
+  "excludedExtensions": [
+    ".mov",
+    ".zip",
+    ".pem",
+    ".tsbuildinfo"
+  ],
+  "excludedFileNames": [
+    ".DS_Store"
+  ],
+  "excludedPaths": [
+    "src/components/BuildStoryHero.tsx",
+    "public/hero-build",
+    "public/guides/kiefer-built-homeowner-guide.pdf",
+    "public/images/project-2/build-timelapse.mp4"
+  ],
+  "pendingReleaseDecisions": [
+    "The production photo hero is the launch target; the future paid scroll-animation component/assets remain preserved locally but excluded from this export. Exact client asset/content approval remains open.",
+    "Owner confirmed public contacts and native quote-to-thank-you flow. The included noindex page uses a five-minute detail-free provider-acceptance cookie; direct visits remain neutral. Hosted recipient scope/receipt and final content/guide/data-use approval remain open.",
+    "Quote receipt, shared abuse controls, client acceptance and deployment authorization remain open gates.",
+    "Quote requests and careers applications send to info@kbuiltco.com, lauren@kbuiltco.com and mark@kbuiltco.com through the shared server-side recipient list. Local mocked verification does not prove inbox delivery; no deployment, DNS change or live test email is authorized by the October16 recipient update."
+  ]
+}

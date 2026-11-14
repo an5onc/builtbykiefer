@@ -70,21 +70,25 @@ const gallery = [
     src: "/images/project-4/DSC05502.jpg",
     alt: "Custom glass residential elevator installed by Kiefer Built Contracting",
     label: "Glass elevator enclosure",
+    sizes: "(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 25vw",
   },
   {
     src: "/images/project-4/DSC05496.jpg",
     alt: "Custom elevator integrated near laundry and living space by Kiefer Built Contracting",
     label: "Integrated room access",
+    sizes: "(max-width: 767px) 188vw, (max-width: 1279px) 94vw, 47vw",
   },
   {
     src: "/images/project-4/DSC05499.jpg",
     alt: "Custom elevator finish transition near utility cabinetry by Kiefer Built Contracting",
     label: "Finish coordination",
+    sizes: "(max-width: 767px) 188vw, (max-width: 1279px) 94vw, 47vw",
   },
   {
     src: "/images/project-4/DSC05505.jpg",
     alt: "Custom residential elevator doorway and wall finish by Kiefer Built Contracting",
     label: "Door and wall detailing",
+    sizes: "(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 25vw",
   },
 ];
 
@@ -100,7 +104,7 @@ export default function CustomElevatorsPage() {
               alt="Custom residential elevator by Kiefer Built Contracting"
               fill
               priority
-              sizes="100vw"
+              sizes="(max-width: 1023px) max(100vw, 1280px), 100vw"
               className="object-cover opacity-34"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/28" />
@@ -244,7 +248,7 @@ export default function CustomElevatorsPage() {
                       src={item.src}
                       alt={item.alt}
                       fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                      sizes={item.sizes}
                       className="object-cover transition duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-black/8 to-transparent" />

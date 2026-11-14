@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     ".worktrees/**",
+    // Generated/local client work is not application source.
+    "tmp/**",
+    "output/**",
+    "outputs/**",
+    ".codex/**",
+    ".claude/**",
     "next-env.d.ts",
   ]),
 ]);

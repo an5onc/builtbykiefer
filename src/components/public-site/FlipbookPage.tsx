@@ -36,7 +36,7 @@ export default function FlipbookPage() {
 
         <section className="overflow-hidden px-6 pb-20">
           <div className="mx-auto max-w-7xl">
-            <div className="flex gap-5 overflow-x-auto pb-6 [scroll-snap-type:x_mandatory]">
+            <div role="region" aria-label="Project lookbook pages" tabIndex={0} className="flex gap-5 overflow-x-auto pb-6 [scroll-snap-type:x_mandatory]">
               {flipbookPages.map((page, index) => (
                 <article
                   key={page.title}
