@@ -4,6 +4,8 @@
   "/awards": "/about/accolades",
   "/accolades": "/about/accolades",
   "/reviews": "/testimonials",
+  "/catalogitems": "/products",
+  "/services/kitchen-remodeling": "/projects/renovations-additions",
   "/catalogitems/our-products": "/products",
   "/customgalleries1/featured-photos": "/projects",
   "/gallery": "/projects",

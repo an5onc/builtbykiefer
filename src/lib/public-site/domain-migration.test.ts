@@ -28,6 +28,8 @@ describe("client domain migration", () => {
   it("installs exact permanent redirects without intercepting retained pages or inventing portals", async () => {
     const rules = await nextConfig.redirects?.();
     expect(rules).toHaveLength(Object.keys(redirects).length);
+    expect(rules).toContainEqual({ source: "/catalogitems", destination: "/products", permanent: true });
+    expect(rules).toContainEqual({ source: "/services/kitchen-remodeling", destination: "/projects/renovations-additions", permanent: true });
     expect(rules).toContainEqual({ source: "/about/careers", destination: "/careers", permanent: true });
     expect(rules).toContainEqual({ source: "/renovations-and-additions/elevators", destination: "/services/custom-elevators", permanent: true });
     const retained = [...publicRoutes, ...noindexRoutes] as string[];

@@ -34,6 +34,14 @@ const STALE_IMAGE = "exterior-1.jpg";
 
 const socialImagePath = join(process.cwd(), "public", EXPECTED_IMAGE_PATH);
 
+describe("business schema vocabulary", () => {
+  it("uses the recognized general contractor subtype with the stable business identity", () => {
+    expect(localBusinessSchema["@type"]).toBe("GeneralContractor");
+    expect(localBusinessSchema["@id"]).toBe("https://kbuiltco.com/#business");
+    expect(websiteSchema.publisher["@id"]).toBe(localBusinessSchema["@id"]);
+  });
+});
+
 describe("PNG icon dimensions", () => {
   it("keeps declared icon sizes consistent with the actual PNG headers", () => {
     const icons = homeMetadata.icons as { icon: Array<{ url: string; sizes: string; type: string }> };

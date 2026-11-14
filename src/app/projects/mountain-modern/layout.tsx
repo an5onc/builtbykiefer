@@ -19,8 +19,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/images/project-2/exterior-front-facade.jpg",
-        width: 1200,
-        height: 630,
+        width: 2400,
+        height: 1800,
         alt: "Mountain Modern custom home with dark metal siding against Colorado pine forest",
       },
     ],

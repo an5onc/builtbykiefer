@@ -47,7 +47,10 @@ describe("rendered inquiry paths", () => {
       const href = links[0][1].match(/href="([^"]*)"/)?.[1];
       expect(href).toBe(destinations[index % 9]);
       expect(publicRoutes).toContain(href);
-      expect(links[0][1]).toMatch(/aria-label="[^"\n]+ — View [^"\n]+"/);
+      // Let the complete visible title, detail and action form the accessible name.
+      expect(links[0][1]).not.toContain("aria-label=");
+      expect(links[0][2]).toMatch(/<h3\b[^>]*>[^<]+<\/h3>/);
+      expect(links[0][2]).toMatch(/View [^<]+/);
       expect(links[0][2]).not.toMatch(/<(?:a|button)\b/);
       if (index >= 9) { expect(attrs).toContain('aria-hidden="true"'); expect(links[0][1]).toContain('tabindex="-1"'); }
       else { expect(attrs).not.toContain('aria-hidden="true"'); expect(links[0][1]).not.toContain('tabindex="-1"'); }

@@ -205,6 +205,7 @@ export default function ServiceAreasPage() {
               {[
                 {
                   title: "New Custom Homes",
+                  href: "/services/home-building",
                   description:
                     "Build your dream from the ground up. We handle everything from site selection and foundation work through final walk-through.",
                   items: [
@@ -216,6 +217,7 @@ export default function ServiceAreasPage() {
                 },
                 {
                   title: "Home Additions",
+                  href: "/projects/renovations-additions",
                   description:
                     "Expand your home with seamless new construction. Master suites, kitchens, living spaces — we integrate new work with existing structures.",
                   items: [
@@ -227,6 +229,7 @@ export default function ServiceAreasPage() {
                 },
                 {
                   title: "Complete Renovations",
+                  href: "/projects/renovations-additions",
                   description:
                     "Transform your existing home. Full gut renovations, system upgrades, and aesthetic improvements executed with precision.",
                   items: [
@@ -238,6 +241,7 @@ export default function ServiceAreasPage() {
                 },
                 {
                   title: "Commercial Construction",
+                  href: "/projects/commercial",
                   description:
                     "We extend our expertise to commercial projects. Office buildouts, retail spaces, and specialized commercial work.",
                   items: [
@@ -257,7 +261,9 @@ export default function ServiceAreasPage() {
                   className="bg-charcoal-900 border border-charcoal-700 rounded-xl p-8 hover:border-walnut-500/30 transition-colors"
                 >
                   <h3 className="text-2xl font-bold text-sand-100 mb-3">
-                    {service.title}
+                    <Link href={service.href} className="underline decoration-walnut-500/50 underline-offset-4 hover:text-walnut-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-walnut-300">
+                      {service.title}
+                    </Link>
                   </h3>
                   <p className="text-charcoal-300 leading-relaxed mb-6">
                     {service.description}

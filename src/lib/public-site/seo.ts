@@ -98,7 +98,7 @@ export const homeMetadata: Metadata = {
 
 export const localBusinessSchema = {
   "@context": "https://schema.org",
-  "@type": "HomeBuilder",
+  "@type": "GeneralContractor",
   "@id": `${SITE_URL}/#business`,
   name: businessContact.name,
   alternateName: "Kiefer Built",

@@ -142,7 +142,6 @@ export default function Home() {
                 >
                   <a
                     href={item.href}
-                    aria-label={`${item.title} — ${item.action}`}
                     tabIndex={index >= serviceGallery.length ? -1 : undefined}
                     className="kiefer-project-link relative block aspect-[4/3] overflow-hidden"
                   >

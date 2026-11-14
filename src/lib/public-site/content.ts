@@ -256,9 +256,9 @@ export const publicPages: Record<string, PublicPageContent> = {
     ],
   },
   services: {
-    title: "Your One Stop Shop",
+    title: "Construction Services in Northern Colorado",
     description:
-      "Kiefer Built supports new homes, renovations, additions, custom elevators, and commercial construction with one accountable team.",
+      "Explore custom home building, renovations, additions, elevators, and commercial construction with Kiefer Built Contracting in Windsor and Northern Colorado.",
     heroImage: "/images/project-3/kitchen-island-living-view.jpg",
     heroAlt: "Custom kitchen and great room by Kiefer Built",
     primaryCta: cta,
@@ -392,13 +392,22 @@ export const publicPages: Record<string, PublicPageContent> = {
     ],
   },
   homeBuilding: {
-    title: "Custom Homes Built With Cutting-Edge Design and Technology",
+    title: "Custom Home Builder in Windsor, CO",
     description:
-      "Single-family homes, cabins, multifamily projects, and modern retreats built around client goals, efficient systems, and long-term comfort.",
+      "Kiefer Built Contracting builds custom homes, cabins, and modern retreats in Windsor and Northern Colorado, with planning, efficient systems, and long-term comfort in mind.",
     heroImage: "/images/project-2/exterior-front-facade.jpg",
     heroAlt: "Modern mountain home by Kiefer Built Contracting",
     primaryCta: cta,
     secondaryCta: { label: "View New Builds", href: "/projects/new-builds" },
+    intro: {
+      title: "Start with your property, priorities, and plans.",
+      body: "Whether you are planning a full-time home or a mountain retreat, share your location, ideas, and project goals. Discuss the layout, materials, budget priorities, and construction approach with Kiefer Built before deciding the next steps. Explore completed homes and our construction process to see how those decisions come together.",
+    },
+    cards: [
+      { title: "Explore Completed Custom Homes", description: "See the layouts, materials, and settings of Kiefer Built homes.", href: "/projects/new-builds" },
+      { title: "Understand the Building Process", description: "Review the path from an initial conversation through construction and the final walkthrough.", href: "/process" },
+      { title: "Check Our Service Areas", description: "Explore the Northern Colorado communities where we welcome project inquiries.", href: "/service-areas" },
+    ],
     sections: [
       {
         title: "A home should reflect the way you actually live.",
@@ -509,12 +518,20 @@ export const publicPages: Record<string, PublicPageContent> = {
     ],
   },
   commercialProjects: {
-    title: "Commercial Work",
+    title: "Commercial Construction in Northern Colorado",
     description:
-      "Commercial spaces built around function, durability, schedule, and the way a business needs to operate.",
+      "Commercial remodels, tenant improvements, and office buildouts in Windsor and Northern Colorado, coordinated by Kiefer Built Contracting around how your business operates.",
     heroImage: "/images/kiefer-commercial-agfinity.jpg",
     heroAlt: "Commercial interior project by Kiefer Built Contracting",
     primaryCta: cta,
+    intro: {
+      title: "Plan the space around the work it needs to support.",
+      body: "A commercial remodel or tenant improvement starts with the intended use of the space. Share the property location, existing conditions, scope, and timing priorities with Kiefer Built. Discuss trade coordination, finishes, and how construction relates to business operations before agreeing on the next steps. The commercial interior shown here offers a look at our work; contact the team to discuss the requirements of your own project.",
+    },
+    cards: [
+      { title: "Our Construction Process", description: "See how planning, communication, field decisions, and the final walkthrough fit together.", href: "/process" },
+      { title: "Northern Colorado Service Areas", description: "Find our named communities and discuss whether your location and commercial scope are a fit.", href: "/service-areas" },
+    ],
     sections: [
       {
         title: "Business spaces need clear coordination.",
