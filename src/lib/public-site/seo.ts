@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { businessContact } from "./business";
+import { serviceAreaCities } from "./service-areas";
 
 /**
  * Canonical origin for absolute URLs in metadata and structured data.
  */
-export const SITE_URL = "https://www.builtbykiefer.com";
+export const SITE_URL = businessContact.clientWebsite;
 
 /**
  * The single homepage social-sharing image.
@@ -26,9 +28,9 @@ const SOCIAL_IMAGE_ALT =
   "Custom modern home at twilight built by Kiefer Built Contracting in Northern Colorado";
 
 export const homeMetadata: Metadata = {
-  title: "Built by Kiefer | Custom Home Builder in Windsor & Northern Colorado",
+  title: "Kiefer Built Contracting | Custom Home Builder in Windsor & Northern Colorado",
   description:
-    "Kiefer Built Contracting builds custom homes, renovations, and commercial spaces in Windsor and Northern Colorado. 25+ years of quality craftsmanship. Call (970) 515-5059.",
+    `Kiefer Built Contracting builds custom homes, renovations, and commercial spaces in Windsor and Northern Colorado. 25+ years of quality craftsmanship. Call ${businessContact.phone}.`,
   keywords: [
     "custom homes Windsor Colorado",
     "Northern Colorado home builder",
@@ -46,11 +48,11 @@ export const homeMetadata: Metadata = {
     canonical: SITE_URL,
   },
   openGraph: {
-    title: "Built by Kiefer | Custom Home Builder in Windsor & Northern Colorado",
+    title: "Kiefer Built Contracting | Custom Home Builder in Windsor & Northern Colorado",
     description:
-      "Custom homes built with precision and purpose. 25+ years of quality craftsmanship in Windsor and Northern Colorado. Call (970) 515-5059.",
+      `Custom homes built with precision and purpose. 25+ years of quality craftsmanship in Windsor and Northern Colorado. Call ${businessContact.phone}.`,
     url: SITE_URL,
-    siteName: "Built by Kiefer",
+    siteName: businessContact.name,
     locale: "en_US",
     type: "website",
     images: [
@@ -64,7 +66,7 @@ export const homeMetadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Built by Kiefer | Custom Home Builder in Northern Colorado",
+    title: "Kiefer Built Contracting | Custom Home Builder in Northern Colorado",
     description:
       "Custom homes built with precision and purpose in Windsor & Northern Colorado. 25+ years of quality craftsmanship.",
     images: [SOCIAL_IMAGE],
@@ -83,7 +85,7 @@ export const homeMetadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.png", sizes: "268x268", type: "image/png" },
     ],
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png",
@@ -91,64 +93,34 @@ export const homeMetadata: Metadata = {
   other: {
     "geo.region": "US-CO",
     "geo.placename": "Windsor, Colorado",
-    "geo.position": "40.4775;-104.9014",
-    ICBM: "40.4775, -104.9014",
   },
 };
 
 export const localBusinessSchema = {
   "@context": "https://schema.org",
-  "@type": "HomeBuilder",
+  "@type": "GeneralContractor",
   "@id": `${SITE_URL}/#business`,
-  name: "Kiefer Built Contracting",
-  alternateName: "Built by Kiefer",
+  name: businessContact.name,
+  alternateName: "Kiefer Built",
   description:
-    "Custom home building, renovations, and commercial construction in Windsor and Northern Colorado. Quality craftsmanship since 1999.",
+    "Custom home building, renovations, and commercial construction in Windsor and Northern Colorado. Quality craftsmanship with an owner-led approach.",
   url: SITE_URL,
-  telephone: "+19705155059",
-  email: "info@kbuiltco.com",
+  telephone: businessContact.telephone,
+  email: businessContact.email,
   address: {
     "@type": "PostalAddress",
     addressLocality: "Windsor",
     addressRegion: "CO",
     addressCountry: "US",
   },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: 40.4775,
-    longitude: -104.9014,
-  },
-  areaServed: [
-    {
-      "@type": "City",
-      name: "Windsor",
-      containedInPlace: { "@type": "State", name: "Colorado" },
-    },
-    {
-      "@type": "City",
-      name: "Fort Collins",
-      containedInPlace: { "@type": "State", name: "Colorado" },
-    },
-    {
-      "@type": "City",
-      name: "Loveland",
-      containedInPlace: { "@type": "State", name: "Colorado" },
-    },
-    {
-      "@type": "City",
-      name: "Greeley",
-      containedInPlace: { "@type": "State", name: "Colorado" },
-    },
-    {
-      "@type": "City",
-      name: "Timnath",
-      containedInPlace: { "@type": "State", name: "Colorado" },
-    },
-  ],
+  areaServed: serviceAreaCities.map((name) => ({
+    "@type": "City",
+    name,
+    containedInPlace: { "@type": "State", name: "Colorado" },
+  })),
   sameAs: [
-    "https://www.facebook.com/KieferBuiltContracting",
-    "https://www.instagram.com/kieferbuiltcontracting",
-    "https://kbuiltco.com",
+    businessContact.facebook,
+    businessContact.instagram,
   ],
   image: SOCIAL_IMAGE_URL,
   priceRange: "$$$",
@@ -164,7 +136,7 @@ export const localBusinessSchema = {
 export const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Built by Kiefer",
+  name: businessContact.name,
   url: SITE_URL,
   publisher: {
     "@id": `${SITE_URL}/#business`,

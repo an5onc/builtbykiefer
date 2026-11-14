@@ -1,7 +1,7 @@
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { publicRoutes } from "./routes";
+import { noindexRoutes, publicRoutes } from "./routes";
 
 function collectAppRoutes(directory: string, targetFile: string, routePrefix = ""): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -26,8 +26,11 @@ describe("public route manifest", () => {
     }
 
     const appDirectory = join(process.cwd(), "src", "app");
-    expect(collectAppRoutes(appDirectory, "page.tsx").sort()).toEqual([...publicRoutes].sort());
-    expect(collectAppRoutes(appDirectory, "route.ts")).toEqual(["/api/quote-request"]);
+    expect(collectAppRoutes(appDirectory, "page.tsx").sort()).toEqual([...publicRoutes, ...noindexRoutes].sort());
+    for (const route of noindexRoutes) {
+      expect(publicRoutes as readonly string[]).not.toContain(route);
+    }
+    expect(collectAppRoutes(appDirectory, "route.ts")).toEqual(["/api/career-application", "/api/quote-request"]);
   });
 
   it("does not expose retired application surfaces", () => {
@@ -37,6 +40,9 @@ describe("public route manifest", () => {
 
     for (const root of [process.cwd(), join(process.cwd(), "src")]) {
       for (const file of ["middleware.ts", "middleware.js", "proxy.ts", "proxy.js"]) {
+        // The public encoded-API boundary is covered by src/proxy.test.ts;
+        // it does not restore the retired app's authentication middleware.
+        if (root === join(process.cwd(), "src") && file === "proxy.ts") continue;
         expect(existsSync(join(root, file)), `${file} should not exist`).toBe(false);
       }
     }

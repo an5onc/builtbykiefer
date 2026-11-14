@@ -1,3 +1,5 @@
+import { businessContact } from "@/lib/public-site/business";
+
 export type QuoteRequest = {
   name: string;
   email: string;
@@ -16,9 +18,20 @@ export type QuoteRequestEmail = {
 };
 
 const fallback = "Not provided";
+const websiteHost = new URL(businessContact.clientWebsite).hostname;
 
 function clean(value: string) {
   return value.trim() || fallback;
+}
+
+function encodeMailtoComponent(value: string) {
+  // A lone UTF-16 surrogate must not throw and leave the form stuck before its send attempt.
+  let wellFormed = "";
+  for (const character of value) {
+    const code = character.charCodeAt(0);
+    wellFormed += character.length === 1 && code >= 0xd800 && code <= 0xdfff ? "\uFFFD" : character;
+  }
+  return encodeURIComponent(wellFormed);
 }
 
 function escapeHtml(value: string) {
@@ -44,19 +57,15 @@ function detailRows(request: QuoteRequest) {
 }
 
 export function formatQuoteRequestEmail(request: QuoteRequest): QuoteRequestEmail {
-  const submittedAt = new Date().toLocaleString("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "America/Denver",
-  });
+  // Identical retries must produce an identical provider payload. Receipt/log time
+  // is the delivery reference; a new render time is not a submission timestamp.
   const subject = `New Kiefer Built quote request from ${clean(request.name)}`;
   const text = [
     "New Kiefer Built website quote request",
     "",
     ...detailRows(request).flatMap(([label, value]) => [`${label}: ${value}`]),
     "",
-    `Submitted: ${submittedAt} Mountain Time`,
-    "Source: builtbykiefer.com contact form",
+    `Source: ${websiteHost} contact form`,
     "",
     `Reply directly to ${clean(request.email)} or call ${clean(request.phone)}.`,
   ].join("\n");
@@ -85,7 +94,7 @@ export function formatQuoteRequestEmail(request: QuoteRequest): QuoteRequestEmai
               ${htmlRows}
             </table>
             <div style="padding:18px 24px;color:#655c52;font-size:13px;line-height:1.6;">
-              <p style="margin:0;">Submitted ${escapeHtml(submittedAt)} Mountain Time from the builtbykiefer.com contact form.</p>
+              <p style="margin:0;">Quote request from the ${escapeHtml(websiteHost)} contact form.</p>
               <p style="margin:8px 0 0;">Reply directly to ${escapeHtml(clean(request.email))} or call ${escapeHtml(clean(request.phone))}.</p>
             </div>
           </div>
@@ -95,6 +104,25 @@ export function formatQuoteRequestEmail(request: QuoteRequest): QuoteRequestEmai
 }
 
 export function buildQuoteRequestMailto(request: QuoteRequest) {
-  const email = formatQuoteRequestEmail(request);
-  return `mailto:info@kbuiltco.com?subject=${encodeURIComponent(email.subject)}&body=${encodeURIComponent(email.text)}`;
+  return buildQuoteRequestRecovery(request).mailtoHref;
+}
+
+export function buildQuoteRequestRecovery(request: QuoteRequest) {
+  const subject = `New Kiefer Built quote request from ${clean(request.name)}`;
+  // A recovery copy is an unconfirmed draft, not evidence that email was sent.
+  const text = [
+    "Kiefer Built website quote request",
+    "Delivery has not been confirmed. This copy does not send a request.",
+    `Send to: ${businessContact.email}`,
+    `Subject: ${subject}`,
+    "",
+    ...detailRows(request).flatMap(([label, value]) => [`${label}: ${value}`]),
+    "",
+    `Source: ${websiteHost} contact form`,
+    `Reply to ${clean(request.email)} or call ${clean(request.phone)}.`,
+  ].join("\n");
+  return {
+    text,
+    mailtoHref: `${businessContact.mailtoHref}?subject=${encodeMailtoComponent(subject)}&body=${encodeMailtoComponent(text)}`,
+  };
 }

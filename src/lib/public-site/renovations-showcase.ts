@@ -105,13 +105,13 @@ export const renovationShowcaseCategories: RenovationShowcaseCategory[] = [
     summary: "Open rooms, fireplaces, flooring, lighting, trim, and better movement.",
     body:
       "Living-space renovations are about connection: the way rooms open, where people gather, how light moves, and how finish details carry from one space into the next.",
-    heroImage: "/images/project-3/interior-great-room-fireplace.jpg",
+    heroImage: "/images/project-3/interior-great-room-wide.jpg",
     icon: Lamp,
     proofPoints: ["Fireplace features", "Open-plan flow", "Flooring transitions"],
     gallery: [
       {
-        src: "/images/project-3/interior-great-room-fireplace.jpg",
-        alt: "Great room fireplace feature wall by Kiefer Built Contracting",
+        src: "/images/project-3/interior-great-room-wide.jpg",
+        alt: "Great room with a stacked-stone fireplace wall, wood flooring and sliding glass doors by Kiefer Built Contracting",
         label: "Fireplace feature",
         detail: "A strong focal wall anchors the room without crowding it.",
       },

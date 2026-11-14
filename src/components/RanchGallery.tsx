@@ -4,18 +4,19 @@
  * RanchGallery — Parallax Bento Grid with YARL Lightbox
  *
  * Architecture:
- *  • Custom CSS bento grid — each photo gets a pre-assigned span (col × row)
- *    that changes per category filter. First 3 cells are always oversized heroes.
+ *  • Ordered responsive bento rows — complete rows and balanced trailing tiles.
+ *    CSS selects desktop/tablet spans without a hydration-time viewport switch.
  *  • Per-card mouse parallax — useRef + pointermove tracks cursor position
  *    relative to card bounds; inner image shifts up to ±18px on each axis via
  *    framer-motion useSpring for silky interpolation.
- *  • Scroll reveal — each cell animates in from a direction derived from its
- *    grid position (corners from diagonals, edges from nearest side).
+ *  • Photo cards and headings are visible before hydration; interaction motion
+ *    enhances the gallery without gating access to its content.
  *  • Category filter — AnimatePresence + layout prop for smooth reflow.
  *  • yet-another-react-lightbox with Zoom, Thumbnails, Captions, Fullscreen.
  */
 
 import { useRef, useState, useCallback, useMemo } from "react";
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import {
   motion,
@@ -26,7 +27,7 @@ import {
   AnimatePresence,
   LayoutGroup,
 } from "framer-motion";
-import Lightbox from "yet-another-react-lightbox";
+import Lightbox from "@/components/ProjectLightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Captions from "yet-another-react-lightbox/plugins/captions";
@@ -44,33 +45,20 @@ export type GalleryPhoto = {
 };
 
 /* ── Bento span patterns ───────────────────────────────────────── */
-// Each entry: [colSpan, rowSpan] — cycles through for each filtered photo
-const BENTO_PATTERN: [number, number][] = [
-  [2, 2], // hero
-  [1, 2], // tall
-  [1, 1], // square
-  [1, 1], // square
-  [2, 1], // wide
-  [1, 1], // square
-  [1, 1], // square
-  [1, 1], // square
-  [1, 2], // tall
-  [1, 1], // square
-  [2, 1], // wide
-  [1, 1], // square
-];
-
-function getBentoSpan(index: number): [number, number] {
-  return BENTO_PATTERN[index % BENTO_PATTERN.length];
-}
-
-/* ── Direction for scroll-reveal based on grid position ────────── */
-function getRevealDirection(index: number): { x: number; y: number } {
-  const col = index % 4;
-  if (index < 3) return { x: 0, y: -40 }; // top heroes fall in
-  if (col === 0) return { x: -40, y: 0 };
-  if (col === 3) return { x: 40, y: 0 };
-  return { x: 0, y: 30 };
+// Twelve tracks allow an ordered half/quarter/quarter feature row and equal tails.
+function getBentoSpans(index: number, count: number): [number, number] {
+  const featured = count >= 3;
+  const offset = featured ? 3 : 0;
+  const rowStart = offset + Math.floor((index - offset) / 4) * 4;
+  // Split a five-photo tail into three/two rather than an extreme full-width crop.
+  const balancedTail = count - offset > 4 && (count - offset) % 4 === 1;
+  const wide = featured && index < 3
+    ? (index === 0 ? 6 : 3)
+    : balancedTail && index >= count - 5
+    ? (index < count - 2 ? 4 : 6)
+    : 12 / Math.min(4, count - rowStart);
+  const medium = index === count - 1 && count % 2 === 1 ? 12 : 6;
+  return [wide, medium];
 }
 
 /* ── Per-card mouse parallax hook ──────────────────────────────── */
@@ -108,21 +96,22 @@ function useCardParallax(strength = 18) {
 function BentoCell({
   photo,
   index,
-  colSpan,
-  rowSpan,
+  wideSpan,
+  mediumSpan,
+  featured,
   onOpen,
 }: {
   photo: GalleryPhoto;
   index: number;
-  colSpan: number;
-  rowSpan: number;
+  wideSpan: number;
+  mediumSpan: number;
+  featured: boolean;
   onOpen: (i: number) => void;
 }) {
   const { cardRef, imgX, imgY, tiltX, tiltY, onPointerMove, onPointerLeave } =
-    useCardParallax(colSpan === 2 ? 24 : 16);
+    useCardParallax(wideSpan >= 6 ? 24 : 16);
   const inViewRef = useRef(null);
   const inView = useInView(inViewRef, { once: true, margin: "0px 0px 200px 0px" });
-  const { x: dx, y: dy } = getRevealDirection(index);
 
   const isHero = index === 0;
 
@@ -131,25 +120,25 @@ function BentoCell({
       ref={inViewRef}
       layout
       style={{
-        gridColumn: `span ${colSpan}`,
-        gridRow: `span ${rowSpan}`,
+        "--gallery-span-wide": wideSpan,
+        "--gallery-span-medium": mediumSpan,
+        "--gallery-height-wide": featured ? "340px" : "200px",
         transformStyle: "preserve-3d" as const,
         perspective: "900px",
         rotateX: tiltX,
         rotateY: tiltY,
         borderRadius: "16px",
-        minHeight: rowSpan === 2 ? "340px" : "200px",
-      }}
-      initial={{ opacity: 0, x: dx, y: dy, scale: 0.95 }}
+      } as CSSProperties}
+      initial={false}
       animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : {}}
       transition={{ duration: 0.65, delay: Math.min(index * 0.06, 0.5), ease: [0.25, 0.1, 0.25, 1] }}
-      className="relative overflow-hidden cursor-pointer group select-none"
+      className="ranch-gallery-cell relative overflow-hidden cursor-pointer group select-none"
     >
       {/* Tappable area */}
       <button
         type="button"
         ref={cardRef}
-        className="absolute inset-0 w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-sage-500)]"
+        className="absolute inset-0 w-full text-left focus-visible:outline-2 focus-visible:outline-[var(--color-sage-500)]"
         onPointerMove={onPointerMove}
         onPointerLeave={onPointerLeave}
         onClick={() => onOpen(index)}
@@ -191,7 +180,7 @@ function BentoCell({
         <motion.span
           className="absolute top-3 left-3 text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full"
           style={{ background: "rgba(78,148,67,0.85)", color: "white" }}
-          initial={{ opacity: 0, y: -6 }}
+          initial={false}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: Math.min(index * 0.06, 0.5) + 0.25 }}
         >
@@ -264,7 +253,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
         {/* Header */}
         <motion.div
           className="text-center mb-12"
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "0px 0px 200px 0px" }}
           transition={{ duration: 0.55 }}
@@ -282,7 +271,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
             Inside &amp; Out
           </h2>
           <p className="max-w-lg mx-auto" style={{ color: "var(--color-slate-500)" }}>
-            29 photos across exterior, aerial, kitchen, and interior.
+            {photos.length} photos across exterior, aerial, kitchen, and interior.
             Hover any photo — click to explore in full detail.
           </p>
         </motion.div>
@@ -294,7 +283,9 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
             const active = activeCategory === cat;
             return (
               <motion.button
+                type="button"
                 key={cat}
+                aria-pressed={active}
                 onClick={() => setActiveCategory(cat)}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
@@ -324,24 +315,23 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
         <LayoutGroup>
           <motion.div
             layout
-            className="grid gap-3"
+            className="ranch-gallery-grid grid gap-3"
             style={{
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gridAutoRows: "minmax(180px, auto)",
+              gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
+              gridAutoRows: "minmax(200px, auto)",
             }}
           >
             <AnimatePresence mode="popLayout">
               {filtered.map((photo, i) => {
-                const [colSpan, rowSpan] = getBentoSpan(i);
-                // Clamp to available columns on smaller grids
-                const clampedCol = Math.min(colSpan, 4);
+                const [wideSpan, mediumSpan] = getBentoSpans(i, filtered.length);
                 return (
                   <BentoCell
                     key={photo.src}
                     photo={photo}
                     index={i}
-                    colSpan={clampedCol}
-                    rowSpan={rowSpan}
+                    wideSpan={wideSpan}
+                    mediumSpan={mediumSpan}
+                    featured={filtered.length >= 3 && i < 3}
                     onOpen={handleOpen}
                   />
                 );
@@ -353,8 +343,8 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
         {/* Photo count */}
         <motion.p
           className="text-center text-xs mt-6 tracking-wider uppercase"
-          style={{ color: "var(--color-slate-400)" }}
-          initial={{ opacity: 0 }}
+          style={{ color: "var(--color-slate-500)" }}
+          initial={false}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: "0px 0px 200px 0px" }}
         >
@@ -384,18 +374,32 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
 
       {/* Responsive grid adjustment */}
       <style>{`
+        #gallery .ranch-gallery-cell {
+          grid-column: span var(--gallery-span-wide);
+          min-height: var(--gallery-height-wide);
+        }
+        /* The global unlayered focus rule outranks Tailwind utilities. */
+        #gallery .ranch-gallery-cell button:focus-visible {
+          outline-offset: -4px;
+        }
+        #gallery .ranch-gallery-cell button:focus-visible::after {
+          content: "";
+          position: absolute;
+          inset: 4px;
+          border: 2px solid var(--color-ember-600);
+          border-radius: 12px;
+          pointer-events: none;
+          z-index: 5;
+        }
         @media (max-width: 900px) {
-          #gallery .grid {
-            grid-template-columns: repeat(2, 1fr) !important;
+          #gallery .ranch-gallery-cell {
+            grid-column: span var(--gallery-span-medium);
+            min-height: 200px;
           }
         }
         @media (max-width: 560px) {
-          #gallery .grid {
-            grid-template-columns: repeat(1, 1fr) !important;
-          }
-          #gallery .grid > * {
-            grid-column: span 1 !important;
-            grid-row: span 1 !important;
+          #gallery .ranch-gallery-cell {
+            grid-column: 1 / -1;
           }
         }
       `}</style>

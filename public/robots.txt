@@ -1,7 +1,7 @@
-# robots.txt for www.builtbykiefer.com
+# robots.txt for kbuiltco.com
 User-agent: *
 Allow: /
 Disallow: /api/
 
 # Sitemap
-Sitemap: https://www.builtbykiefer.com/sitemap.xml
+Sitemap: https://kbuiltco.com/sitemap.xml

@@ -9,6 +9,7 @@ export const publicRoutes = [
   "/flipbook",
   "/process",
   "/products",
+  "/privacy-policy",
   "/projects",
   "/projects/commercial",
   "/projects/contemporary-ranch",
@@ -29,3 +30,6 @@ export const publicRoutes = [
   "/why-kiefer-built/quality",
   "/why-kiefer-built/sips",
 ] as const;
+
+// Real pages that are deliberately kept out of the sitemap and marked noindex.
+export const noindexRoutes = ["/thank-you"] as const;

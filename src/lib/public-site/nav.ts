@@ -56,9 +56,5 @@ export const navLinks: NavLink[] = [
     ],
   },
   { label: "Careers", href: "/careers" },
-  {
-    label: "Contact Us",
-    href: "/contact",
-    children: [{ label: "Contact", href: "/contact" }],
-  },
+  { label: "Contact Us", href: "/contact" },
 ];

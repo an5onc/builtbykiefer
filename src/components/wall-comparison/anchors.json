@@ -1,0 +1,102 @@
+{
+  "markers": {
+    "air": {
+      "x": 0.2912,
+      "y": 0.4446
+    },
+    "heat": {
+      "x": 0.5105,
+      "y": 0.4564
+    }
+  },
+  "leaks": {
+    "leftTopPlate": {
+      "x": 0.3401,
+      "y": 0.3365
+    },
+    "rightTopPlate": {
+      "x": 0.7265,
+      "y": 0.4165
+    },
+    "leftWindowHead": {
+      "x": 0.3031,
+      "y": 0.4235
+    },
+    "rightWindowHead": {
+      "x": 0.7226,
+      "y": 0.4344
+    },
+    "leftSill": {
+      "x": 0.3522,
+      "y": 0.5731
+    },
+    "rightSill": {
+      "x": 0.7156,
+      "y": 0.7468
+    },
+    "backTop": {
+      "x": 0.4534,
+      "y": 0.3232
+    },
+    "doorHead": {
+      "x": 0.5995,
+      "y": 0.3791
+    },
+    "ridgeFront": {
+      "x": 0.4714,
+      "y": 0.1868
+    },
+    "sipSeam": {
+      "x": 0.3351,
+      "y": 0.3408
+    }
+  },
+  "view": {
+    "floorButton": {
+      "x": 0.5042,
+      "y": 0.6656
+    },
+    "zoomTarget": {
+      "x": 0.5357,
+      "y": 0.4502
+    }
+  },
+  "extents": {
+    "eaveLeftFront": {
+      "x": 0.2048,
+      "y": 0.4477
+    },
+    "eaveRightFront": {
+      "x": 0.7559,
+      "y": 0.49
+    },
+    "eaveLeftBack": {
+      "x": 0.3504,
+      "y": 0.3249
+    },
+    "eaveRightBack": {
+      "x": 0.7408,
+      "y": 0.3456
+    },
+    "ridgeFront": {
+      "x": 0.4657,
+      "y": 0.1874
+    },
+    "ridgeBack": {
+      "x": 0.5404,
+      "y": 0.1369
+    },
+    "slabLeftFront": {
+      "x": 0.1885,
+      "y": 0.7859
+    },
+    "slabRightFront": {
+      "x": 0.7682,
+      "y": 0.8662
+    }
+  },
+  "size": {
+    "width": 1600,
+    "height": 1000
+  }
+}

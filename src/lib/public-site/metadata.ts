@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { PublicPageContent } from "./content";
+import { businessContact } from "./business";
 
 type MarketingMetadataInput = {
   title: string;
@@ -24,7 +25,7 @@ export function createMarketingMetadata({
       title,
       description,
       url: pathname,
-      siteName: "Built by Kiefer",
+      siteName: businessContact.name,
       locale: "en_US",
       type: "website",
       images: [{ url: image, alt: imageAlt }],

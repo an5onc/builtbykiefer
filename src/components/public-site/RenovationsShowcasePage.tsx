@@ -187,6 +187,9 @@ function ShowcaseSection({ category, index }: { category: RenovationShowcaseCate
             </div>
             <div
               id={`${category.id}-gallery`}
+              role="region"
+              aria-label={`${category.title} project photos`}
+              tabIndex={0}
               className="flex snap-x snap-mandatory gap-5 overflow-x-auto pb-5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {category.gallery.map((item, imageIndex) => (

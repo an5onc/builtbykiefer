@@ -2,18 +2,30 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export default function FloatingCTA() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Show after scrolling past the hero
+    // Keep the active quote form and careers application free of the project shortcut.
     const handleScroll = () => {
-      setVisible(window.scrollY > 400);
+      const contact = document.getElementById("contact")?.getBoundingClientRect();
+      const contactInView = contact && contact.top < window.innerHeight && contact.bottom > 0;
+      setVisible(pathname !== "/contact" && pathname !== "/careers" && window.scrollY > 400 && !contactInView);
     };
+    const frame = window.requestAnimationFrame(handleScroll);
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [pathname]);
+
+  if (pathname === "/contact" || pathname === "/careers") return null;
 
   return (
     <AnimatePresence>

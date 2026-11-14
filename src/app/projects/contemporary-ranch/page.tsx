@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import RanchGallery from "@/components/RanchGallery";
+import { businessContact } from "@/lib/public-site/business";
 
 /* ── Types ─────────────────────────────────────────────────────── */
 type Photo = { src: string; alt: string; caption: string; category: string };
@@ -32,18 +33,20 @@ const photos: Photo[] = [
   { src: "/images/project-3/kitchen-island-living-view.jpg", alt: "View from kitchen island into the great room — stacked stone fireplace, vaulted ceilings, sliding glass doors", caption: "Kitchen to great room view", category: "Kitchen" },
   { src: "/images/project-3/kitchen-dining-view.jpg", alt: "Kitchen and adjacent dining with walnut cabinetry, white quartz island, and linear chandelier", caption: "Kitchen and dining area", category: "Kitchen" },
   // Interior
-  { src: "/images/project-3/interior-great-room-fireplace.jpg", alt: "Great room — floor-to-ceiling stacked stone fireplace, linear electric insert, vaulted ceilings, multi-panel sliding glass doors", caption: "Great room — fireplace wall", category: "Interior" },
+  // Original filename is misleading: this preserved photo shows the exterior.
+  { src: "/images/project-3/interior-great-room-fireplace.jpg", alt: "Ranch front elevation at dusk with stone columns, wood siding and an arched entry", caption: "Front elevation at dusk — wide view", category: "Exterior" },
   { src: "/images/project-3/interior-great-room-wide.jpg", alt: "Great room wide view — open-concept layout, vaulted ceilings, stacked stone fireplace, kitchen beyond", caption: "Great room — wide view", category: "Interior" },
   { src: "/images/project-3/interior-great-room-kitchen.jpg", alt: "Great room to kitchen — vaulted ceiling, open floor plan, sliding glass doors, kitchen island visible", caption: "Great room to kitchen", category: "Interior" },
   { src: "/images/project-3/interior-open-plan.jpg", alt: "Full open-concept main floor — kitchen, great room, groin vault foyer, and cable railing staircase all visible", caption: "Full open-plan overview", category: "Interior" },
   { src: "/images/project-3/interior-living-to-entry.jpg", alt: "Living area toward front entry — barrel-vault foyer, black-framed double glass doors, stacked stone fireplace at right", caption: "Living area to entry foyer", category: "Interior" },
-  { src: "/images/project-3/interior-dining.jpg", alt: "Dining area — terracotta accent wall, contemporary black linear chandelier, large windows to landscaped backyard", caption: "Dining area", category: "Interior" },
+  // Keep the original dining/laundry paths; describe the visible rooms accurately.
+  { src: "/images/project-3/interior-dining.jpg", alt: "Great room toward the hall with a stone fireplace, sliding glass doors and a black barn door", caption: "Great room toward the hall", category: "Interior" },
   { src: "/images/project-3/interior-primary-bedroom.jpg", alt: "Primary bedroom — vaulted cathedral ceiling, wall of windows, sliding glass patio door to backyard, neutral plush carpet", caption: "Primary bedroom", category: "Interior" },
   { src: "/images/project-3/interior-primary-bedroom-closets.jpg", alt: "Primary bedroom toward ensuite and walk-in closet — black-framed doors, vaulted ceiling", caption: "Primary bedroom — ensuite access", category: "Interior" },
   { src: "/images/project-3/interior-primary-bath.jpg", alt: "Primary bathroom — dual walnut vanity, white quartz countertops, dark slate tile accent wall, oval black-framed mirrors", caption: "Primary bathroom", category: "Interior" },
   { src: "/images/project-3/interior-primary-bath-vanity.jpg", alt: "Primary bath vanity detail — warm wood cabinetry, matte black hardware, oval mirrors, brass cylindrical wall sconces", caption: "Primary bath — vanity detail", category: "Interior" },
   { src: "/images/project-3/interior-master-suite.jpg", alt: "Master suite — integrated laundry nook, freestanding soaking tub, and frameless glass walk-in shower", caption: "Master suite — bath and laundry", category: "Interior" },
-  { src: "/images/project-3/interior-laundry.jpg", alt: "Laundry room — recessed window niche, white walls, GE Profile front-load washer", caption: "Laundry room", category: "Interior" },
+  { src: "/images/project-3/interior-laundry.jpg", alt: "Dining area with a terracotta accent wall, linear chandelier and large windows", caption: "Dining area", category: "Interior" },
 ];
 
 /* ── Project specs ─────────────────────────────────────────────── */
@@ -110,7 +113,7 @@ export default function ContemporaryRanchProject() {
             fill
             className="object-cover"
             priority
-            sizes="100vw"
+            sizes="(max-width: 767px) max(100vw, 150vh), 100vw"
           />
           {/* Light gradient — warm cream at bottom, clear at top */}
           <div className="absolute inset-0" style={{
@@ -118,7 +121,7 @@ export default function ContemporaryRanchProject() {
           }} />
         </motion.div>
         <div className="relative z-10 h-full flex flex-col justify-end pb-16 px-6 sm:px-12 max-w-7xl mx-auto">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}>
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}>
             <div className="w-16 h-1 mb-6 rounded-full" style={{ background: "var(--color-sage-400)" }} />
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 tracking-tight" style={{ color: "var(--color-slate-800)" }}>
               Contemporary Ranch
@@ -147,7 +150,7 @@ export default function ContemporaryRanchProject() {
                   background: "white",
                   borderColor: "var(--color-cream-300)"
                 }}
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ delay: i * 0.07 }}
@@ -178,7 +181,7 @@ export default function ContemporaryRanchProject() {
                   background: "white",
                   borderColor: "var(--color-sage-200)"
                 }}
-                initial={{ opacity: 0, x: -10 }}
+                initial={false}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, margin: "0px 0px 200px 0px" }}
                 transition={{ delay: i * 0.06 }}
@@ -237,9 +240,8 @@ export default function ContemporaryRanchProject() {
             </div>
             <nav className="flex gap-6" aria-label="Social links">
               {[
-                { label: "Facebook", href: "https://www.facebook.com/KieferBuiltContracting" },
-                { label: "Instagram", href: "https://www.instagram.com/kieferbuiltco" },
-                { label: "kbuiltco.com", href: "https://kbuiltco.com" },
+                { label: "Facebook", href: businessContact.facebook },
+                { label: "Instagram", href: businessContact.instagram },
               ].map(link => (
                 <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
                   className="text-sm transition-colors hover:underline"
@@ -247,6 +249,8 @@ export default function ContemporaryRanchProject() {
                   {link.label}
                 </a>
               ))}
+              <Link href="/" className="text-sm transition-colors hover:underline"
+                style={{ color: "var(--color-slate-500)" }}>kbuiltco.com</Link>
             </nav>
             <div className="text-center md:text-right">
               <p className="text-xs" style={{ color: "var(--color-slate-600)" }}>
@@ -284,7 +288,7 @@ function SectionHeader({ tag, title, desc }: { tag: string; title: string; desc:
     <motion.div
       ref={ref}
       className="text-center mb-12"
-      initial={{ opacity: 0, y: 18 }}
+      initial={false}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
     >

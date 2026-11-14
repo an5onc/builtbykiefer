@@ -1,6 +1,11 @@
 @import "tailwindcss";
 
 @theme inline {
+  /* Kiefer brand red */
+  --color-ember-300: #FF6B5C;
+  --color-ember-600: #C9281C;
+  --color-ember-700: #A91F16;
+
   --color-sand-50: #FAF7F2;
   --color-sand-100: #F5F0EB;
   --color-sand-200: #E8E0D5;
@@ -145,12 +150,49 @@ html {
   color: white;
 }
 
-.kiefer-marquee {
+.kiefer-marquee-viewport {
+  overflow-x: auto;
+}
+
+.kiefer-marquee-viewport[data-playing="true"] {
+  overflow-x: hidden;
+}
+
+.kiefer-marquee-viewport[data-playing="true"] .kiefer-marquee {
   animation: kiefer-marquee 48s linear infinite;
 }
 
-.kiefer-marquee:hover {
+.kiefer-marquee-viewport:hover .kiefer-marquee,
+.kiefer-marquee-viewport:focus-within .kiefer-marquee {
   animation-play-state: paused;
+}
+
+.kiefer-marquee-viewport:focus-within {
+  overflow-x: auto;
+}
+
+.kiefer-marquee-viewport[data-playing="false"] article[aria-hidden="true"] {
+  display: none;
+}
+
+:where(a, button, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-ember-600);
+  outline-offset: 4px;
+}
+
+/* Keep linked photo focus inside the card's rounded clipping boundary. */
+.kiefer-project-link:focus-visible {
+  outline: 3px solid #ffb4a8;
+  outline-offset: -4px;
+}
+
+.kiefer-project-link {
+  scroll-margin-top: 6rem;
+  scroll-margin-bottom: 6rem;
+}
+
+section[id] {
+  scroll-margin-top: 6rem;
 }
 
 @keyframes kiefer-marquee {
@@ -164,8 +206,19 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .kiefer-marquee {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  .kiefer-marquee-viewport[data-playing="true"] .kiefer-marquee {
     animation: none;
+  }
+
+  .kiefer-marquee-viewport[data-playing="true"] {
     overflow-x: auto;
+  }
+
+  .kiefer-marquee-viewport article[aria-hidden="true"] {
+    display: none;
   }
 }
