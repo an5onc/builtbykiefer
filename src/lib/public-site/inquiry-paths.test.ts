@@ -78,6 +78,7 @@ describe("rendered inquiry paths", () => {
     const anchors = [...html.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
     const informational = cards.find((card) => card.includes("Barns and Garages")) ?? "";
     expect(informational).toContain("Barns and Garages"); expect(informational).not.toMatch(/<a\b/);
+    expect(informational).not.toMatch(/<img\b/);
     expect(anchors.some((anchor) => anchor.includes("Barns and Garages"))).toBe(false);
   });
 

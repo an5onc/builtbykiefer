@@ -1,8 +1,8 @@
-// Approved Mountain Modern edition; owner confirmed background music only on October 14, 2026.
+// November 16 revision removes the retired Barns and Garages photo; music is unchanged.
 export const mountainVideo = {
-  "source": "/images/project-2/build-timelapse-kbuiltco.mp4",
+  "source": "/images/project-2/build-timelapse-20261116.mp4",
   "captions": "/images/project-2/build-timelapse-music-en.vtt",
-  "descriptions": "/images/project-2/build-timelapse-descriptions-en.vtt",
+  "descriptions": "/images/project-2/build-timelapse-descriptions-20261116-en.vtt",
   "duration": 23.466,
   "musicCaption": "Background music",
   "transcript": [
@@ -80,20 +80,20 @@ export const mountainVideo = {
     },
     {
       "start": 15.833,
-      "end": 17.367,
-      "time": "00:15-00:17",
+      "end": 16.9,
+      "time": "00:15-00:16",
       "text": "Wide views of the house and small steep-roofed outbuilding."
     },
     {
-      "start": 17.367,
-      "end": 18.933,
-      "time": "00:17-00:18",
-      "text": "Close view of the outbuilding with roof-mounted solar panels."
+      "start": 16.9,
+      "end": 19.2,
+      "time": "00:16-00:19",
+      "text": "Finished front facade of the dark-sided mountain home with a balcony and pine trees."
     },
     {
-      "start": 18.933,
+      "start": 19.2,
       "end": 20.7,
-      "time": "00:18-00:20",
+      "time": "00:19-00:20",
       "text": "Wide property view with house, outbuilding, grass and wooded hillside. Closing-card transition begins."
     },
     {

@@ -33,7 +33,9 @@
     "src/components/BuildStoryHero.tsx",
     "public/hero-build",
     "public/guides/kiefer-built-homeowner-guide.pdf",
-    "public/images/project-2/build-timelapse.mp4"
+    "public/images/project-2/build-timelapse.mp4",
+    "public/images/project-2/build-timelapse-kbuiltco.mp4",
+    "public/images/project-2/exterior-solar-shed.jpg"
   ],
   "pendingReleaseDecisions": [
     "The production photo hero is the launch target; the future paid scroll-animation component/assets remain preserved locally but excluded from this export. Exact client asset/content approval remains open.",

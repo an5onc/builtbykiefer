@@ -18,35 +18,12 @@ const photos = [
   { src: "/images/project-2/exterior-front-facade.jpg", alt: "Finished front facade with dark vertical metal siding against pine tree backdrop", caption: "Front facade against Colorado pine forest" },
   { src: "/images/project-2/exterior-wide-property.jpg", alt: "Wide view of finished house and solar shed on mountain property", caption: "Complete property — house and solar outbuilding" },
   { src: "/images/project-2/exterior-driveway-mountains.jpg", alt: "Gravel driveway with boulder accents, solar shed, and mountain vista", caption: "Driveway approach with mountain backdrop" },
-  { src: "/images/project-2/exterior-solar-shed.jpg", alt: "Dark metal solar panel shed with covered carport against snowy peaks", caption: "Solar panel outbuilding with mountain views" },
   { src: "/images/project-2/exterior-wide-cloudy.jpg", alt: "Finished house and outbuilding under dramatic cloudy sky", caption: "Property under dramatic Colorado skies" },
   { src: "/images/project-2/exterior-panoramic.jpg", alt: "Panoramic mountain property view with rolling grasslands", caption: "Panoramic mountain property" },
   // Original winter filenames are preserved; these are snow-free build-progress photos.
   { src: "/images/project-2/exterior-winter-snow.jpg", alt: "ICF foundation walls with exposed floor framing on the mountain site", caption: "Foundation walls and floor framing" },
   { src: "/images/project-2/exterior-winter-detail.jpg", alt: "Floor framing across ICF foundation walls with construction equipment in the background", caption: "Foundation and framing detail" },
   { src: "/images/project-2/exterior-winter-wide.jpg", alt: "Wide view of the foundation and floor framing beside a telehandler on the mountain site", caption: "Mountain site — foundation stage" },
-];
-
-/* ── Project specs ─────────────────────────────────────────────── */
-const specs = [
-  { label: "Location", value: "Colorado Mountains" },
-  { label: "Type", value: "Custom Home + Outbuilding" },
-  { label: "Exterior", value: "Dark Metal Panel Siding" },
-  { label: "Foundation", value: "ICF (Insulated Concrete Forms)" },
-  { label: "Roofing", value: "Standing Seam Metal" },
-  { label: "Features", value: "Solar Array, Cedar Posts, Cable Railing" },
-  { label: "Landscape", value: "Boulder Retaining Walls, Gravel Drive" },
-];
-
-/* ── Build phases ──────────────────────────────────────────────── */
-const phases = [
-  { name: "Excavation", icon: "⛏️", desc: "Mountain hillside grading and site preparation" },
-  { name: "Foundation", icon: "🧱", desc: "ICF insulated concrete form walls for extreme efficiency" },
-  { name: "Framing", icon: "🪵", desc: "Two-story structural framing with engineered lumber" },
-  { name: "Sheathing", icon: "📐", desc: "OSB wall and roof sheathing for structural integrity" },
-  { name: "Weatherproofing", icon: "🛡️", desc: "Typar housewrap, windows, and door installation" },
-  { name: "Roofing & Siding", icon: "🏗️", desc: "Standing seam metal roof and dark panel siding" },
-  { name: "Finish", icon: "✨", desc: "Cedar posts, cable railing, boulder landscaping" },
 ];
 
 /* ── Main Page ─────────────────────────────────────────────────── */
@@ -153,66 +130,6 @@ export default function MountainModernProject() {
               ))}
             </ol>
           </details>
-        </div>
-      </SectionWrapper>
-
-      {/* ════════════════════════════════════════════════════════════ */}
-      {/*  BUILD PHASES                                              */}
-      {/* ════════════════════════════════════════════════════════════ */}
-      <SectionWrapper id="process" className="bg-steel-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Process"
-            title="Build Phases"
-            desc="Every custom home follows a proven path — here's how this mountain retreat came to life."
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {phases.map((phase, i) => (
-              <motion.div
-                key={phase.name}
-                className="p-5 rounded-lg bg-steel-800 border border-steel-700/40 hover:border-pine-500/30 transition-colors"
-                initial={false}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ delay: i * 0.08 }}
-              >
-                <span className="text-2xl mb-2 block">{phase.icon}</span>
-                <h3 className="text-white font-semibold text-sm mb-1">{phase.name}</h3>
-                <p className="text-steel-200 text-xs leading-relaxed">{phase.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </SectionWrapper>
-
-      {/* ════════════════════════════════════════════════════════════ */}
-      {/*  SPECS                                                     */}
-      {/* ════════════════════════════════════════════════════════════ */}
-      <SectionWrapper id="specs" className="bg-pine-900/40">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Details"
-            title="Project Specifications"
-            desc="The materials and methods that make this build stand apart."
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {specs.map((s, i) => (
-              <motion.div
-                key={s.label}
-                className="flex items-start gap-3 p-4 rounded-lg bg-steel-800/60 border border-pine-800/30"
-                initial={false}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ delay: i * 0.06 }}
-              >
-                <div className="w-1 h-full min-h-[2.5rem] bg-pine-500 rounded-full flex-shrink-0" />
-                <div>
-                  <p className="text-pine-200 text-xs uppercase tracking-wider mb-0.5">{s.label}</p>
-                  <p className="text-white text-sm font-medium">{s.value}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </SectionWrapper>
 

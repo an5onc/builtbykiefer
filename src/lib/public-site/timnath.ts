@@ -129,32 +129,32 @@ export const timnathPhotos: GalleryPhoto[] = [
   },
   {
     "src": "/images/timnath/65-print-IMG_0065-HDR.webp",
-    "alt": "Moody dark green lounge with upholstered banquette seating, a wood table, wall sconces and framed art",
-    "caption": "Lounge \u2014 banquette seating",
-    "category": "Lounge"
+    "alt": "Moody dark green speakeasy with upholstered banquette seating, a wood table, wall sconces and framed art",
+    "caption": "Speakeasy \u2014 banquette seating",
+    "category": "Speakeasy"
   },
   {
     "src": "/images/timnath/66-print-IMG_0070-HDR.webp",
-    "alt": "Long view through a dark lounge with banquette seating, a wood table and a black countertop",
-    "caption": "Lounge \u2014 long view",
-    "category": "Lounge"
+    "alt": "Long view through a dark speakeasy with banquette seating, a wood table and a black countertop",
+    "caption": "Speakeasy \u2014 long view",
+    "category": "Speakeasy"
   },
   {
     "src": "/images/timnath/67-print-IMG_0075-HDR.webp",
-    "alt": "Dark green lounge with a wood dining table, upholstered bench and a dark stone-look counter",
-    "caption": "Lounge \u2014 seating and counter",
-    "category": "Lounge"
+    "alt": "Dark green speakeasy with a wood dining table, upholstered bench and a dark stone-look counter",
+    "caption": "Speakeasy \u2014 seating and counter",
+    "category": "Speakeasy"
   },
   {
     "src": "/images/timnath/68-print-IMG_0080-HDR.webp",
     "alt": "Illuminated arched bar niche with glassware, bottles, ribbed backing and dark cabinetry",
-    "caption": "Lounge \u2014 arched bar shelves",
-    "category": "Lounge"
+    "caption": "Speakeasy \u2014 arched bar shelves",
+    "category": "Speakeasy"
   },
   {
     "src": "/images/timnath/69-print-IMG_0085-HDR.webp",
-    "alt": "Dark lounge seating area with a wood table, upholstered bench, framed art and warm wall lights",
-    "caption": "Lounge \u2014 intimate seating",
-    "category": "Lounge"
+    "alt": "Dark speakeasy seating area with a wood table, upholstered bench, framed art and warm wall lights",
+    "caption": "Speakeasy \u2014 intimate seating",
+    "category": "Speakeasy"
   }
 ];

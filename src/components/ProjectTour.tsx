@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, type CSSProperties } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import RanchGallery, { type GalleryPhoto } from "@/components/RanchGallery";
 import { businessContact } from "@/lib/public-site/business";
 
@@ -13,10 +13,8 @@ export type ProjectTourContent = {
   description: string;
   hero: { src: string; alt: string };
   photos: GalleryPhoto[];
-  specs: { label: string; value: string }[];
-  phases: { name: string; desc: string }[];
-  processDescription?: string;
-  specsDescription?: string;
+  ctaTitle?: string;
+  ctaDescription?: string;
   backHref?: string;
   moreHref?: string;
   galleryCategories?: readonly string[];
@@ -29,9 +27,9 @@ export type ProjectTourContent = {
 };
 
 export default function ProjectTour({
-  title, description, hero, photos, specs, phases,
-  processDescription = "Every detail planned from foundation to final landscaping.",
-  specsDescription = "Premium materials and finishes throughout — inside and out.",
+  title, description, hero, photos,
+  ctaTitle = "Ready to Build?",
+  ctaDescription = "From spec homes to fully custom builds — we bring the same level of precision and quality to every project in Northern Colorado.",
   backHref = "/", moreHref = "/", galleryCategories, galleryTitle, galleryDescription,
   theme, surfaceRgb = "253,252,249", accent, accentHighlight,
 }: ProjectTourContent) {
@@ -96,63 +94,6 @@ export default function ProjectTour({
         </div>
       </section>
 
-      {/* ════════ BUILD PHASES ════════ */}
-      <section id="process" className="py-12 md:py-16" style={{ background: "var(--color-cream-50)" }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Process"
-            title="Build Phases"
-            desc={processDescription}
-          />
-          <ol className="grid gap-5 border-y py-6 sm:grid-cols-2 lg:grid-cols-7 lg:gap-0" style={{ borderColor: "var(--color-cream-300)" }}>
-            {phases.map((phase, i) => (
-              <li
-                key={phase.name}
-                className="min-w-0 lg:border-l lg:px-4 lg:first:border-l-0 lg:first:pl-0 lg:last:pr-0"
-                style={{ borderColor: "var(--color-cream-300)" }}
-              >
-                <span className="text-xs font-semibold tracking-widest mb-2 block" style={{ color: "var(--color-sage-700)" }}>{String(i + 1).padStart(2, "0")}</span>
-                <h3 className="font-semibold text-sm mb-2" style={{ color: "var(--color-slate-800)" }}>{phase.name}</h3>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--color-slate-500)" }}>{phase.desc}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* ════════ SPECS ════════ */}
-      <SectionWrapper id="specs" bg="var(--color-sage-50)">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Details"
-            title="Project Specifications"
-            desc={specsDescription}
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {specs.map((s, i) => (
-              <motion.div
-                key={s.label}
-                className="flex items-start gap-3 p-4 rounded-xl border shadow-sm"
-                style={{
-                  background: "white",
-                  borderColor: "var(--color-sage-200)"
-                }}
-                initial={false}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ delay: i * 0.06 }}
-              >
-                <div className="w-1 h-full min-h-[2.5rem] rounded-full flex-shrink-0" style={{ background: "var(--color-sage-400)" }} />
-                <div>
-                  <p className="text-xs uppercase tracking-wider mb-0.5" style={{ color: "var(--color-sage-600)" }}>{s.label}</p>
-                  <p className="text-sm font-semibold" style={{ color: "var(--color-slate-800)" }}>{s.value}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </SectionWrapper>
-
       {/* ════════ GALLERY ════════ */}
       <RanchGallery photos={photos} categories={galleryCategories} title={galleryTitle} description={galleryDescription} accent={accent} accentHighlight={accentHighlight} />
 
@@ -161,10 +102,10 @@ export default function ProjectTour({
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <div className="w-16 h-1 mx-auto mb-6 rounded-full" style={{ background: "var(--color-sage-400)" }} />
           <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: "var(--color-slate-800)" }}>
-            Ready to Build?
+            {ctaTitle}
           </h2>
           <p className="mb-8 max-w-lg mx-auto" style={{ color: "var(--color-slate-600)" }}>
-            From spec homes to fully custom builds — we bring the same level of precision and quality to every project in Northern Colorado.
+            {ctaDescription}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/#contact"
@@ -234,23 +175,5 @@ function SectionWrapper({ id, bg, children }: { id: string; bg: string; children
     <section id={id} className="py-20 md:py-28" style={{ background: bg }}>
       {children}
     </section>
-  );
-}
-
-function SectionHeader({ tag, title, desc }: { tag: string; title: string; desc: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px 200px 0px" });
-  return (
-    <motion.div
-      ref={ref}
-      className="text-center mb-12"
-      initial={false}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5 }}
-    >
-      <p className="text-sm tracking-[0.3em] uppercase mb-3 font-medium" style={{ color: "var(--color-sage-700)" }}>{tag}</p>
-      <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--color-slate-800)" }}>{title}</h2>
-      <p className="max-w-lg mx-auto" style={{ color: "var(--color-slate-500)" }}>{desc}</p>
-    </motion.div>
   );
 }

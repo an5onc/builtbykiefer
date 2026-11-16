@@ -30,30 +30,6 @@ const theme = {
   "--color-slate-800": "#2e2a26",
 } as CSSProperties;
 
-const specs = [
-  { label: "Location", value: "Berthoud, Colorado" },
-  { label: "Type", value: "New Home Build" },
-  { label: "Palette", value: "Warm White, Natural Wood, Charcoal" },
-  { label: "Exterior", value: "Vertical Siding, Stone Accents, Dark Trim" },
-  { label: "Entry", value: "Covered Porch, Wood-Tone Front Door" },
-  { label: "Kitchen", value: "Island Seating, Wood Cabinetry, White Counters" },
-  { label: "Lighting", value: "Warm Metal Pendants, Recessed Lighting" },
-  { label: "Baths", value: "Wood Vanities, Black Fixtures, Light Tile" },
-  { label: "Living Spaces", value: "Vaulted Ceilings, Large Windows, Open Layout" },
-  { label: "Storage", value: "Walk-In Closet, Built-In Cabinetry" },
-];
-
-// Process overview, rather than an undocumented project construction log.
-const phases = [
-  { name: "Planning", desc: "Shape the layout, site approach and finish direction around the home." },
-  { name: "Foundation", desc: "Prepare the site and establish the base for the structure above." },
-  { name: "Framing", desc: "Bring the rooms, rooflines and vaulted living spaces into form." },
-  { name: "Exterior", desc: "Bring siding, stone accents and contrasting trim together." },
-  { name: "Windows & Doors", desc: "Connect the interior to natural light, the entry and outdoor spaces." },
-  { name: "Interior Finish", desc: "Layer warm cabinetry, light surfaces, tile and lighting throughout." },
-  { name: "Final Walkthrough", desc: "Review the finished spaces and the details that make the home feel complete." },
-];
-
 export default function BerthoudProject() {
   return (
     <ProjectTour
@@ -61,10 +37,6 @@ export default function BerthoudProject() {
       description="Warm wood, bright interiors, and charcoal accents — a Northern Colorado home with room to gather and details to appreciate."
       hero={{ src: "/images/berthoud/DSC03016.webp", alt: "Berthoud home with light siding, dark trim, covered entry and wood-tone garage doors" }}
       photos={berthoudPhotos}
-      specs={specs}
-      phases={phases}
-      processDescription="A look at the building process, from the first plans to the finishing details."
-      specsDescription="Explore the colors, spaces, and finishes shown throughout the home."
       backHref="/projects/new-builds"
       moreHref="/projects/new-builds"
       galleryCategories={["All", "Exterior", "Kitchen", "Baths", "Interior"]}

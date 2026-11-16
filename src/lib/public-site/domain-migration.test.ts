@@ -36,6 +36,7 @@ describe("client domain migration", () => {
     const selectedAssets: Record<string, string> = {
       "/guides/kiefer-built-homeowner-guide.pdf": "/guides/kiefer-built-homeowner-guide-2026.pdf",
       "/images/project-2/build-timelapse.mp4": mountainVideo.source,
+      "/images/project-2/build-timelapse-kbuiltco.mp4": mountainVideo.source,
     };
     for (const [source, destination] of Object.entries(redirects)) {
       expect(retained).not.toContain(source);

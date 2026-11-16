@@ -5,6 +5,11 @@ import VendorInterestPage from "@/components/public-site/VendorInterestPage";
 import ServiceAreasPage from "@/app/service-areas/page";
 import ContemporaryRanchProject from "@/app/projects/contemporary-ranch/page";
 import MountainModernProject from "@/app/projects/mountain-modern/page";
+import BerthoudProject from "@/app/projects/berthoud/page";
+import TimnathProject from "@/app/projects/timnath/page";
+import RedFeatherLakesProject from "@/app/projects/red-feather-lakes/page";
+import VettersProject from "@/app/projects/vetters/page";
+import LakehouseRemodelProject from "@/app/projects/lakehouse-remodel/page";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
 
@@ -36,6 +41,18 @@ function hiddenContent(html: string) {
 }
 
 describe("safe initial public rendering", () => {
+  it.each([
+    ["Contemporary Ranch", ContemporaryRanchProject], ["Mountain Modern", MountainModernProject],
+    ["Berthoud", BerthoudProject], ["Timnath", TimnathProject],
+    ["Red Feather Lakes", RedFeatherLakesProject], ["Vetters", VettersProject],
+    ["Lakehouse Remodel", LakehouseRemodelProject],
+  ])("keeps %s focused on the gallery without process or specifications sections", (_name, Page) => {
+    const html = renderToStaticMarkup(createElement(Page));
+    expect(html).toContain('id="gallery"');
+    expect(html).not.toMatch(/id="(?:process|specs)"|Build Phases|Project Specifications|Remodeling Process/);
+    expect(html).not.toContain("exterior-solar-shed.jpg");
+  });
+
   it("disables all vendor entry and submission before hydration with an explicit POST fallback", () => {
     const html = renderToStaticMarkup(createElement(VendorInterestPage));
     const form = html.match(/<form\b[^>]*>[\s\S]*?<\/form>/)?.[0] ?? "";

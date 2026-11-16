@@ -4,6 +4,7 @@ Newest sessions first. Add a new entry at the top whenever a handoff file is cre
 
 | Date | Session | Summary |
 | --- | --- | --- |
+| 2026-11-16 | [Customer Website Updates](./2026-11-16-customer-updates-release.md) | Lakehouse remodel, Speakeasies, simpler project tours and retired Barns photo/video; clean release qualified. |
 | 2026-11-16 | [New Build Project Tours](./2026-11-16-new-build-project-tours.md) | Four optimized photo tours and shared hero, process, gallery and mobile quote refinements; focused branch for review. |
 | 2026-07-20 | [Land Purchase Lead Alert Roadmap](./2026-07-20-land-purchase-lead-alert-roadmap.md) | Researched official Larimer and Weld County data paths and produced a branded, 12-page fillable PDF roadmap for a compliant vacant-land buyer alert and postcard pilot. |
 | 2026-07-17 | [Production Marketing Website Completion](./2026-07-17-production-marketing-completion.md) | Finished the marketing-only cleanup, passed complete local/preview/live QA, synchronized Git-backed production, and finalized `v1.0-marketing-site`. |
