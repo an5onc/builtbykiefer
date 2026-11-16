@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import {
@@ -47,6 +47,7 @@ function CategoryRail({
             <a
               key={category.id}
               href={`#${category.id}`}
+              aria-current={isActive ? "location" : undefined}
               className={`flex min-w-[190px] items-center gap-3 rounded-md border px-4 py-3 text-left transition ${
                 isActive
                   ? "border-[#c9281c] bg-white text-[#171717] shadow-sm"
@@ -70,7 +71,7 @@ function CategoryCards({ categories }: { categories: RenovationShowcaseCategory[
   return (
     <section className="bg-[#f9f6f0] px-6 py-16 md:py-20">
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {categories.map((category) => {
             const Icon = category.icon;
 
@@ -228,32 +229,36 @@ function ShowcaseSection({ category, index }: { category: RenovationShowcaseCate
 export default function RenovationsShowcasePage() {
   const categories = useMemo(() => renovationShowcaseCategories, []);
   const [activeId, setActiveId] = useState<RenovationShowcaseCategory["id"]>(categories[0].id);
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    observerRef.current?.disconnect();
-
-    observerRef.current = new IntersectionObserver(
-      (entries) => {
-        const visibleEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
-        if (visibleEntry?.target.id) {
-          setActiveId(visibleEntry.target.id as RenovationShowcaseCategory["id"]);
+    let frame: number | null = null;
+    // Follow the section beneath the fixed header and category rail, even when
+    // a stacked phone section is much taller than the viewport.
+    const updateActiveCategory = () => {
+      let current = categories[0].id;
+      for (const category of categories) {
+        const section = document.getElementById(category.id);
+        if (section && section.getBoundingClientRect().top <= 184) {
+          current = category.id;
         }
-      },
-      { rootMargin: "-30% 0px -45% 0px", threshold: [0.18, 0.32, 0.5] },
-    );
-
-    for (const category of categories) {
-      const section = document.getElementById(category.id);
-      if (section) {
-        observerRef.current.observe(section);
       }
-    }
-
-    return () => observerRef.current?.disconnect();
+      setActiveId(current);
+    };
+    const scheduleUpdate = () => {
+      if (frame !== null) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        updateActiveCategory();
+      });
+    };
+    scheduleUpdate();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+    };
   }, [categories]);
 
   return (
@@ -262,8 +267,8 @@ export default function RenovationsShowcasePage() {
       <main id="main-content">
         <section className="relative min-h-[82vh] overflow-hidden bg-[#151515] text-white">
           <Image
-            src="/images/project-1/kitchen-8.jpg"
-            alt="Renovated kitchen by Kiefer Built Contracting"
+            src="/images/lakehouse-remodel/DSC05814-HDR.webp"
+            alt="Lakehouse Remodel kitchen with light wood cabinets, a dark waterfall island and pendant lighting"
             fill
             priority
             sizes="100vw"
@@ -275,7 +280,7 @@ export default function RenovationsShowcasePage() {
             <div className="max-w-4xl">
               <h1 className="text-5xl font-bold leading-[0.96] md:text-7xl">Renovations and Additions</h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80">
-                Explore kitchens, bathrooms, living spaces, exteriors, and specialty upgrades through real Kiefer Built project photography. Each category below opens into a focused showcase with details from work built over the years.
+                Explore kitchens, bathrooms, living spaces, speakeasies, exteriors, and specialty upgrades through real Kiefer Built project photography. Each category below opens into a focused showcase with details from work built over the years.
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <Link
@@ -294,6 +299,26 @@ export default function RenovationsShowcasePage() {
               </div>
             </div>
           </div>
+        </section>
+
+        <section aria-labelledby="featured-remodel-title" className="bg-[#f9f6f0] px-6 pt-16 md:pt-20">
+          <Link href="/projects/lakehouse-remodel" className="group mx-auto grid max-w-7xl overflow-hidden rounded-md border border-black/10 bg-white shadow-sm transition hover:shadow-xl md:grid-cols-2">
+            <div className="relative min-h-64 overflow-hidden md:min-h-80">
+              <Image
+                src="/images/lakehouse-remodel/DSC06025-HDR.webp"
+                alt="Lakehouse Remodel open great room with vaulted glazing and connected dining space"
+                fill
+                sizes="(max-width: 767px) 100vw, 50vw"
+                className="object-cover transition duration-700 group-hover:scale-105"
+              />
+            </div>
+            <div className="flex flex-col justify-center p-7 md:p-10">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c9281c]">Featured Renovation</p>
+              <h2 id="featured-remodel-title" className="mt-3 text-3xl font-bold text-[#171717] md:text-4xl">Lakehouse Remodel</h2>
+              <p className="mt-4 max-w-lg text-base leading-7 text-[#655c52]">Warm wood cabinetry, a dark waterfall island, open gathering spaces, refreshed baths and a timber-framed deck. Explore the completed renovation in 48 photographs.</p>
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-[0.12em] text-[#c9281c]">View the full remodel <ExternalIcon className="size-4" /></span>
+            </div>
+          </Link>
         </section>
 
         <CategoryCards categories={categories} />

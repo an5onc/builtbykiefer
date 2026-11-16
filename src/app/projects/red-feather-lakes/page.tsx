@@ -29,30 +29,6 @@ const theme = {
   "--color-slate-800": "#293740",
 } as CSSProperties;
 
-const specs = [
-  { label: "Location", value: "Red Feather Lakes, Colorado" },
-  { label: "Setting", value: "Wooded Hillside, Mountain Outlook" },
-  { label: "Palette", value: "Stone Gray, Warm Timber, Soft White" },
-  { label: "Exterior", value: "Horizontal Siding, Timber Accents, Stone Base" },
-  { label: "Roofline", value: "Sloped Metal Roof, Broad Overhangs" },
-  { label: "Entry", value: "Covered Timber Porch, Wide Wood Steps" },
-  { label: "Kitchen", value: "Two-Tone Cabinets, Island, White Counters" },
-  { label: "Great Room", value: "High Windows, Exposed Beams, Full-Height Fireplace" },
-  { label: "Baths", value: "Vessel Sinks, Wood Vanities, Tiled Showers" },
-  { label: "Outdoor Living", value: "View Deck, Glass Railing, Timber Brackets" },
-];
-
-// Process overview; photos do not establish a construction timeline.
-const phases = [
-  { name: "Planning", desc: "Shape the home around the hillside, views and room connections." },
-  { name: "Foundation", desc: "Prepare the site and establish the base for the home above." },
-  { name: "Framing", desc: "Bring the room proportions, tall living space and roofline into form." },
-  { name: "Exterior", desc: "Coordinate siding, roof details, timber accents and the entry." },
-  { name: "Windows & Doors", desc: "Connect the rooms to daylight and the surrounding mountain landscape." },
-  { name: "Interior Finish", desc: "Bring cabinetry, fireplace details, tile and wood finishes together." },
-  { name: "Final Walkthrough", desc: "Review the finished spaces, deck and details before handover." },
-];
-
 export default function RedFeatherLakesProject() {
   return (
     <ProjectTour
@@ -60,10 +36,6 @@ export default function RedFeatherLakesProject() {
       description="A hillside retreat among the pines — warm timber details, an open great room, and a deck that looks out toward the Colorado mountains."
       hero={{ src: "/images/red-feather-lakes/DSC00111.webp", alt: "Red Feather Lakes mountain home with gray siding, a sloped roof and a covered timber entry among the pines" }}
       photos={redFeatherLakesPhotos}
-      specs={specs}
-      phases={phases}
-      processDescription="A look at the building process, from planning around the site to the finishing details."
-      specsDescription="Explore the setting, spaces, and visible finish details throughout the photo tour."
       backHref="/projects/new-builds"
       moreHref="/projects/new-builds"
       galleryCategories={["All", "Exterior", "Aerial", "Kitchen", "Interior", "Baths", "Systems"]}

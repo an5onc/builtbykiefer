@@ -14,6 +14,7 @@ export const publicRoutes = [
   "/projects/berthoud",
   "/projects/commercial",
   "/projects/contemporary-ranch",
+  "/projects/lakehouse-remodel",
   "/projects/mountain-modern",
   "/projects/new-builds",
   "/projects/red-feather-lakes",

@@ -120,7 +120,10 @@ for (const route of ["/admin", "/login", "/portal", "/vendor", "/demo-slider", "
   assert.equal((html.match(/<h1\b/g) ?? []).length, 1, `${route}: one main heading`);
   assert.ok(html.includes('id="main-content"') && html.includes('<header') && html.includes('<footer'), `${route}: public shell`);
 }
-const range = await get("/images/project-2/build-timelapse-kbuiltco.mp4", { range: "bytes=0-1023" });
+const selectedVideo = pages.get("/projects/mountain-modern").html.match(/<source\b[^>]*src="([^"]+)"[^>]*type="video\/mp4"/)?.[1];
+assert.ok(selectedVideo?.startsWith("/images/project-2/"), "Mountain Modern renders a local project video.");
+assert.ok(manifest.files.some((file) => file.path === `public${selectedVideo}`), "Video range check targets the selected release asset.");
+const range = await get(selectedVideo, { range: "bytes=0-1023" });
 assert.equal(range.response.status, 206);
 assert.equal(range.bytes.length, 1024);
 assert.equal((await get("/api/quote-request")).response.status, 405);

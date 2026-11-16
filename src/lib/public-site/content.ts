@@ -232,8 +232,8 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "How Kiefer Built uses structural insulated panels to improve strength, reduce waste, and create more efficient homes.",
         href: "/why-kiefer-built/energy-efficiency",
-        image: "/images/project-2/exterior-solar-shed.jpg",
-        imageAlt: "Small open-sided outbuilding with a steep dark roof in an open landscape",
+        image: "/images/project-2/exterior-front-facade.jpg",
+        imageAlt: "Finished dark-sided mountain home with a balcony and pine trees",
       },
       {
         title: "Efficiency and Comfort in a Modern Home",
@@ -276,7 +276,7 @@ export const publicPages: Record<string, PublicPageContent> = {
       {
         title: "Renovations & Additions",
         description:
-          "Kitchens, bathrooms, living spaces, exteriors, and additions coordinated with clear scope and clean execution.",
+          "Kitchens, bathrooms, living spaces, speakeasies, exteriors, and additions coordinated with clear scope and clean execution.",
         href: "/projects/renovations-additions",
         image: "/images/project-1/kitchen-8.jpg",
         imageAlt: "Kitchen with a dark island, wood cabinets and black pendant lights",
@@ -437,6 +437,13 @@ export const publicPages: Record<string, PublicPageContent> = {
     primaryCta: cta,
     cards: [
       {
+        title: "Lakehouse Remodel",
+        description: "Tour a completed renovation with warm wood cabinetry, connected gathering spaces, refreshed baths and a timber-framed deck.",
+        href: "/projects/lakehouse-remodel",
+        image: "/images/lakehouse-remodel/DSC06277.webp",
+        imageAlt: "Lakehouse Remodel with a timber gable, broad deck and pergolas",
+      },
+      {
         title: "New Builds",
         description: "Space efficient homes, modern homes, barns, garages, and new construction projects.",
         href: "/projects/new-builds",
@@ -452,7 +459,7 @@ export const publicPages: Record<string, PublicPageContent> = {
       },
       {
         title: "Renovations & Additions",
-        description: "Kitchens, bathrooms, living spaces, exteriors, additions, and custom improvements.",
+        description: "Kitchens, bathrooms, living spaces, speakeasies, exteriors, additions, and custom improvements.",
         href: "/projects/renovations-additions",
         image: "/images/project-1/kitchen-8.jpg",
         imageAlt: "Kitchen with a dark island, wood cabinets and black pendant lights",
@@ -511,7 +518,7 @@ export const publicPages: Record<string, PublicPageContent> = {
       {
         title: "Timnath",
         description:
-          "Deep green cabinetry, natural wood, stone accents, and an intimate lounge. Tour the home's considered interior spaces.",
+          "Deep green cabinetry, natural wood, stone accents, and an intimate speakeasy. Tour the home's considered interior spaces.",
         image: "/images/timnath/47-print-IMG_0130-HDR.webp",
         imageAlt: "Timnath kitchen with deep green and natural wood cabinetry and a large island",
         href: "/projects/timnath",
@@ -548,8 +555,6 @@ export const publicPages: Record<string, PublicPageContent> = {
         title: "Barns and Garages",
         description:
           "Useful structures planned around storage, property needs, and long-term durability.",
-        image: "/images/project-2/exterior-solar-shed.jpg",
-        imageAlt: "Small open-sided outbuilding with a steep dark roof in an open landscape",
       },
     ],
   },
@@ -604,6 +609,13 @@ export const publicPages: Record<string, PublicPageContent> = {
         description: "Open rooms, fireplaces, flooring, lighting, and better flow between spaces.",
         image: "/images/project-3/interior-great-room-wide.jpg",
         imageAlt: "Great room with a stone fireplace, wood flooring and sliding glass doors",
+      },
+      {
+        title: "Speakeasies",
+        description: "Intimate gathering spaces with bar cabinetry, banquette seating, and atmospheric lighting.",
+        image: "/images/timnath/65-print-IMG_0065-HDR.webp",
+        imageAlt: "Timnath speakeasy with dark green walls, upholstered seating and a wood table",
+        href: "/projects/renovations-additions#speakeasies",
       },
       {
         title: "Exteriors",
@@ -745,8 +757,8 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "See how structural insulated panels change airtightness, whole-wall insulation, and tested structural performance.",
         href: "/why-kiefer-built/sips",
-        image: "/images/project-2/exterior-solar-shed.jpg",
-        imageAlt: "Small open-sided outbuilding with a steep dark roof in an open landscape",
+        image: "/images/project-2/exterior-front-facade.jpg",
+        imageAlt: "Finished dark-sided mountain home with a balcony and pine trees",
       },
       {
         title: "Energy Efficiency",
@@ -804,8 +816,8 @@ export const publicPages: Record<string, PublicPageContent> = {
     title: "SIPs 101: The Shell Changes Everything",
     description:
       "Structural insulated panels combine structure and insulation in one engineered assembly, reducing the gaps and thermal bridges that limit conventional framing.",
-    heroImage: "/images/project-2/exterior-solar-shed.jpg",
-    heroAlt: "Finished outbuilding with rooftop solar at a Kiefer Built mountain property",
+    heroImage: "/images/project-2/exterior-front-facade.jpg",
+    heroAlt: "Finished dark-sided mountain home with a balcony and pine trees",
     primaryCta: cta,
     secondaryCta: { label: "See Energy Efficiency", href: "/why-kiefer-built/energy-efficiency" },
     proof: [
@@ -893,8 +905,8 @@ export const publicPages: Record<string, PublicPageContent> = {
         title: "Certification and Colorado case studies give useful context.",
         body:
           "DOE describes its certified Efficient New Homes, formerly Zero Energy Ready Homes, as typically 40–50% more efficient than typical new homes. Its 2015 Durango case describes Mantell-Hecathorn Builders' advanced wood-framed home: HERS 50 without solar PV and 21 with PV. This is another builder's whole-home rating, not a Kiefer Built certification or a measured bill forecast.",
-        image: "/images/project-2/exterior-solar-shed.jpg",
-        imageAlt: "Small open-sided outbuilding with a steep dark roof in an open landscape",
+        image: "/images/project-2/exterior-front-facade.jpg",
+        imageAlt: "Finished dark-sided mountain home with a balcony and pine trees",
         points: ["Third-party certification", "Named Colorado case study", "Ratings and bills differ"],
         sourceIds: [7, 8],
         dark: true,
@@ -1150,7 +1162,7 @@ export const flipbookPages = [
   },
   {
     title: "Renovations",
-    subtitle: "Kitchens, baths, living spaces, and additions.",
+    subtitle: "Kitchens, baths, living spaces, speakeasies, and additions.",
     image: "/images/project-1/kitchen-8.jpg",
   },
   {

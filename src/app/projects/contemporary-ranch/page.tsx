@@ -42,31 +42,6 @@ const photos: Photo[] = [
   { src: "/images/project-3/interior-laundry.jpg", alt: "Dining area with a terracotta accent wall, linear chandelier and large windows", caption: "Dining area", category: "Interior" },
 ];
 
-/* ── Project specs ─────────────────────────────────────────────── */
-const specs = [
-  { label: "Location", value: "Northern Colorado" },
-  { label: "Type", value: "Spec Home — Contemporary Ranch" },
-  { label: "Style", value: "Single-Story Modern Ranch" },
-  { label: "Exterior", value: "Ledgestone, Dark Wood Siding, Stucco" },
-  { label: "Roofing", value: "Architectural Shingles, Dark Metal Fascia" },
-  { label: "Entry", value: "Barrel-Vault Arched Portico" },
-  { label: "Kitchen", value: "Two-Tone Cabinetry, Quartz Counters" },
-  { label: "Primary Bath", value: "Dual Vanity, Soaking Tub, Frameless Shower" },
-  { label: "Great Room", value: "Vaulted Ceilings, Stacked Stone Fireplace" },
-  { label: "Outdoor", value: "Covered Patio, Xeriscape Landscaping" },
-];
-
-/* ── Build phases ──────────────────────────────────────────────── */
-const phases = [
-  { name: "Foundation", desc: "Poured concrete foundation with engineered floor system" },
-  { name: "Framing", desc: "Single-story structural framing with vaulted ceiling engineered lumber" },
-  { name: "Roofing", desc: "Architectural shingles with dark metal fascia and rain chain details" },
-  { name: "Exterior", desc: "Ledgestone veneer columns, dark wood plank siding, and smooth stucco" },
-  { name: "Windows & Doors", desc: "Black-framed windows, multi-panel sliding glass doors, barrel-vault entry" },
-  { name: "Interior Finish", desc: "Custom cabinetry, quartz surfaces, stacked stone fireplace, hardwood floors" },
-  { name: "Landscaping", desc: "Sod lawn, river rock borders, decorative boulders, ornamental plantings" },
-];
-
 export default function ContemporaryRanchProject() {
   return (
     <ProjectTour
@@ -74,8 +49,6 @@ export default function ContemporaryRanchProject() {
       description="A Northern Colorado spec home built with premium craftsmanship — stacked stone, warm wood, and open-concept living from the ground up."
       hero={{ src: "/images/project-3/exterior-twilight-front.jpg", alt: "Contemporary ranch front elevation at twilight" }}
       photos={photos}
-      specs={specs}
-      phases={phases}
     />
   );
 }

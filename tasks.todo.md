@@ -1,3 +1,13 @@
+## November 16 - Customer website update release
+
+- [x] Add Lakehouse Remodel with48optimized photos and matching renovation section examples.
+- [x] Rename Timnath lounge to Speakeasy and add Speakeasies to renovation services.
+- [x] Remove process/specification sections from all7project tours.
+- [x] Retire Barns/Garages photo across pages/gallery/video; preserve originals privately.
+- [x] Verify desktop/phone navigation, gallery, revised video and unchanged music.
+- [x] Qualify clean446-file release:281tests,12releaseguards,build/types/lint/zero production vulnerabilities/GET-only smoke.
+- [ ] Replacement Barns/Garages photos pending owner.
+
 ## November 16 - Approved project tours commit and push
 
 - [x] Isolate the four new tours and shared design updates from older local records.

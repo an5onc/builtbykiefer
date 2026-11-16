@@ -73,6 +73,8 @@ describe("public site content", () => {
       href: "/projects/mountain-modern", meta: "Home tour example: Mountain Modern",
     });
     expect(cards.find((card) => card.title === "Barns and Garages")?.href).toBeUndefined();
+    expect(cards.find((card) => card.title === "Barns and Garages")?.image).toBeUndefined();
+    expect(JSON.stringify(publicPages)).not.toContain("exterior-solar-shed.jpg");
   });
   it("routes custom elevator marketing to the dedicated service page", () => {
     const servicesCards = publicPages.services.cards ?? [];
