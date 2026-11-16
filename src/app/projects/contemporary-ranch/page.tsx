@@ -1,11 +1,4 @@
-"use client";
-
-import Image from "next/image";
-import Link from "next/link";
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import RanchGallery from "@/components/RanchGallery";
-import { businessContact } from "@/lib/public-site/business";
+import ProjectTour from "@/components/ProjectTour";
 
 /* ── Types ─────────────────────────────────────────────────────── */
 type Photo = { src: string; alt: string; caption: string; category: string };
@@ -65,236 +58,24 @@ const specs = [
 
 /* ── Build phases ──────────────────────────────────────────────── */
 const phases = [
-  { name: "Foundation", icon: "🧱", desc: "Poured concrete foundation with engineered floor system" },
-  { name: "Framing", icon: "🪵", desc: "Single-story structural framing with vaulted ceiling engineered lumber" },
-  { name: "Roofing", icon: "🏗️", desc: "Architectural shingles with dark metal fascia and rain chain details" },
-  { name: "Exterior", icon: "🏠", desc: "Ledgestone veneer columns, dark wood plank siding, and smooth stucco" },
-  { name: "Windows & Doors", icon: "🪟", desc: "Black-framed windows, multi-panel sliding glass doors, barrel-vault entry" },
-  { name: "Interior Finish", icon: "✨", desc: "Custom cabinetry, quartz surfaces, stacked stone fireplace, hardwood floors" },
-  { name: "Landscaping", icon: "🌿", desc: "Sod lawn, river rock borders, decorative boulders, ornamental plantings" },
+  { name: "Foundation", desc: "Poured concrete foundation with engineered floor system" },
+  { name: "Framing", desc: "Single-story structural framing with vaulted ceiling engineered lumber" },
+  { name: "Roofing", desc: "Architectural shingles with dark metal fascia and rain chain details" },
+  { name: "Exterior", desc: "Ledgestone veneer columns, dark wood plank siding, and smooth stucco" },
+  { name: "Windows & Doors", desc: "Black-framed windows, multi-panel sliding glass doors, barrel-vault entry" },
+  { name: "Interior Finish", desc: "Custom cabinetry, quartz surfaces, stacked stone fireplace, hardwood floors" },
+  { name: "Landscaping", desc: "Sod lawn, river rock borders, decorative boulders, ornamental plantings" },
 ];
 
-/* ── Main Page ─────────────────────────────────────────────────── */
 export default function ContemporaryRanchProject() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const heroParallax = useTransform(scrollYProgress, [0, 0.3], [0, -80]);
-
   return (
-    <div ref={containerRef} className="min-h-screen" style={{ background: "var(--color-cream-50)" }}>
-      {/* Progress bar */}
-      <motion.div
-        className="fixed top-0 left-0 h-[3px] z-[100]"
-        style={{ width: progressWidth, background: "var(--color-sage-400)" }}
-      />
-
-      {/* Back nav */}
-      <div className="fixed top-4 left-4 z-50">
-        <Link href="/"
-          className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all shadow-sm border"
-          style={{
-            background: "rgba(253,252,249,0.90)",
-            backdropFilter: "blur(8px)",
-            color: "var(--color-slate-700)",
-            borderColor: "var(--color-cream-300)"
-          }}>
-          ← Back to Portfolio
-        </Link>
-      </div>
-
-      <main id="main-content">
-      {/* ════════ HERO ════════ */}
-      <section className="relative h-[85vh] overflow-hidden">
-        <motion.div className="absolute inset-0" style={{ y: heroParallax }}>
-          <Image
-            src="/images/project-3/exterior-twilight-front.jpg"
-            alt="Contemporary ranch front elevation at twilight"
-            fill
-            className="object-cover"
-            priority
-            sizes="(max-width: 767px) max(100vw, 150vh), 100vw"
-          />
-          {/* Light gradient — warm cream at bottom, clear at top */}
-          <div className="absolute inset-0" style={{
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.05) 40%, rgba(253,252,249,0.92) 100%)"
-          }} />
-        </motion.div>
-        <div className="relative z-10 h-full flex flex-col justify-end pb-16 px-6 sm:px-12 max-w-7xl mx-auto">
-          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}>
-            <div className="w-16 h-1 mb-6 rounded-full" style={{ background: "var(--color-sage-400)" }} />
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-3 tracking-tight" style={{ color: "var(--color-slate-800)" }}>
-              Contemporary Ranch
-            </h1>
-            <p className="text-lg sm:text-xl max-w-xl" style={{ color: "var(--color-slate-600)" }}>
-              A Northern Colorado spec home built with premium craftsmanship — stacked stone, warm wood, and open-concept living from the ground up.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ════════ BUILD PHASES ════════ */}
-      <SectionWrapper id="process" bg="var(--color-cream-50)">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Process"
-            title="Build Phases"
-            desc="Every detail planned from foundation to final landscaping."
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {phases.map((phase, i) => (
-              <motion.div
-                key={phase.name}
-                className="p-5 rounded-xl shadow-sm border transition-all hover:-translate-y-0.5 hover:shadow-md"
-                style={{
-                  background: "white",
-                  borderColor: "var(--color-cream-300)"
-                }}
-                initial={false}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ delay: i * 0.07 }}
-              >
-                <span className="text-2xl mb-3 block">{phase.icon}</span>
-                <h3 className="font-semibold text-sm mb-1" style={{ color: "var(--color-slate-800)" }}>{phase.name}</h3>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--color-slate-500)" }}>{phase.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </SectionWrapper>
-
-      {/* ════════ SPECS ════════ */}
-      <SectionWrapper id="specs" bg="var(--color-sage-50)">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <SectionHeader
-            tag="Details"
-            title="Project Specifications"
-            desc="Premium materials and finishes throughout — inside and out."
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {specs.map((s, i) => (
-              <motion.div
-                key={s.label}
-                className="flex items-start gap-3 p-4 rounded-xl border shadow-sm"
-                style={{
-                  background: "white",
-                  borderColor: "var(--color-sage-200)"
-                }}
-                initial={false}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "0px 0px 200px 0px" }}
-                transition={{ delay: i * 0.06 }}
-              >
-                <div className="w-1 h-full min-h-[2.5rem] rounded-full flex-shrink-0" style={{ background: "var(--color-sage-400)" }} />
-                <div>
-                  <p className="text-xs uppercase tracking-wider mb-0.5" style={{ color: "var(--color-sage-600)" }}>{s.label}</p>
-                  <p className="text-sm font-semibold" style={{ color: "var(--color-slate-800)" }}>{s.value}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </SectionWrapper>
-
-      {/* ════════ GALLERY ════════ */}
-      <RanchGallery photos={photos} />
-
-      {/* ════════ CTA ════════ */}
-      <SectionWrapper id="cta" bg="var(--color-cream-100)">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <div className="w-16 h-1 mx-auto mb-6 rounded-full" style={{ background: "var(--color-sage-400)" }} />
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4" style={{ color: "var(--color-slate-800)" }}>
-            Ready to Build?
-          </h2>
-          <p className="mb-8 max-w-lg mx-auto" style={{ color: "var(--color-slate-600)" }}>
-            From spec homes to fully custom builds — we bring the same level of precision and quality to every project in Northern Colorado.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/#contact"
-              className="px-8 py-3 font-semibold rounded-xl transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 text-white"
-              style={{ background: "var(--color-sage-600)" }}>
-              Start Your Project
-            </Link>
-            <Link href="/"
-              className="px-8 py-3 font-medium rounded-xl transition-all border hover:-translate-y-0.5"
-              style={{
-                background: "white",
-                color: "var(--color-slate-700)",
-                borderColor: "var(--color-cream-300)"
-              }}>
-              View More Projects
-            </Link>
-          </div>
-        </div>
-      </SectionWrapper>
-      </main>
-
-      {/* Footer */}
-      <footer className="py-8 border-t" style={{ background: "var(--color-cream-100)", borderColor: "var(--color-cream-300)" }}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div>
-              <p className="font-bold tracking-wider text-sm" style={{ color: "var(--color-slate-800)" }}>BUILT BY KIEFER</p>
-              <p className="text-xs tracking-wider mt-1" style={{ color: "var(--color-slate-500)" }}>Custom Homes · Northern Colorado</p>
-            </div>
-            <nav className="flex gap-6" aria-label="Social links">
-              {[
-                { label: "Facebook", href: businessContact.facebook },
-                { label: "Instagram", href: businessContact.instagram },
-              ].map(link => (
-                <a key={link.label} href={link.href} target="_blank" rel="noopener noreferrer"
-                  className="text-sm transition-colors hover:underline"
-                  style={{ color: "var(--color-slate-500)" }}>
-                  {link.label}
-                </a>
-              ))}
-              <Link href="/" className="text-sm transition-colors hover:underline"
-                style={{ color: "var(--color-slate-500)" }}>kbuiltco.com</Link>
-            </nav>
-            <div className="text-center md:text-right">
-              <p className="text-xs" style={{ color: "var(--color-slate-600)" }}>
-                &copy; {new Date().getFullYear()} Kiefer Built Contracting. All rights reserved.
-              </p>
-              <p className="text-xs mt-1" style={{ color: "var(--color-slate-600)" }}>
-                Created and Powered by{" "}
-                <a href="https://nexgenstudio.io" target="_blank" rel="noopener noreferrer"
-                  className="underline decoration-current/60 underline-offset-2 transition-colors hover:no-underline" style={{ color: "var(--color-sage-700)" }}>
-                  Nexgen Studio
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-    </div>
-  );
-}
-
-/* ── Reusable helpers ──────────────────────────────────────────── */
-function SectionWrapper({ id, bg, children }: { id: string; bg: string; children: React.ReactNode }) {
-  return (
-    <section id={id} className="py-20 md:py-28" style={{ background: bg }}>
-      {children}
-    </section>
-  );
-}
-
-function SectionHeader({ tag, title, desc }: { tag: string; title: string; desc: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px 200px 0px" });
-  return (
-    <motion.div
-      ref={ref}
-      className="text-center mb-12"
-      initial={false}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5 }}
-    >
-      <p className="text-sm tracking-[0.3em] uppercase mb-3 font-medium" style={{ color: "var(--color-sage-700)" }}>{tag}</p>
-      <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: "var(--color-slate-800)" }}>{title}</h2>
-      <p className="max-w-lg mx-auto" style={{ color: "var(--color-slate-500)" }}>{desc}</p>
-    </motion.div>
+    <ProjectTour
+      title="Contemporary Ranch"
+      description="A Northern Colorado spec home built with premium craftsmanship — stacked stone, warm wood, and open-concept living from the ground up."
+      hero={{ src: "/images/project-3/exterior-twilight-front.jpg", alt: "Contemporary ranch front elevation at twilight" }}
+      photos={photos}
+      specs={specs}
+      phases={phases}
+    />
   );
 }

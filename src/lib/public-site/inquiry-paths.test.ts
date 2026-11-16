@@ -60,17 +60,24 @@ describe("rendered inquiry paths", () => {
     expect(html).toContain('href="#contact"');
   });
 
-  it("renders the two New Builds tour examples as anchors while keeping the third informational", () => {
+  it("links all six New Builds tours while keeping Barns and Garages informational", () => {
     const html = renderToStaticMarkup(createElement(NewBuildsPage));
     const cards = [...html.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/g)].map((match) => match[1]);
-    expect(cards).toHaveLength(3);
+    expect(cards).toHaveLength(7);
+    for (const [slug, title] of [["berthoud", "Berthoud"], ["timnath", "Timnath"], ["red-feather-lakes", "Red Feather Lakes"], ["vetters", "Vetters"]]) {
+      const anchor = html.match(new RegExp(`<a\\b[^>]*href="/projects/${slug}"[^>]*>[\\s\\S]*?</a>`))?.[0] ?? "";
+      expect(anchor).toContain(`aria-label="${title} — Home tour: ${title}"`);
+      expect(anchor).toContain(title);
+      expect(publicRoutes).toContain(`/projects/${slug}`);
+    }
     for (const [destination, title] of [["/projects/contemporary-ranch", "Space Efficient Homes"], ["/projects/mountain-modern", "Modern Homes"]]) {
       const anchor = html.match(new RegExp(`<a\\b[^>]*href="${destination}"[^>]*>[\\s\\S]*?</a>`))?.[0] ?? "";
       expect(anchor).toContain(title); expect(anchor).toContain("Home tour example");
       expect(anchor).toMatch(new RegExp(`aria-label="${title} — Home tour example: [^"]+"`));
     }
     const anchors = [...html.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
-    expect(cards[2]).toContain("Barns and Garages"); expect(cards[2]).not.toMatch(/<a\b/);
+    const informational = cards.find((card) => card.includes("Barns and Garages")) ?? "";
+    expect(informational).toContain("Barns and Garages"); expect(informational).not.toMatch(/<a\b/);
     expect(anchors.some((anchor) => anchor.includes("Barns and Garages"))).toBe(false);
   });
 

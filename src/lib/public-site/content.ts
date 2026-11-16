@@ -491,6 +491,42 @@ export const publicPages: Record<string, PublicPageContent> = {
     primaryCta: cta,
     cards: [
       {
+        title: "Vetters",
+        description:
+          "Natural wood cabinetry, warm metal lighting, bright living spaces, and light-filled baths. Explore the complete home tour.",
+        image: "/images/vetters/DSC03731.webp",
+        imageAlt: "Vetters home with pale siding, a dark roof and a covered front porch",
+        href: "/projects/vetters",
+        meta: "Home tour: Vetters",
+      },
+      {
+        title: "Red Feather Lakes",
+        description:
+          "A hillside mountain home with timber details, a light-filled great room, and a view deck among the pines.",
+        image: "/images/red-feather-lakes/DSC00111.webp",
+        imageAlt: "Gray Red Feather Lakes mountain home with a covered timber porch and pine trees",
+        href: "/projects/red-feather-lakes",
+        meta: "Home tour: Red Feather Lakes",
+      },
+      {
+        title: "Timnath",
+        description:
+          "Deep green cabinetry, natural wood, stone accents, and an intimate lounge. Tour the home's considered interior spaces.",
+        image: "/images/timnath/47-print-IMG_0130-HDR.webp",
+        imageAlt: "Timnath kitchen with deep green and natural wood cabinetry and a large island",
+        href: "/projects/timnath",
+        meta: "Home tour: Timnath",
+      },
+      {
+        title: "Berthoud",
+        description:
+          "Warm wood cabinetry, light-filled living spaces, and charcoal accents. Explore the complete home, inside and out.",
+        image: "/images/berthoud/DSC03016.webp",
+        imageAlt: "Berthoud home with light vertical siding, dark trim and wood-tone garage doors",
+        href: "/projects/berthoud",
+        meta: "Home tour: Berthoud",
+      },
+      {
         title: "Space Efficient Homes",
         description:
           "Smart layouts, durable envelopes, and finish decisions that make the most of every square foot.",

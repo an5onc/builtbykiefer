@@ -1,3 +1,7 @@
+## November 16 - New build project tours
+
+Berthoud, Timnath, Red Feather Lakes and Vetters use the shared `src/components/ProjectTour.tsx` layout with Contemporary Ranch. New Builds cards and the route manifest include all four tours. Optimized WebP assets live in project-named directories under `public/images/`. Keep original ZIPs outside the repository. The shared hero uses an edge fade and dark title panel; process steps are numbered and the mobile quote pill appears after the hero. See `.sessions/2026-11-16-new-build-project-tours.md` for validation and remaining review limits.
+
 # Kiefer Built Agent Handoff Guide
 
 This file is the durable orientation document for agents working in this repo. Keep it current when project structure, runtime, environment, deployment, or handoff expectations change.

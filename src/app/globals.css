@@ -1,4 +1,5 @@
-@import "tailwindcss";
+/* Scan application source; saved HTML audit responses are not styles. */
+@import "tailwindcss" source("../");
 
 @theme inline {
   /* Kiefer brand red */
