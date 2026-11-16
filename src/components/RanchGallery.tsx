@@ -100,6 +100,7 @@ function BentoCell({
   mediumSpan,
   featured,
   onOpen,
+  accent,
 }: {
   photo: GalleryPhoto;
   index: number;
@@ -107,6 +108,7 @@ function BentoCell({
   mediumSpan: number;
   featured: boolean;
   onOpen: (i: number) => void;
+  accent: string;
 }) {
   const { cardRef, imgX, imgY, tiltX, tiltY, onPointerMove, onPointerLeave } =
     useCardParallax(wideSpan >= 6 ? 24 : 16);
@@ -114,6 +116,7 @@ function BentoCell({
   const inView = useInView(inViewRef, { once: true, margin: "0px 0px 200px 0px" });
 
   const isHero = index === 0;
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <motion.div
@@ -128,6 +131,7 @@ function BentoCell({
         rotateX: tiltX,
         rotateY: tiltY,
         borderRadius: "16px",
+        background: "var(--color-cream-100)",
       } as CSSProperties}
       initial={false}
       animate={inView ? { opacity: 1, x: 0, y: 0, scale: 1 } : {}}
@@ -157,6 +161,7 @@ function BentoCell({
             sizes="(min-width: 1280px) 50vw, (min-width: 768px) 60vw, 95vw"
             priority={isHero}
             loading={isHero ? "eager" : "lazy"}
+            onLoad={() => setImageLoaded(true)}
           />
         </motion.div>
 
@@ -164,6 +169,7 @@ function BentoCell({
         <div
           className="absolute inset-0 transition-opacity duration-500"
           style={{
+            opacity: imageLoaded ? 1 : 0,
             background:
               "linear-gradient(160deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.0) 40%, rgba(0,0,0,0.55) 100%)",
           }}
@@ -179,7 +185,7 @@ function BentoCell({
         {/* Category pill — top left */}
         <motion.span
           className="absolute top-3 left-3 text-[10px] font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full"
-          style={{ background: "rgba(78,148,67,0.85)", color: "white" }}
+          style={{ background: accent, color: "white" }}
           initial={false}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: Math.min(index * 0.06, 0.5) + 0.25 }}
@@ -200,7 +206,7 @@ function BentoCell({
         >
           <p className="text-white text-xs font-medium truncate">{photo.caption}</p>
           <p className="text-white/50 text-[10px] mt-0.5 uppercase tracking-wider">
-            Click to expand
+            View photo
           </p>
         </motion.div>
 
@@ -223,10 +229,19 @@ function BentoCell({
 
 /* ── Main Gallery Component ────────────────────────────────────── */
 const CATEGORIES = ["All", "Exterior", "Aerial", "Kitchen", "Interior"] as const;
-type Category = typeof CATEGORIES[number];
 
-export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
-  const [activeCategory, setActiveCategory] = useState<Category>("All");
+export default function RanchGallery({
+  photos, categories = CATEGORIES, title = "Inside & Out", description,
+  accent = "#4e9443", accentHighlight = "#6aaf60",
+}: {
+  photos: GalleryPhoto[];
+  categories?: readonly string[];
+  title?: string;
+  description?: string;
+  accent?: string;
+  accentHighlight?: string;
+}) {
+  const [activeCategory, setActiveCategory] = useState("All");
   const [lightboxIndex, setLightboxIndex] = useState(-1);
 
   const filtered = useMemo(
@@ -268,17 +283,16 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
             className="text-3xl md:text-4xl font-bold mb-4"
             style={{ color: "var(--color-slate-800)" }}
           >
-            Inside &amp; Out
+            {title}
           </h2>
           <p className="max-w-lg mx-auto" style={{ color: "var(--color-slate-500)" }}>
-            {photos.length} photos across exterior, aerial, kitchen, and interior.
-            Hover any photo — click to explore in full detail.
+            {description ?? `${photos.length} photos across exterior, aerial, kitchen, and interior.`}
           </p>
         </motion.div>
 
         {/* Category filter */}
         <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {CATEGORIES.map((cat) => {
+          {categories.map((cat) => {
             const count = cat === "All" ? photos.length : photos.filter((p) => p.category === cat).length;
             const active = activeCategory === cat;
             return (
@@ -291,7 +305,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
                 whileTap={{ scale: 0.97 }}
                 className="relative px-5 py-2.5 text-xs font-semibold uppercase tracking-widest rounded-full transition-colors cursor-pointer overflow-hidden"
                 style={active
-                  ? { background: "var(--color-sage-600)", color: "white", boxShadow: "0 4px 14px rgba(61,120,53,0.3)" }
+                  ? { background: "var(--color-sage-600)", color: "white", boxShadow: `0 4px 14px color-mix(in srgb, ${accent} 30%, transparent)` }
                   : { background: "var(--color-cream-100)", color: "var(--color-slate-600)", border: "1px solid var(--color-cream-300)" }
                 }
               >
@@ -333,6 +347,7 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
                     mediumSpan={mediumSpan}
                     featured={filtered.length >= 3 && i < 3}
                     onOpen={handleOpen}
+                    accent={accent === "#4e9443" ? "rgba(78,148,67,0.85)" : accent}
                   />
                 );
               })}
@@ -361,11 +376,10 @@ export default function RanchGallery({ photos }: { photos: GalleryPhoto[] }) {
         plugins={[Zoom, Thumbnails, Captions, Fullscreen]}
         zoom={{ maxZoomPixelRatio: 4, scrollToZoom: true }}
         captions={{ showToggle: true, descriptionTextAlign: "center" }}
-        thumbnails={{ border: 2, borderStyle: "solid", borderColor: "#4e9443", borderRadius: 6, padding: 3, gap: 8 }}
+        thumbnails={{ border: 2, borderStyle: "solid", borderColor: accent, borderRadius: 6, padding: 3, gap: 8 }}
         styles={{
           container: { backgroundColor: "rgba(10, 12, 16, 0.97)" },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          root: { "--yarl__color_button": "#4e9443", "--yarl__color_button_active": "#6aaf60" } as any,
+          root: { "--yarl__color_button": accent, "--yarl__color_button_active": accentHighlight },
         }}
         controller={{ closeOnBackdropClick: true }}
         carousel={{ finite: false, preload: 3 }}
