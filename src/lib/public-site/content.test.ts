@@ -64,16 +64,11 @@ describe("shared public image descriptions", () => {
 });
 
 describe("public site content", () => {
-  it("links supported New Builds examples without inventing a barn portfolio", () => {
+  it("lists only the five named New Builds project tours", () => {
     const cards = publicPages.newBuilds.cards ?? [];
-    expect(cards.find((card) => card.title === "Space Efficient Homes")).toMatchObject({
-      href: "/projects/contemporary-ranch", meta: "Home tour example: Contemporary Ranch",
-    });
-    expect(cards.find((card) => card.title === "Modern Homes")).toMatchObject({
-      href: "/projects/mountain-modern", meta: "Home tour example: Mountain Modern",
-    });
-    expect(cards.find((card) => card.title === "Barns and Garages")?.href).toBeUndefined();
-    expect(cards.find((card) => card.title === "Barns and Garages")?.image).toBeUndefined();
+    expect(cards.map((card) => card.title)).toEqual([
+      "Greeley", "Vetters", "Red Feather Lakes", "Timnath", "Berthoud",
+    ]);
     expect(JSON.stringify(publicPages)).not.toContain("exterior-solar-shed.jpg");
   });
   it("routes custom elevator marketing to the dedicated service page", () => {
@@ -97,7 +92,7 @@ describe("public site content", () => {
   it("links both detailed home tours from the project gallery", () => {
     const hrefs = (publicPages.projects.cards ?? []).map((card) => card.href);
 
-    expect(hrefs).toContain("/projects/contemporary-ranch");
+    expect(hrefs).toContain("/projects/greeley");
     expect(hrefs).toContain("/projects/mountain-modern");
   });
 

@@ -56,9 +56,6 @@ describe("why-kiefer-built education content", () => {
     expect(statSync(guidePath).size).toBeLessThanOrEqual(15 * 1024 * 1024);
   });
 
-  it("teases the education hub from the services page", () => {
-    const cards = publicPages.services.cards ?? [];
-    const teaser = cards.find((card) => card.href === "/why-kiefer-built");
-    expect(teaser, "services page should link to the education hub").toBeDefined();
-  });
-});
+  it("keeps services focused on service inquiries without the education teaser", () => {
+    expect(publicPages.services.cards?.some((card) => card.href === "/why-kiefer-built")).toBe(false);
+  });});

@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { writeFile } from "node:fs/promises";
 import { test, expect, contain, origin, runRoot, providerState } from "./helpers.mjs";
 
-const categories = { All: 29, Exterior: 8, Aerial: 3, Kitchen: 7, Interior: 11 };
+const categories = {"All": 45, "Exterior": 9, "Aerial": 3, "Kitchen": 6, "Interior": 16, "Baths": 6, "Basement": 5};
 const imagePath = (src) => new URL(src, origin).searchParams.get("url") || new URL(src, origin).pathname;
 test.use({ actionTimeout: 7000, navigationTimeout: 20000 });
 
@@ -52,7 +52,7 @@ async function settledGallery(page) {
 test("13 ranch row packing and filter counts at eight responsive widths", async ({ page }) => {
   test.setTimeout(180000);
   const results = [];
-  await page.goto("/projects/contemporary-ranch");
+  await page.goto("/projects/greeley");
   const grid = page.locator("#gallery .grid");
   for (const width of [1440, 1024, 900, 768, 600, 560, 390, 320]) {
     await page.setViewportSize({ width, height: 1000 });
@@ -73,7 +73,7 @@ test("14 every filtered ranch tile opens its own image with keyboard order and a
   const records = [];
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 });
-    await page.goto("/projects/contemporary-ranch");
+    await page.goto("/projects/greeley");
     for (const [category, count] of Object.entries(categories)) {
       await page.getByRole("button", { name: `${category} (${count})`, exact: true }).click();
       const tiles = page.locator('#gallery .grid button[aria-label^="Open"]');
@@ -107,13 +107,13 @@ test("14 every filtered ranch tile opens its own image with keyboard order and a
       }
       await writeFile(join(runRoot, "ranch-clicked-photos.json"), JSON.stringify(records, null, 2));
     }
-    await page.getByRole("button", { name: "All (29)", exact: true }).click();
-    const exterior = page.locator('#gallery img[alt="Ranch front elevation at dusk with stone columns, wood siding and an arched entry"]');
-    expect(imagePath(await exterior.getAttribute("src"))).toBe("/images/project-3/interior-great-room-fireplace.jpg");
-    const dining = page.getByRole("img", { name: "Dining area with a terracotta accent wall, linear chandelier and large windows", exact: true });
-    expect(imagePath(await dining.getAttribute("src"))).toBe("/images/project-3/interior-laundry.jpg");
-    const hall = page.getByRole("img", { name: "Great room toward the hall with a stone fireplace, sliding glass doors and a black barn door", exact: true });
-    expect(imagePath(await hall.getAttribute("src"))).toBe("/images/project-3/interior-dining.jpg");
+    await page.getByRole("button", { name: "All (45)", exact: true }).click();
+    const exterior = page.locator('#gallery img[alt="Greeley home at twilight with stone entry columns, dark siding, warm exterior lights and a broad driveway"]');
+    expect(imagePath(await exterior.getAttribute("src"))).toBe("/images/greeley/01-IMG_3586.webp");
+    const dining = page.getByRole("img", { name: "Greeley dining area with warm accent walls, a linear chandelier and large windows", exact: true });
+    expect(imagePath(await dining.getAttribute("src"))).toBe("/images/greeley/23-IMG_3495.webp");
+    const hall = page.getByRole("img", { name: "Greeley great room with a stone fireplace and a dark sliding door beside the hall", exact: true });
+    expect(imagePath(await hall.getAttribute("src"))).toBe("/images/greeley/15-IMG_3441.webp");
     await page.goto("/projects/renovations-additions");
     const fireplace = page.locator('#living-spaces img[alt="Great room with a stacked-stone fireplace wall, wood flooring and sliding glass doors by Kiefer Built Contracting"]');
     expect(imagePath(await fireplace.getAttribute("src"))).toBe("/images/project-3/interior-great-room-wide.jpg");
@@ -139,7 +139,7 @@ test("15 all three project self-links stay on the owned homepage in the same tab
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 });
     for (const [path, selector] of [
-      ["/projects/contemporary-ranch", 'footer a:has-text("kbuiltco.com")'],
+      ["/projects/greeley", 'footer a:has-text("kbuiltco.com")'],
       ["/projects/mountain-modern", 'a:has(img[alt="Kiefer Built Contracting"])'],
       ["/projects/mountain-modern", 'footer a:has-text("kbuiltco.com")'],
     ]) {
@@ -168,7 +168,7 @@ test("16 ordered full ranch gallery remains visible when scripts are disabled or
     const guards = await contain(context);
     if (state === "blocked") await context.route("**/_next/static/**/*.js", route => route.abort());
     try {
-      const page = await context.newPage(); await page.goto("/projects/contemporary-ranch");
+      const page = await context.newPage(); await page.goto("/projects/greeley");
       const tiles = page.locator('#gallery .grid button[aria-label^="Open"]');
       await expect(tiles).toHaveCount(29);
       records.push({ width, state, ...await settledGallery(page) });

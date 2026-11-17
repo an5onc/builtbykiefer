@@ -13,8 +13,8 @@ export default function ProductionHero() {
   return (
     <section aria-labelledby="home-heading" className="relative min-h-[86svh] overflow-hidden bg-[#151515] text-white">
       <Image
-        src="/images/project-3/exterior-twilight-front.jpg"
-        alt="Kiefer Built custom contemporary ranch home at twilight in Northern Colorado"
+        src="/images/greeley/01-IMG_3586.webp"
+        alt="Kiefer Built custom Greeley home at twilight in Northern Colorado"
         fill
         priority
         sizes="(max-width: 767px) max(100vw, 150svh), 100vw"

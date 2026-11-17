@@ -31,7 +31,7 @@ describe("routing boundary", () => {
     expect(request.url).toBe(original); expect(request.bodyUsed).toBe(false);
   });
 
-  it.each(["/", "/process", "/projects/contemporary-ranch", "/_next/static/script.js", "/_next/image?url=%2Fimages%2Fphoto.jpg"])("does not invoke the boundary for %s", async (path) => {
+  it.each(["/", "/process", "/projects/greeley", "/_next/static/script.js", "/_next/image?url=%2Fimages%2Fphoto.jpg"])("does not invoke the boundary for %s", async (path) => {
     const { unstable_doesMiddlewareMatch } = await import("next/experimental/testing/server");
     expect(unstable_doesMiddlewareMatch({ config, nextConfig: {}, url: path })).toBe(false);
   });

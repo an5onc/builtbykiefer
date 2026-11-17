@@ -29,9 +29,11 @@ describe("client domain migration", () => {
     const rules = await nextConfig.redirects?.();
     expect(rules).toHaveLength(Object.keys(redirects).length);
     expect(rules).toContainEqual({ source: "/catalogitems", destination: "/products", permanent: true });
-    expect(rules).toContainEqual({ source: "/services/kitchen-remodeling", destination: "/projects/renovations-additions", permanent: true });
+    expect(rules?.some((rule) => rule.source === "/services/kitchen-remodeling")).toBe(false);
+    expect(rules).toContainEqual({ source: "/kitchens", destination: "/services/kitchen-remodeling", permanent: true });
     expect(rules).toContainEqual({ source: "/about/careers", destination: "/careers", permanent: true });
     expect(rules).toContainEqual({ source: "/renovations-and-additions/elevators", destination: "/services/custom-elevators", permanent: true });
+    expect(rules).toContainEqual({ source: "/projects/contemporary-ranch", destination: "/projects/greeley", permanent: true });
     const retained = [...publicRoutes, ...noindexRoutes] as string[];
     const selectedAssets: Record<string, string> = {
       "/guides/kiefer-built-homeowner-guide.pdf": "/guides/kiefer-built-homeowner-guide-2026.pdf",

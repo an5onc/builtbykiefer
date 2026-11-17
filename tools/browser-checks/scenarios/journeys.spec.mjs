@@ -61,7 +61,7 @@ test("3 nine original gallery links, keyboard containment, pause and reduced mot
   await region.locator(".kiefer-marquee").evaluate(element => { const animation = element.getAnimations()[0]; animation.pause(); animation.currentTime = 47900; });
   const pointerCopy = region.locator('article[aria-hidden="true"] a').first();
   await expect(pointerCopy).toBeInViewport({ ratio: 0.99 });
-  await pointerCopy.click(); await expect(page).toHaveURL(`${origin}/projects/contemporary-ranch`);
+  await pointerCopy.click(); await expect(page).toHaveURL(`${origin}/projects/greeley`);
   const context = await browser.newContext({ baseURL: origin, reducedMotion: "reduce", viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
   const guards = await contain(context);
   try {
@@ -69,7 +69,7 @@ test("3 nine original gallery links, keyboard containment, pause and reduced mot
     await expect(reduced.getByRole("button", { name: /project gallery/ })).not.toBeVisible();
     expect(await reduced.locator('article[aria-hidden="true"]').evaluateAll((elements) => elements.every((element) => getComputedStyle(element).display === "none"))).toBe(true);
     await reduced.locator('article:not([aria-hidden="true"]) .kiefer-project-link').first().click();
-    await expect(reduced).toHaveURL(`${origin}/projects/contemporary-ranch`);
+    await expect(reduced).toHaveURL(`${origin}/projects/greeley`);
     expect(guards.outbound).toEqual([]);
   } finally { await guards.drain(); await context.close(); }
 });
@@ -192,7 +192,7 @@ test("9 coverage bounds/initial content at 320,390,1440 with script failure and 
         await page.screenshot({ path: join(runRoot, `home-${width}.png`), fullPage: true });
         await page.locator("#service-area").screenshot({ path: join(runRoot, `home-service-area-${width}.png`) });
       }
-      for (const path of ["/projects/contemporary-ranch", "/projects/mountain-modern"]) {
+      for (const path of ["/projects/greeley", "/projects/mountain-modern"]) {
         await page.goto(path); await expect(page.locator("main h1")).toBeVisible();
         await expect(page.locator('main button[aria-label^="Open"]').first()).toBeVisible();
         const hiddenProjectContent = await page.locator('main h1,main h2,main img,main button[aria-label^="Open"]').evaluateAll((elements) => elements.some(element => {
@@ -211,7 +211,7 @@ test("9 coverage bounds/initial content at 320,390,1440 with script failure and 
 
 test("10 photo dialog keyboard/Escape and no analytics across navigation/fake inquiry", async ({ page, context }) => {
   const analytics = []; context.on("request", request => { if (/googletagmanager|google-analytics|google.*collect/.test(request.url())) analytics.push(new URL(request.url()).origin); });
-  await page.goto("/projects/contemporary-ranch"); await page.locator('button[aria-label^="Open"]').first().click();
+  await page.goto("/projects/greeley"); await page.locator('button[aria-label^="Open"]').first().click();
   const dialog = page.locator(".yarl__root"); await expect(dialog).toBeVisible();
   for (let index = 0; index < 8; index++) { await page.keyboard.press("Tab"); expect(await dialog.evaluate(element => element.contains(document.activeElement))).toBe(true); }
   await page.keyboard.press("Escape"); await expect(dialog).not.toBeVisible();

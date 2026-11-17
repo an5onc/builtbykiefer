@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import Header from "@/components/Header";
+import ProjectReveal from "@/components/public-site/ProjectReveal";
 import Footer from "@/components/Footer";
 import WallComparison from "@/components/wall-comparison/WallComparison";
 import type { PublicCard, PublicPageContent, PublicSection, TestimonialSummary } from "@/lib/public-site/content";
@@ -432,12 +433,18 @@ export default function PublicPage({ content, children }: { content: PublicPageC
             sizes="(max-width: 767px) max(100vw, 150vh), 100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/84 via-black/56 to-black/18" />
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#151515] to-transparent" />
+          {content.projectShowcase ? (
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.06)_20%,rgba(0,0,0,0.12)_48%,rgba(0,0,0,0.84)_100%)]" />
+          ) : (
+            <>
+              <div className="absolute inset-0 bg-gradient-to-r from-black/84 via-black/56 to-black/18" />
+              <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#151515] to-transparent" />
+            </>
+          )}
           <div className="relative z-10 mx-auto flex min-h-[72vh] max-w-7xl flex-col justify-end px-6 pb-12 pt-28">
             <div className="max-w-4xl">
               <h1 className="text-5xl font-bold leading-[0.96] text-white md:text-7xl">{content.title}</h1>
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80">{content.description}</p>
+              <p className={`mt-6 max-w-3xl text-lg leading-8 ${content.projectShowcase ? "text-white/95 [text-shadow:0_1px_8px_rgba(0,0,0,0.7)]" : "text-white/80"}`}>{content.description}</p>
               <div className="mt-7 flex flex-wrap gap-3">
                 {content.primaryCta ? <ActionLink href={content.primaryCta.href}>{content.primaryCta.label}</ActionLink> : null}
                 {content.secondaryCta ? (
@@ -479,14 +486,35 @@ export default function PublicPage({ content, children }: { content: PublicPageC
         ) : null}
 
         {content.cards ? (
-          <section className="bg-[#f9f6f0] px-6 py-20 md:py-24">
-            <div className="mx-auto max-w-7xl">
+          <section
+            id={content.projectShowcase ? "project-tours" : undefined}
+            aria-labelledby={content.projectShowcase ? "project-tours-heading" : undefined}
+            className={content.projectShowcase ? "relative z-10 -mt-5 scroll-mt-24 rounded-t-[1.75rem] bg-[#f9f6f0] px-6 pb-20 pt-14 md:-mt-7 md:rounded-t-[2.5rem] md:pb-24 md:pt-20" : "bg-[#f9f6f0] px-6 py-20 md:py-24"}
+          >
+            <ProjectReveal enabled={Boolean(content.projectShowcase)}>
+              {content.projectShowcase ? (
+                <div data-project-reveal className="mb-10 border-b border-black/15 pb-8 md:mb-12 md:flex md:items-end md:justify-between md:gap-8">
+                  <div>
+                    <div className="mb-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-[#a91f16]">
+                      <span aria-hidden="true" className="h-px w-10 bg-[#c9281c]" />
+                      Built in Northern Colorado
+                    </div>
+                    <h2 id="project-tours-heading" className="text-4xl font-bold tracking-tight md:text-5xl">Explore our homes.</h2>
+                    <p className="mt-4 max-w-xl text-base leading-7 text-[#655c52]">Step inside each project. See the spaces, finishes and details that make every home its own.</p>
+                  </div>
+                  <p className="mt-6 shrink-0 text-xs font-bold uppercase tracking-[0.18em] text-[#655c52] md:mt-0">{String(content.cards.length).padStart(2, "0")} home tours</p>
+                </div>
+              ) : null}
               <div className={cardGridClass}>
-                {content.cards.map((card) => (
+                {content.cards.map((card) => content.projectShowcase ? (
+                  <div key={card.title} data-project-reveal className="h-full">
+                    <Card card={card} imageAspect={cardImageAspect} imageSizes={cardImageSizes} />
+                  </div>
+                ) : (
                   <Card key={card.title} card={card} imageAspect={cardImageAspect} imageSizes={cardImageSizes} />
                 ))}
               </div>
-            </div>
+            </ProjectReveal>
           </section>
         ) : null}
 

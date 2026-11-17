@@ -1,4 +1,5 @@
 import { businessContact } from "./business";
+import { remodelingServices } from "./remodeling-services";
 
 export type PublicCard = {
   title: string;
@@ -47,6 +48,7 @@ export type PublicPageContent = {
   heroImage: string;
   heroAlt: string;
   cardsLayout?: "default" | "fourColumn";
+  projectShowcase?: boolean;
   primaryCta?: {
     label: string;
     href: string;
@@ -242,7 +244,7 @@ export const publicPages: Record<string, PublicPageContent> = {
           "A practical view of how planning, insulation, window placement, and finish decisions shape the way a home lives.",
         href: "/why-kiefer-built/indoor-air-quality",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
-        imageAlt: "Ranch home exterior at twilight with an arched entry and stone columns",
+        imageAlt: "Greeley home exterior at twilight with an arched entry and stone columns",
       },
       {
         title: "SIPA-Recognized Energy-Efficient Home",
@@ -258,12 +260,13 @@ export const publicPages: Record<string, PublicPageContent> = {
   services: {
     title: "Construction Services in Northern Colorado",
     description:
-      "Explore custom home building, renovations, additions, elevators, and commercial construction with Kiefer Built Contracting in Windsor and Northern Colorado.",
+      "Explore kitchen remodeling, bathroom remodeling, cabinet replacement, basement finishing, custom homes, elevators and commercial construction in Northern Colorado.",
     heroImage: "/images/project-3/kitchen-island-living-view.jpg",
     heroAlt: "Custom kitchen and great room by Kiefer Built",
     primaryCta: cta,
     cardsLayout: "fourColumn",
     cards: [
+      ...remodelingServices.map((service) => ({ title: service.title, description: service.intro, href: `/services/${service.slug}`, image: service.hero.src, imageAlt: service.hero.alt })),
       {
         title: "New Builds",
         description:
@@ -271,15 +274,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         href: "/services/home-building",
         image: "/images/project-3/exterior-twilight-front.jpg",
         imageSizes: "(max-width: 767px) 188vw, (max-width: 1279px) 94vw, 47vw",
-        imageAlt: "Ranch home exterior with a stone entry, wood siding and a driveway at twilight",
-      },
-      {
-        title: "Renovations & Additions",
-        description:
-          "Kitchens, bathrooms, living spaces, speakeasies, exteriors, and additions coordinated with clear scope and clean execution.",
-        href: "/projects/renovations-additions",
-        image: "/images/project-1/kitchen-8.jpg",
-        imageAlt: "Kitchen with a dark island, wood cabinets and black pendant lights",
+        imageAlt: "Greeley home exterior with a stone entry, wood siding and a driveway at twilight",
       },
       {
         title: "Commercial Construction",
@@ -298,16 +293,6 @@ export const publicPages: Record<string, PublicPageContent> = {
         image: "/images/project-4/DSC05496.jpg",
         imageSizes: "(max-width: 767px) 188vw, (max-width: 1279px) 94vw, 47vw",
         imageAlt: "Glass elevator enclosure beside a doorway into a laundry room",
-      },
-      {
-        title: "Why Build With Kiefer Built",
-        meta: "The difference",
-        description:
-          "SIPs construction, real energy efficiency, and family craftsmanship — see exactly why a Kiefer Built home is built better.",
-        href: "/why-kiefer-built",
-        image: "/images/project-2/exterior-wide-property.jpg",
-        imageSizes: "(max-width: 767px) 168vw, (max-width: 1279px) 84vw, 42vw",
-        imageAlt: "Mountain home across an open yard with a wooded hillside behind it",
       },
     ],
   },
@@ -448,7 +433,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description: "Space efficient homes, modern homes, barns, garages, and new construction projects.",
         href: "/projects/new-builds",
         image: "/images/project-3/exterior-front-daytime.jpg",
-        imageAlt: "Ranch home front elevation with stone columns and an arched entry at twilight",
+        imageAlt: "Greeley home front elevation with stone columns and an arched entry at twilight",
       },
       {
         title: "Commercial",
@@ -472,12 +457,12 @@ export const publicPages: Record<string, PublicPageContent> = {
         imageAlt: "Round glass elevator enclosure set into a finished room",
       },
       {
-        title: "Contemporary Ranch",
+        title: "Greeley",
         description:
-          "Tour a finished Northern Colorado ranch from its twilight exterior and open great room to custom cabinetry and primary-suite details.",
-        href: "/projects/contemporary-ranch",
-        image: "/images/project-3/aerial-front-twilight.jpg",
-        imageAlt: "Ranch home entrance and driveway viewed from above at twilight",
+          "Tour the Greeley home in Northern Colorado, from its twilight exterior and open great room to custom cabinetry and primary-suite details.",
+        href: "/projects/greeley",
+        image: "/images/greeley/01-IMG_3586.webp",
+        imageAlt: "Greeley home at twilight with a stone entry, dark siding and landscaped approach",
       },
       {
         title: "Mountain Modern",
@@ -493,10 +478,20 @@ export const publicPages: Record<string, PublicPageContent> = {
     title: "New Builds",
     description:
       "New homes, modern builds, space efficient homes, barns, garages, and owner-led construction from first scope to final walkthrough.",
-    heroImage: "/images/project-3/exterior-garage-twilight.jpg",
-    heroAlt: "New custom home and garage by Kiefer Built",
+    heroImage: "/images/timnath/updated-20261117/133-web-or-mls-IMG_0153-TW2.webp",
+    heroAlt: "Timnath home at twilight with dark siding, stone entry columns, warm exterior lighting and a landscaped front lawn",
     primaryCta: cta,
+    secondaryCta: { label: "Explore The Homes ↓", href: "#project-tours" },
+    projectShowcase: true,
     cards: [
+      {
+        title: "Greeley",
+        description: "A stone entry, warm wood cabinetry, open living spaces and a finished basement. Explore the complete Greeley home tour.",
+        image: "/images/greeley/01-IMG_3586.webp",
+        imageAlt: "Greeley home at twilight with stone entry columns, dark siding and a broad driveway",
+        href: "/projects/greeley",
+        meta: "Home tour: Greeley",
+      },
       {
         title: "Vetters",
         description:
@@ -518,9 +513,9 @@ export const publicPages: Record<string, PublicPageContent> = {
       {
         title: "Timnath",
         description:
-          "Deep green cabinetry, natural wood, stone accents, and an intimate speakeasy. Tour the home's considered interior spaces.",
-        image: "/images/timnath/47-print-IMG_0130-HDR.webp",
-        imageAlt: "Timnath kitchen with deep green and natural wood cabinetry and a large island",
+          "Warm wood, stone accents, open living spaces, a finished basement and a speakeasy. Tour the home inside and out.",
+        image: "/images/timnath/updated-20261117/133-web-or-mls-IMG_0153-TW2.webp",
+        imageAlt: "Timnath home at twilight with dark siding, stone entry columns and a landscaped front lawn",
         href: "/projects/timnath",
         meta: "Home tour: Timnath",
       },
@@ -532,29 +527,6 @@ export const publicPages: Record<string, PublicPageContent> = {
         imageAlt: "Berthoud home with light vertical siding, dark trim and wood-tone garage doors",
         href: "/projects/berthoud",
         meta: "Home tour: Berthoud",
-      },
-      {
-        title: "Space Efficient Homes",
-        description:
-          "Smart layouts, durable envelopes, and finish decisions that make the most of every square foot.",
-        image: "/images/project-3/interior-open-plan.jpg",
-        imageAlt: "Open kitchen and living area with a dark island and wood flooring",
-        href: "/projects/contemporary-ranch",
-        meta: "Home tour example: Contemporary Ranch",
-      },
-      {
-        title: "Modern Homes",
-        description:
-          "Clean lines, natural light, efficient systems, and practical details built for Northern Colorado living.",
-        image: "/images/project-2/exterior-front-balcony.jpg",
-        imageAlt: "Dark-sided two-story home beside an open yard and wooded hillside",
-        href: "/projects/mountain-modern",
-        meta: "Home tour example: Mountain Modern",
-      },
-      {
-        title: "Barns and Garages",
-        description:
-          "Useful structures planned around storage, property needs, and long-term durability.",
       },
     ],
   },
@@ -612,9 +584,9 @@ export const publicPages: Record<string, PublicPageContent> = {
       },
       {
         title: "Speakeasies",
-        description: "Intimate gathering spaces with bar cabinetry, banquette seating, and atmospheric lighting.",
-        image: "/images/timnath/65-print-IMG_0065-HDR.webp",
-        imageAlt: "Timnath speakeasy with dark green walls, upholstered seating and a wood table",
+        description: "Intimate gathering spaces with bar cabinetry, game tables, comfortable seating and atmospheric lighting.",
+        image: "/images/timnath/updated-20261117/38-web-or-mls-IMG_0048.webp",
+        imageAlt: "Timnath speakeasy with bar seating, a round game table and illuminated shelving",
         href: "/projects/renovations-additions#speakeasies",
       },
       {
@@ -711,7 +683,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         description:
           "Support framing, finish work, repairs, remodels, and field details with clean work habits and pride in the finished product.",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
-        imageAlt: "Ranch home exterior at twilight with an arched entry and stone columns",
+        imageAlt: "Greeley home exterior at twilight with an arched entry and stone columns",
       },
       {
         title: "Trade Partners",
@@ -916,7 +888,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "ORNL's best-sealed SIP test room had about fifteen times lower leakage than its wood-framed counterpart. Actual homes need their own blower-door results, ventilation plan and heating/cooling load calculations. Reducing uncontrolled leakage can help reduce conditioning loads; equipment sizing must still follow the specific home.",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
-        imageAlt: "Ranch home exterior at twilight with an arched entry and stone columns",
+        imageAlt: "Greeley home exterior at twilight with an arched entry and stone columns",
         points: ["Less uncontrolled leakage", "Steadier temperatures", "Right-sized systems"],
         sourceIds: [9, 6],
       },
@@ -994,7 +966,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Colorado's Division of Insurance includes hail in its disaster-readiness guidance. Impact-rated roofing and durable exterior assemblies are options worth discussing alongside replacement costs, coverage terms and site exposure. Check the actual policy and insurer's requirements before assuming a premium discount or coverage benefit.",
         image: "/images/project-3/aerial-front-twilight.jpg",
-        imageAlt: "Ranch home entrance and driveway viewed from above at twilight",
+        imageAlt: "Greeley home entrance and driveway viewed from above at twilight",
         points: ["Hail exposure", "Replacement cycles", "Insurance conversation"],
         sourceIds: [11],
         dark: true,
@@ -1047,7 +1019,7 @@ export const publicPages: Record<string, PublicPageContent> = {
         body:
           "Plan fresh-air exchange alongside air sealing. A 2017 Austrian field study compared 123 modern homes with mechanical or natural ventilation. Residents reported better perceived air quality and climate with mechanical ventilation, while overall health did not differ significantly. This is not evidence that a particular Kiefer Built home prevents illness. A project can evaluate balanced, filtered ventilation for its specific design.",
         image: "/images/project-3/interior-great-room-fireplace.jpg",
-        imageAlt: "Ranch home exterior at twilight with an arched entry and stone columns",
+        imageAlt: "Greeley home exterior at twilight with an arched entry and stone columns",
         points: ["Controlled fresh air", "Filtered intake", "Balanced system design"],
         sourceIds: [1, 2],
         dark: true,

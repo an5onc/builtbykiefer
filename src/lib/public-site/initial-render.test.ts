@@ -3,7 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import VendorInterestPage from "@/components/public-site/VendorInterestPage";
 import ServiceAreasPage from "@/app/service-areas/page";
-import ContemporaryRanchProject from "@/app/projects/contemporary-ranch/page";
+import GreeleyProject from "@/app/projects/greeley/page";
 import MountainModernProject from "@/app/projects/mountain-modern/page";
 import BerthoudProject from "@/app/projects/berthoud/page";
 import TimnathProject from "@/app/projects/timnath/page";
@@ -42,7 +42,7 @@ function hiddenContent(html: string) {
 
 describe("safe initial public rendering", () => {
   it.each([
-    ["Contemporary Ranch", ContemporaryRanchProject], ["Mountain Modern", MountainModernProject],
+    ["Greeley", GreeleyProject], ["Mountain Modern", MountainModernProject],
     ["Berthoud", BerthoudProject], ["Timnath", TimnathProject],
     ["Red Feather Lakes", RedFeatherLakesProject], ["Vetters", VettersProject],
     ["Lakehouse Remodel", LakehouseRemodelProject],
@@ -67,7 +67,7 @@ describe("safe initial public rendering", () => {
 
   it.each([
     ["service areas", ServiceAreasPage],
-    ["ranch tour and photo gallery", ContemporaryRanchProject],
+    ["ranch tour and photo gallery", GreeleyProject],
     ["mountain tour and photo gallery", MountainModernProject],
   ])("keeps essential %s headings and images visible in initial HTML", (_name, Page) => {
     const result = hiddenContent(renderToStaticMarkup(createElement(Page)));

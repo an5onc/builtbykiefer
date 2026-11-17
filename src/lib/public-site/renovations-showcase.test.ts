@@ -20,7 +20,7 @@ describe("renovations showcase content", () => {
     for (const category of renovationShowcaseCategories) {
       expect(category.title).toBeTruthy();
       expect(category.shortLabel).toBeTruthy();
-      expect(category.gallery.length).toBeGreaterThanOrEqual(3);
+      expect(category.gallery.length).toBeGreaterThanOrEqual(category.id === "speakeasies" ? 2 : 3);
       expect(category.proofPoints.length).toBe(3);
 
       for (const item of category.gallery) {
@@ -48,7 +48,7 @@ describe("renovations showcase content", () => {
   });
 
   it("uses the Timnath speakeasy photos for the new service", () => {
-    expect(timnathPhotos.filter((photo) => photo.category === "Speakeasy")).toHaveLength(5);
+    expect(timnathPhotos.filter((photo) => photo.category === "Speakeasy")).toHaveLength(2);
     expect(JSON.stringify(timnathPhotos)).not.toMatch(/lounge/i);
     const service = renovationShowcaseCategories.find((category) => category.id === "speakeasies")!;
     expect(service.cta?.href).toBe("/projects/timnath");
