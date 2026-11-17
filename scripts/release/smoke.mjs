@@ -32,7 +32,7 @@ async function get(path, headers) {
   })) assert.equal(response.headers.get(key), value, `${path}: ${key}`);
   const policy = response.headers.get("content-security-policy-report-only") ?? "";
   assert.match(policy, /(?:^|; )default-src 'self'(?:;|$)/, `${path}: report-only policy`);
-  assert.match(policy, /(?:^|; )connect-src 'self'(?:;|$)/, `${path}: same-origin production connections`);
+  assert.match(policy, /(?:^|; )connect-src 'self' https:\/\/www\.googletagmanager\.com /, `${path}: same-origin and explicit Google Ads connections`);
   assert.ok(!policy.includes("unsafe-eval") && !/report-(?:uri|to)|report-sample/.test(policy), `${path}: no eval or report collector`);
   assert.equal(response.headers.get("content-security-policy"), null, `${path}: resource policy remains report-only`);
   headerResponses++;
@@ -42,7 +42,8 @@ for (const route of routes) {
   const { response, bytes } = await get(route);
   assert.equal(response.status, 200, route);
   const html = bytes.toString();
-  assert.ok(!/googletagmanager|google-analytics|G-BBCR31BJSM|_next-ga/.test(html), `${route}: no analytics loader`);
+  assert.ok(html.includes("google-ads-tag") && html.includes("https://www.googletagmanager.com/gtag/js?id=AW-11035153313"), `${route}: shared Google Ads bootstrap`);
+  assert.ok(!/google-analytics|G-BBCR31BJSM|_next-ga/.test(html), `${route}: obsolete Analytics tag stays removed`);
   assert.equal((html.match(/<h1\b/g) ?? []).length, 1, `${route}: one main heading`);
   assert.match(html, /<title>[^<]+<\/title>/);
   assert.match(html, /name="description" content="[^"]+"/);

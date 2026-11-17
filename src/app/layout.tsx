@@ -1,6 +1,8 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import GlobalFloatingAction from "@/components/GlobalFloatingAction";
 import MotionProvider from "@/components/MotionProvider";
+import { GOOGLE_ADS_SCRIPT_ID, googleAdsBootstrap } from "@/lib/public-site/google-ads";
 import { homeMetadata, localBusinessSchema, websiteSchema } from "@/lib/public-site/seo";
 import "./globals.css";
 
@@ -34,6 +36,9 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
+        <Script id={GOOGLE_ADS_SCRIPT_ID} strategy="afterInteractive">
+          {googleAdsBootstrap}
+        </Script>
         <MotionProvider>
           {children}
           <GlobalFloatingAction />

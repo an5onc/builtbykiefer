@@ -13,13 +13,24 @@ describe("browser response safeguards", () => {
     expect(headers["Content-Security-Policy"]).toBeUndefined();
   });
 
-  it("observes known static-site resources without claiming strict inline protection", () => {
+  it("observes static-site resources and explicit Ads/Analytics hosts without enabling arbitrary origins", () => {
     const headers = Object.fromEntries(publicSecurityHeaders().map(({ key, value }) => [key, value]));
     const policy = headers["Content-Security-Policy-Report-Only"];
-    expect(policy.split("; ")).toEqual(["default-src 'self'", "script-src 'self' 'unsafe-inline'", "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob:", "font-src 'self'", "connect-src 'self'", "media-src 'self' blob:", "object-src 'none'",
-      "base-uri 'self'", "frame-src 'none'", "frame-ancestors 'none'", "form-action 'self'"]);
-    expect(policy).not.toMatch(/unsafe-eval|report-uri|report-to|report-sample|https?:|\*/);
+    const directives = Object.fromEntries(policy.split("; ").map((directive) => {
+      const [name, ...sources] = directive.split(" ");
+      return [name, sources];
+    }));
+    expect(directives["default-src"]).toEqual(["'self'"]);
+    expect(directives["script-src"]).toEqual(["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.googleadservices.com", "https://www.google.com"]);
+    expect(directives["connect-src"]).toContain("https://googleads.g.doubleclick.net");
+    expect(directives["connect-src"]).toContain("https://ad.doubleclick.net");
+    expect(directives["connect-src"]).toContain("https://www.google-analytics.com");
+    expect(directives["connect-src"]).toContain("https://region1.google-analytics.com");
+    expect(directives["img-src"]).toContain("https://pagead2.googlesyndication.com");
+    expect(directives["frame-src"]).toEqual(["https://www.googletagmanager.com"]);
+    expect(directives["frame-ancestors"]).toEqual(["'none'"]);
+    expect(directives["form-action"]).toEqual(["'self'"]);
+    expect(policy).not.toMatch(/unsafe-eval|report-uri|report-to|report-sample|\*/);
   });
 
   it("isolates development HMR/eval allowances from the production policy", () => {
