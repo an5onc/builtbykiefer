@@ -12,9 +12,9 @@ import { selectQuoteAttempt } from "@/lib/contact/quote-attempt";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push: vi.fn() }) }));
 
-const destinations = ["/projects/contemporary-ranch", "/projects/contemporary-ranch", "/projects/renovations-additions",
-  "/projects/mountain-modern", "/projects/contemporary-ranch", "/projects/contemporary-ranch", "/projects/mountain-modern",
-  "/projects/contemporary-ranch", "/services/custom-elevators"];
+const destinations = ["/projects/greeley", "/projects/greeley", "/projects/renovations-additions",
+  "/projects/mountain-modern", "/projects/greeley", "/projects/greeley", "/projects/mountain-modern",
+  "/projects/greeley", "/services/custom-elevators"];
 const homeHtml = () => renderToStaticMarkup(createElement(Home));
 
 describe("rendered inquiry paths", () => {
@@ -60,26 +60,19 @@ describe("rendered inquiry paths", () => {
     expect(html).toContain('href="#contact"');
   });
 
-  it("links all six New Builds tours while keeping Barns and Garages informational", () => {
+  it("links the five named New Builds tours", () => {
     const html = renderToStaticMarkup(createElement(NewBuildsPage));
     const cards = [...html.matchAll(/<article\b[^>]*>([\s\S]*?)<\/article>/g)].map((match) => match[1]);
-    expect(cards).toHaveLength(7);
-    for (const [slug, title] of [["berthoud", "Berthoud"], ["timnath", "Timnath"], ["red-feather-lakes", "Red Feather Lakes"], ["vetters", "Vetters"]]) {
+    expect(cards).toHaveLength(5);
+    for (const [slug, title] of [["greeley", "Greeley"], ["berthoud", "Berthoud"], ["timnath", "Timnath"], ["red-feather-lakes", "Red Feather Lakes"], ["vetters", "Vetters"]]) {
       const anchor = html.match(new RegExp(`<a\\b[^>]*href="/projects/${slug}"[^>]*>[\\s\\S]*?</a>`))?.[0] ?? "";
       expect(anchor).toContain(`aria-label="${title} — Home tour: ${title}"`);
       expect(anchor).toContain(title);
       expect(publicRoutes).toContain(`/projects/${slug}`);
     }
-    for (const [destination, title] of [["/projects/contemporary-ranch", "Space Efficient Homes"], ["/projects/mountain-modern", "Modern Homes"]]) {
-      const anchor = html.match(new RegExp(`<a\\b[^>]*href="${destination}"[^>]*>[\\s\\S]*?</a>`))?.[0] ?? "";
-      expect(anchor).toContain(title); expect(anchor).toContain("Home tour example");
-      expect(anchor).toMatch(new RegExp(`aria-label="${title} — Home tour example: [^"]+"`));
+    for (const title of ["Space Efficient Homes", "Modern Homes", "Barns and Garages"]) {
+      expect(cards.some((card) => card.includes(title))).toBe(false);
     }
-    const anchors = [...html.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/g)].map((match) => match[0]);
-    const informational = cards.find((card) => card.includes("Barns and Garages")) ?? "";
-    expect(informational).toContain("Barns and Garages"); expect(informational).not.toMatch(/<a\b/);
-    expect(informational).not.toMatch(/<img\b/);
-    expect(anchors.some((anchor) => anchor.includes("Barns and Garages"))).toBe(false);
   });
 
   it("carries elevator selection through validation, email, recovery and edited retry identity", () => {

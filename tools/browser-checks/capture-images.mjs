@@ -39,7 +39,7 @@ try {
     try {
       const denied = await installBrowserContainment(context, origin); const page = await context.newPage();
       const responses = observeImages(page), errors = []; page.on("pageerror", error => errors.push(error.message));
-      const paths = ["/", "/services", "/about/team", "/about", "/projects/contemporary-ranch", "/services/custom-elevators"];
+      const paths = ["/", "/services", "/about/team", "/about", "/projects/greeley", "/services/custom-elevators"];
       if (view.width === 390) paths.push(...["sips", "energy-efficiency", "indoor-air-quality", "built-for-colorado", "cost-of-ownership", "quality"].map(key => `/why-kiefer-built/${key}`));
       for (const path of paths) {
         assert.equal((await page.goto(origin + path)).status(), 200);

@@ -47,7 +47,7 @@ try {
       const denied = await installBrowserContainment(context, origin);
       const page = await context.newPage(); const errors = []; page.on("pageerror", error => errors.push(error.message));
       for (const [path, selector] of [
-        ["/projects/contemporary-ranch", "#gallery"], ["/projects/mountain-modern", "#gallery"],
+        ["/projects/greeley", "#gallery"], ["/projects/mountain-modern", "#gallery"],
         ["/projects/renovations-additions", "#living-spaces"], ["/services", "main"],
         ["/why-kiefer-built/energy-efficiency", null], ["/why-kiefer-built/built-for-colorado", null],
       ]) {
@@ -69,8 +69,8 @@ try {
         if (selector) await region.screenshot({ path: join(runRoot, filename) });
         else { await page.evaluate(() => scrollTo(0, 0)); await page.screenshot({ path: join(runRoot, filename) }); }
         record.pages.push({ label, width, path, screenshot: filename, ...state });
-        if (path === "/projects/contemporary-ranch") {
-          for (const category of ["Exterior", "Aerial", "Kitchen", "Interior"]) {
+        if (path === "/projects/greeley") {
+          for (const category of ["Exterior", "Aerial", "Kitchen", "Interior", "Baths", "Basement"]) {
             await page.getByRole("button", { name: new RegExp(`^${category} \\(`) }).click();
             const gallery = page.locator("#gallery .grid"), pictures = gallery.locator("img");
             for (let i = 0; i < await pictures.count(); i++) {

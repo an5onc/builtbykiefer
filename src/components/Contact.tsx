@@ -9,6 +9,10 @@ import QuoteRequestRecovery from "@/components/QuoteRequestRecovery";
 import { businessContact } from "@/lib/public-site/business";
 import { QUOTE_ATTEMPT_HEADER, selectQuoteAttempt, type QuoteAttempt } from "@/lib/contact/quote-attempt";
 
+import { trackAcceptedServiceLead } from "@/lib/public-site/lead-event";
+
+type ServiceConsultation = { slug: string; title: string; projectType: string; question: string };
+
 type SubmitState = "idle" | "submitting" | "success" | "error";
 
 const projectTypes = [
@@ -48,7 +52,7 @@ function getField(formData: FormData, key: string) {
 
 const subscribeToHydration = () => () => {};
 
-export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" | "h2" }) {
+export default function Contact({ headingLevel = "h2", service }: { headingLevel?: "h1" | "h2"; service?: ServiceConsultation }) {
   const router = useRouter();
   const sendingRef = useRef(false);
   const deliveryAttemptRef = useRef<QuoteAttempt | null>(null);
@@ -102,7 +106,7 @@ export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" |
         body: selected.attempt.body,
       });
       const result = (await response.json().catch(() => null)) as {
-        ok?: unknown; emailSent?: unknown; error?: unknown; code?: unknown; issues?: unknown;
+        ok?: unknown; emailSent?: unknown; error?: unknown; code?: unknown; issues?: unknown; requestId?: unknown;
       } | null;
 
       if (!response.ok || result?.ok !== true || result?.emailSent !== true) {
@@ -125,6 +129,7 @@ export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" |
         return;
       }
 
+      if (service) trackAcceptedServiceLead(service.slug, selected.attempt.id, response.ok, result);
       setSubmitState("success");
       setMessage("Thanks. Your request was accepted for email delivery to Kiefer Built.");
       setRecovery(null);
@@ -159,14 +164,13 @@ export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" |
       <div className="relative mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.78fr_1fr] lg:items-start">
         <div>
           <p className="mb-3 text-sm font-bold uppercase tracking-[0.24em] text-[#ffb4a8]">
-            Get a Free Quote
+            {service ? "Request a Consultation" : "Get a Free Quote"}
           </p>
           <Heading id="contact-heading" className="text-4xl font-bold leading-tight text-white md:text-5xl">
-            Tell Kiefer Built what you want to build.
+            {service ? `Let’s talk about your ${service.title.toLowerCase()} project.` : "Tell Kiefer Built what you want to build."}
           </Heading>
           <p className="mt-6 max-w-xl text-base leading-8 text-white/68">
-            Share the project type, location, rough budget, and timing. The form sends a structured
-            quote request to Kiefer Built so the first follow-up starts with the right details.
+            {service ? "Share your location and the work you have in mind. Kiefer Built will follow up to discuss project fit and next steps. Add timing and budget to your project details if you know them." : "Share the project type, location, rough budget, and timing. The form sends a structured quote request to Kiefer Built so the first follow-up starts with the right details."}
           </p>
 
           <address className="mt-10 space-y-5 not-italic text-white/72">
@@ -229,11 +233,23 @@ export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" |
                 <Field label="Project location" name="location" placeholder="City, neighborhood, or address" minLength={quoteFieldLimits.location.min} maxLength={quoteFieldLimits.location.max} required />
               </div>
 
-              <div className="grid gap-4 md:grid-cols-3">
-                <SelectField label="Project type" name="projectType" options={projectTypes} required />
-                <SelectField label="Budget range" name="budget" options={budgetRanges} required />
-                <SelectField label="Timeline" name="timeline" options={timelines} required />
-              </div>
+              {service ? (
+                <>
+                  <div><label htmlFor="projectType" className="mb-2 block text-sm font-bold text-[#171717]">Project type</label>
+                    <select id="projectType" name="projectType" defaultValue={service.projectType} required className="w-full rounded-md border border-black/10 bg-[#f9f6f0] px-4 py-3 text-sm text-[#171717] outline-none focus:border-[#c9281c]">
+                      <option value={service.projectType}>{service.title}</option>
+                    </select>
+                  </div>
+                  <input type="hidden" name="budget" value="Still planning" />
+                  <input type="hidden" name="timeline" value="Still planning" />
+                </>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-3">
+                  <SelectField label="Project type" name="projectType" options={projectTypes} required />
+                  <SelectField label="Budget range" name="budget" options={budgetRanges} required />
+                  <SelectField label="Timeline" name="timeline" options={timelines} required />
+                </div>
+              )}
 
               <div>
                 <label htmlFor="message" className="mb-2 block text-sm font-bold text-[#171717]">
@@ -242,11 +258,11 @@ export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" |
                 <textarea
                   id="message"
                   name="message"
-                  rows={6}
+                  rows={service ? 4 : 6}
                   required
                   minLength={quoteFieldLimits.message.min}
                   maxLength={quoteFieldLimits.message.max}
-                  placeholder="Tell us what you are building, what matters most, and any site or schedule details we should know."
+                  placeholder={service?.question ?? "Tell us what you are building, what matters most, and any site or schedule details we should know."}
                   className="w-full rounded-md border border-black/10 bg-[#f9f6f0] px-4 py-3 text-sm text-[#171717] outline-none transition focus:border-[#c9281c] focus:bg-white"
                 />
               </div>
@@ -293,7 +309,7 @@ export default function Contact({ headingLevel = "h2" }: { headingLevel?: "h1" |
                 </>
               ) : (
                 <>
-                  Send Quote Request
+                  {service ? "Request a Consultation" : "Send Quote Request"}
                   <ArrowRight className="size-4" />
                 </>
               )}

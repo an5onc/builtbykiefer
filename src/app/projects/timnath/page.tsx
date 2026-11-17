@@ -1,15 +1,15 @@
 import type { CSSProperties } from "react";
 import ProjectTour from "@/components/ProjectTour";
-import { timnathPhotos } from "@/lib/public-site/timnath";
+import { timnathPhotos, timnathHero } from "@/lib/public-site/timnath";
 import { createMarketingMetadata } from "@/lib/public-site/metadata";
 
 export const metadata = createMarketingMetadata({
   title: "Timnath | Kiefer Built Contracting",
   description:
-    "Tour the Timnath home: deep green cabinetry, natural wood, stone accents, a light-filled bathroom suite, and an intimate speakeasy. Explore all 26 interior photos.",
+    `Explore ${timnathPhotos.length} photos of the Timnath home: twilight exteriors, wood cabinetry, open living spaces, bathrooms, a speakeasy and the finished basement.`,
   pathname: "/projects/timnath",
-  image: "/images/timnath/47-print-IMG_0130-HDR.webp",
-  imageAlt: "Timnath kitchen with deep green cabinetry, natural wood and a large island",
+  image: timnathHero.src,
+  imageAlt: timnathHero.alt,
 });
 
 // Colors echo the supplied photos; overrides remain inside this tour.
@@ -33,14 +33,14 @@ export default function TimnathProject() {
   return (
     <ProjectTour
       title="Timnath"
-      description="Deep green, natural wood, and warm stone — inviting gathering spaces, a serene bathroom suite, and a speakeasy with a mood all its own."
-      hero={{ src: "/images/timnath/47-print-IMG_0130-HDR.webp", alt: "Timnath kitchen with deep green and natural wood cabinetry, a large island and pendant lighting" }}
+      description="Warm wood, stone and open views — a custom home with connected living spaces, carefully finished bathrooms, a speakeasy and a generous basement."
+      hero={timnathHero}
       photos={timnathPhotos}
       backHref="/projects/new-builds"
       moreHref="/projects/new-builds"
-      galleryCategories={["All", "Kitchen", "Interior", "Baths", "Speakeasy"]}
+      galleryCategories={["All", "Exterior", "Kitchen", "Interior", "Baths", "Speakeasy", "Basement"]}
       galleryTitle="Inside Timnath"
-      galleryDescription="26 photos across the kitchen, living spaces, baths, and speakeasy."
+      galleryDescription={`${timnathPhotos.length} photographs across the exterior, kitchen, living spaces, bathrooms, speakeasy and finished basement.`}
       theme={theme}
       surfaceRgb="248,246,239"
       accent="#43533b"

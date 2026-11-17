@@ -5,7 +5,6 @@
   "/accolades": "/about/accolades",
   "/reviews": "/testimonials",
   "/catalogitems": "/products",
-  "/services/kitchen-remodeling": "/projects/renovations-additions",
   "/catalogitems/our-products": "/products",
   "/customgalleries1/featured-photos": "/projects",
   "/gallery": "/projects",
@@ -16,10 +15,10 @@
   "/new-builds/barns-and-garages": "/projects/new-builds",
   "/customgalleries3/commercial-sample": "/projects/commercial",
   "/renovations-and-additions": "/projects/renovations-additions",
-  "/renovations-and-additions/kitchens": "/projects/renovations-additions",
-  "/renovations-and-additions/bathrooms": "/projects/renovations-additions",
-  "/kitchens": "/projects/renovations-additions",
-  "/bathrooms": "/projects/renovations-additions",
+  "/renovations-and-additions/kitchens": "/services/kitchen-remodeling",
+  "/renovations-and-additions/bathrooms": "/services/bathroom-remodeling",
+  "/kitchens": "/services/kitchen-remodeling",
+  "/bathrooms": "/services/bathroom-remodeling",
   "/renovations-and-additions/living-spaces": "/projects/renovations-additions",
   "/renovations-and-additions/exteriors": "/projects/renovations-additions",
   "/renovations-and-additions/elevators": "/services/custom-elevators",
@@ -57,5 +56,6 @@
   "/buildertrend": "https://buildertrend.net/app/Login",
   "/guides/kiefer-built-homeowner-guide.pdf": "/guides/kiefer-built-homeowner-guide-2026.pdf",
   "/images/project-2/build-timelapse.mp4": "/images/project-2/build-timelapse-20261116.mp4",
-  "/images/project-2/build-timelapse-kbuiltco.mp4": "/images/project-2/build-timelapse-20261116.mp4"
+  "/images/project-2/build-timelapse-kbuiltco.mp4": "/images/project-2/build-timelapse-20261116.mp4",
+  "/projects/contemporary-ranch": "/projects/greeley"
 }

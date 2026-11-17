@@ -190,29 +190,23 @@ export const renovationShowcaseCategories: RenovationShowcaseCategory[] = [
     summary: "Bar cabinetry, intimate seating, layered lighting, and spaces made for gathering.",
     body:
       "A speakeasy brings a different mood to the home. Coordinate bar storage, comfortable seating, lighting, and finishes to create an inviting place to gather. Explore the details in the Timnath speakeasy below.",
-    heroImage: "/images/timnath/65-print-IMG_0065-HDR.webp",
+    heroImage: "/images/timnath/updated-20261117/38-web-or-mls-IMG_0048.webp",
     icon: Wine,
-    proofPoints: ["Bar cabinetry", "Banquette seating", "Atmospheric lighting"],
+    proofPoints: ["Bar cabinetry", "Game and gathering spaces", "Atmospheric lighting"],
     cta: { label: "Explore Timnath", href: "/projects/timnath" },
     gallery: [
       {
-        src: "/images/timnath/65-print-IMG_0065-HDR.webp",
-        alt: "Timnath speakeasy with dark green walls, upholstered banquette seating and a wood table by Kiefer Built",
-        label: "Timnath · Speakeasy seating",
-        detail: "Deep green finishes, upholstered seating and wall sconces set an intimate mood.",
+        "src": "/images/timnath/updated-20261117/38-web-or-mls-IMG_0048.webp",
+        "alt": "Timnath speakeasy with a round game table, blue upholstered seating and a bar with illuminated shelves by Kiefer Built",
+        "label": "Timnath · Bar and game table",
+        "detail": "A bar, illuminated shelving, upholstered seating and a round game table share the finished room."
       },
       {
-        src: "/images/timnath/67-print-IMG_0075-HDR.webp",
-        alt: "Timnath speakeasy with a wood table, upholstered bench and dark counter by Kiefer Built",
-        label: "Timnath · Seating and counter",
-        detail: "A wood table and upholstered banquette sit beside dark bar cabinetry and counters.",
-      },
-      {
-        src: "/images/timnath/68-print-IMG_0080-HDR.webp",
-        alt: "Timnath speakeasy illuminated arched bar niche with ribbed backing and glassware by Kiefer Built",
-        label: "Timnath · Arched bar niche",
-        detail: "An illuminated arch frames bar shelves, glassware and a ribbed backdrop.",
-      },
+        "src": "/images/timnath/updated-20261117/40-web-or-mls-IMG_0063.webp",
+        "alt": "Timnath speakeasy with a pool table, wood-pattern flooring, dark walls and upholstered seating by Kiefer Built",
+        "label": "Timnath · Pool table and seating",
+        "detail": "A pool table and wood-pattern flooring give the speakeasy another place to gather."
+      }
     ],
   },
   {

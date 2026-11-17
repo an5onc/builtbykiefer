@@ -75,7 +75,7 @@ test("18 crop-aware requests deliver usable pixels while respecting original res
     const guards = await contain(context);
     try {
       const page = await context.newPage(), responses = observeImages(page);
-      const paths = view.width === 1440 ? ["/services", "/about/team", "/services/custom-elevators"] : ["/", "/about", "/projects/contemporary-ranch", "/services/custom-elevators", ...["sips", "energy-efficiency", "indoor-air-quality", "built-for-colorado", "cost-of-ownership", "quality"].map(key => `/why-kiefer-built/${key}`)];
+      const paths = view.width === 1440 ? ["/services", "/about/team", "/services/custom-elevators"] : ["/", "/about", "/projects/greeley", "/services/custom-elevators", ...["sips", "energy-efficiency", "indoor-air-quality", "built-for-colorado", "cost-of-ownership", "quality"].map(key => `/why-kiefer-built/${key}`)];
       for (const path of paths) {
         await page.goto(path);
         const targets = view.width === 1440 ? page.locator("main article img") : page.locator("main img").first();
